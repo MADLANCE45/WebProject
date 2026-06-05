@@ -61,14 +61,13 @@ function ShareButtons({ prodotto }) {
   );
 }
 
-// --- MODALE PRODOTTO ---
+// --- MODALE PRODOTTO OTTIMIZZATA ---
 function ProductModal({ prodotto, tuttiProdotti, onClose, isDarkMode }) {
   if (!prodotto) return null;
 
   const bg = isDarkMode ? '#1F2937' : '#FFFFFF';
   const text = isDarkMode ? '#F9FAFB' : '#111827';
   
-  // Per evitare il crash su campi undefined
   const categoriaSafe = prodotto.categoria || '';
   
   const correlati = tuttiProdotti
@@ -81,34 +80,93 @@ function ProductModal({ prodotto, tuttiProdotti, onClose, isDarkMode }) {
     prezzoBarrato = ((parseFloat(prodotto.prezzo.toString().replace(',', '.'))) * 1.3).toFixed(2);
   }
 
+  // Genera una percentuale finta ma "stabile" basata sull'ID del prodotto
+  const percentualeVenduta = 75 + ((prodotto.id * 7) % 20); 
+
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 10000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px', backdropFilter: 'blur(5px)' }}>
-      <div style={{ background: bg, color: text, width: '100%', maxWidth: '800px', maxHeight: '90vh', borderRadius: '16px', overflowY: 'auto', position: 'relative', display: 'flex', flexDirection: 'column', padding: '25px' }}>
+    <div 
+      onClick={onClose} 
+      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 10000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px', backdropFilter: 'blur(5px)' }}
+    >
+      <div 
+        onClick={(e) => e.stopPropagation()} 
+        style={{ background: bg, color: text, width: '100%', maxWidth: '800px', maxHeight: '90vh', borderRadius: '16px', overflowY: 'auto', position: 'relative', display: 'flex', flexDirection: 'column', padding: '25px' }}
+      >
         
         <button onClick={onClose} style={{ position: 'absolute', top: '15px', right: '15px', background: '#E5E7EB', color: '#111827', border: 'none', borderRadius: '50%', width: '35px', height: '35px', cursor: 'pointer', fontWeight: 'bold', zIndex: 10 }}>X</button>
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
-          <div style={{ flex: '1 1 300px', height: '300px', display: 'flex', justifyContent: 'center', alignItems: 'center', background: isDarkMode ? '#111827' : '#F3F4F6', borderRadius: '12px', overflow: 'hidden' }}>
-             {prodotto.immagine_url ? <img src={prodotto.immagine_url} alt={prodotto.titolo} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} /> : 'Nessuna Immagine'}
+        {/* Aggiunto alignItems: 'flex-start' per evitare allungamenti asimmetrici */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', alignItems: 'flex-start' }}>
+          
+          {/* COLONNA SINISTRA: IMMAGINE + STELLE + GARANZIE */}
+          <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            <div style={{ height: '300px', display: 'flex', justifyContent: 'center', alignItems: 'center', background: isDarkMode ? '#111827' : '#F3F4F6', borderRadius: '12px', overflow: 'hidden' }}>
+               {prodotto.immagine_url ? <img src={prodotto.immagine_url} alt={prodotto.titolo} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} /> : 'Nessuna Immagine'}
+            </div>
+            
+            {/* Stelle */}
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', paddingBottom: '10px', borderBottom: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}` }}>
+              <span style={{ color: '#FBBF24', fontSize: '22px', letterSpacing: '2px' }}>★★★★★</span>
+              <span style={{ color: '#6B7280', fontSize: '15px', fontWeight: 'bold' }}>(4.8)</span>
+            </div>
+
+            {/* Garanzie per riempire lo spazio e dare fiducia (Ottime su mobile prima del prezzo) */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '0 10px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#059669', fontWeight: '600' }}>
+                <span>📦</span> Spedizione GRATUITA
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: isDarkMode ? '#D1D5DB' : '#4B5563' }}>
+                <span>↩️</span> Reso gratuito entro 90 giorni
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: isDarkMode ? '#D1D5DB' : '#4B5563' }}>
+                <span>🔒</span> Pagamenti sicuri al 100%
+              </div>
+            </div>
           </div>
 
+          {/* COLONNA DESTRA: DETTAGLI + PREZZO + CTA + CONDIVISIONE */}
           <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontSize: '12px', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '1px' }}>{prodotto.reparto} &gt; {prodotto.categoria}</span>
-            <h2 style={{ fontSize: '22px', margin: '10px 0' }}>{prodotto.titolo}</h2>
+            <h2 style={{ fontSize: '22px', margin: '10px 0', lineHeight: '1.4' }}>{prodotto.titolo}</h2>
             
             <CountdownTimer />
             
-            <div style={{ marginBottom: '20px' }}>
+            <div style={{ marginBottom: '15px' }}>
               <span style={{ fontSize: '14px', color: '#6B7280', textDecoration: 'line-through', marginRight: '10px' }}>{prezzoBarrato}€</span>
               <span style={{ fontWeight: '900', fontSize: '32px', color: '#FF6600' }}>€ {prodotto.prezzo}</span>
             </div>
 
-            <a href={prodotto.link_affiliazione} target="_blank" rel="noopener noreferrer" style={{ background: '#FF6600', color: 'white', padding: '15px', textDecoration: 'none', borderRadius: '8px', fontSize: '18px', fontWeight: 'bold', textAlign: 'center', boxShadow: '0 4px 10px rgba(255,102,0,0.3)' }}>
+            {/* Barra Scarsità Dinamica Temu Style */}
+            <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ fontSize: '13px', color: '#EF4444', fontWeight: 'bold' }}>🔥 {percentualeVenduta}% Venduto</span>
+              <div style={{ flex: 1, height: '6px', background: '#FEE2E2', borderRadius: '10px', overflow: 'hidden' }}>
+                <div style={{ width: `${percentualeVenduta}%`, height: '100%', background: '#EF4444', borderRadius: '10px' }}></div>
+              </div>
+            </div>
+
+            <a href={prodotto.link_affiliazione} className="temu-buy-btn" target="_blank" rel="noopener noreferrer" style={{ background: '#FF6600', color: 'white', padding: '15px', textDecoration: 'none', borderRadius: '8px', fontSize: '18px', fontWeight: 'bold', textAlign: 'center', marginBottom: '15px' }}>
               🔥 Vai all'Offerta su Temu
             </a>
+            {/* BOX COUPON INTERATTIVO */}
+            <div 
+              onClick={() => {
+                navigator.clipboard.writeText('TEMU50');
+                alert('Codice copiato! Ora incollalo su Temu al checkout.');
+              }}
+              style={{ border: '2px dashed #10B981', background: isDarkMode ? 'rgba(16, 185, 129, 0.1)' : '#ECFDF5', padding: '12px', borderRadius: '8px', marginBottom: '15px', textAlign: 'center', cursor: 'pointer', transition: 'transform 0.1s' }}
+              onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
+              onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+            >
+              <span style={{ fontSize: '12px', color: '#10B981', fontWeight: 'bold', textTransform: 'uppercase' }}>Sconto Extra 50% (Nuovi Utenti)</span><br/>
+              <span style={{ fontSize: '22px', color: '#059669', fontWeight: '900', letterSpacing: '2px' }}>TEMU50</span><br/>
+              <span style={{ fontSize: '11px', color: '#6B7280', textDecoration: 'underline' }}>Clicca per copiare il codice</span>
+            </div>
+            {/* Spostati qui sotto: perfetti per il mobile! */}
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '5px' }}>
+              <ShareButtons prodotto={prodotto} />
+            </div>
 
-            <ShareButtons prodotto={prodotto} />
-            <p style={{ fontSize: '13px', color: '#9CA3AF' }}>* Il prezzo può subire variazioni su Temu. Verifica sempre sulla piattaforma.</p>
+            <p style={{ fontSize: '12px', color: '#9CA3AF', lineHeight: '1.4', textAlign: 'center', marginTop: '10px' }}>* Il prezzo può subire variazioni su Temu. Verifica sempre sulla piattaforma ufficiale.</p>
           </div>
         </div>
 
@@ -117,11 +175,13 @@ function ProductModal({ prodotto, tuttiProdotti, onClose, isDarkMode }) {
             <h3 style={{ fontSize: '18px', marginBottom: '15px' }}>💡 Potrebbe interessarti anche...</h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '15px' }}>
               {correlati.map(corr => (
+                
                 <div onClick={() => { window.open(corr.link_affiliazione, '_blank'); }} key={corr.id} style={{ cursor: 'pointer', textDecoration: 'none', color: 'inherit', border: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}`, borderRadius: '8px', padding: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                   <img src={corr.immagine_url} alt={corr.titolo} style={{ height: '100px', objectFit: 'contain', marginBottom: '10px' }} />
                   <h4 style={{ fontSize: '13px', margin: '0 0 5px 0', textAlign: 'center', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{corr.titolo}</h4>
                   <span style={{ fontWeight: 'bold', color: '#FF6600' }}>€ {corr.prezzo}</span>
                 </div>
+                
               ))}
             </div>
           </div>
@@ -257,7 +317,50 @@ function ToastPromo() {
     </div>
   );
 }
+// --- FAKE SALES TOAST (RIPROVA SOCIALE) ---
+function FakeSalesToast({ prodotti }) {
+  const [vendita, setVendita] = useState(null);
 
+  useEffect(() => {
+    if (!prodotti || prodotti.length === 0) return;
+    
+    const nomi = ['Marco da Roma', 'Giulia da Milano', 'Luca da Napoli', 'Anna da Torino', 'Matteo da Firenze', 'Elena da Bologna', 'Davide da Palermo'];
+    
+    // Mostra una notifica ogni 18 secondi
+    const interval = setInterval(() => {
+      const prodottoCasuale = prodotti[Math.floor(Math.random() * prodotti.length)];
+      const nomeCasuale = nomi[Math.floor(Math.random() * nomi.length)];
+      const minutiCasuali = Math.floor(Math.random() * 12) + 1; // Tra 1 e 12 minuti fa
+      
+      setVendita({ nome: nomeCasuale, titolo: prodottoCasuale.titolo, tempo: minutiCasuali });
+      
+      // Nascondi la notifica dopo 5 secondi
+      setTimeout(() => setVendita(null), 5000);
+    }, 18000);
+
+    return () => clearInterval(interval);
+  }, [prodotti]);
+
+  if (!vendita) return null;
+
+  return (
+    <div style={{
+      position: 'fixed', bottom: '20px', left: '20px', background: 'white', color: '#111827', 
+      padding: '12px 15px', borderRadius: '10px', boxShadow: '0 8px 25px rgba(0,0,0,0.2)', 
+      zIndex: 9999, display: 'flex', alignItems: 'center', gap: '12px', maxWidth: '320px',
+      borderLeft: '4px solid #059669', transition: 'all 0.3s ease-in-out'
+    }}>
+      <div style={{ fontSize: '24px' }}>🛍️</div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <p style={{ margin: 0, fontSize: '11px', color: '#6B7280' }}>{vendita.nome} ha acquistato:</p>
+        <p style={{ margin: '2px 0', fontSize: '13px', fontWeight: 'bold', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          {vendita.titolo}
+        </p>
+        <p style={{ margin: 0, fontSize: '10px', color: '#059669', fontWeight: '600' }}>Circa {vendita.tempo} minuti fa</p>
+      </div>
+    </div>
+  );
+}
 function HeroSlider() {
   const [current, setCurrent] = useState(0);
   const slides = [
@@ -297,7 +400,49 @@ function CookieBanner() {
     </div>
   )
 }
+// --- 3. EXIT-INTENT POPUP (RECUPERO UTENTI) ---
+function ExitIntentPopup({ isDarkMode }) {
+  const [isVisible, setIsVisible] = useState(false);
+  const [hasShown, setHasShown] = useState(false);
 
+  useEffect(() => {
+    const handleMouseLeave = (e) => {
+      // Se il cursore esce dalla parte superiore dello schermo (verso le schede del browser)
+      if (e.clientY <= 0 && !hasShown) {
+        setIsVisible(true);
+        setHasShown(true);
+      }
+    };
+
+    document.addEventListener('mouseleave', handleMouseLeave);
+    return () => document.removeEventListener('mouseleave', handleMouseLeave);
+  }, [hasShown]);
+
+  if (!isVisible) return null;
+
+  return (
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.8)', zIndex: 99999, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px', backdropFilter: 'blur(5px)' }}>
+      <div style={{ background: isDarkMode ? '#1F2937' : '#FFFFFF', color: isDarkMode ? '#F9FAFB' : '#111827', width: '100%', maxWidth: '400px', borderRadius: '16px', padding: '30px', textAlign: 'center', position: 'relative', boxShadow: '0 10px 30px rgba(0,0,0,0.5)', borderTop: '5px solid #FF6600' }}>
+        <button onClick={() => setIsVisible(false)} style={{ position: 'absolute', top: '10px', right: '15px', background: 'transparent', border: 'none', fontSize: '20px', color: '#9CA3AF', cursor: 'pointer' }}>✖</button>
+        
+        <div style={{ fontSize: '45px', marginBottom: '10px' }}>🎁</div>
+        <h2 style={{ fontSize: '24px', margin: '0 0 10px 0', color: '#FF6600', fontWeight: '900' }}>Aspetta! Non scappare!</h2>
+        <p style={{ fontSize: '15px', marginBottom: '25px', color: isDarkMode ? '#D1D5DB' : '#4B5563', lineHeight: '1.5' }}>
+          Hai già visto la sezione segreta di Temu con gli articoli a <strong>meno di 5€</strong> e la spedizione gratuita?
+        </p>
+        
+        {/* SOSTITUISCI QUESTO LINK CON IL TUO LINK DI AFFILIAZIONE ALLA HOMEPAGE DI TEMU */}
+        <a href="https://temu.to/k/iltuolinkgenerico" target="_blank" rel="noopener noreferrer" onClick={() => setIsVisible(false)} className="temu-buy-btn" style={{ display: 'block', background: '#FF6600', color: 'white', padding: '15px', borderRadius: '8px', fontSize: '16px', fontWeight: 'bold', textDecoration: 'none', boxShadow: '0 4px 10px rgba(255,102,0,0.3)' }}>
+          Mostrami le Offerte sotto i 5€
+        </a>
+        
+        <button onClick={() => setIsVisible(false)} style={{ background: 'transparent', border: 'none', color: '#9CA3AF', fontSize: '12px', marginTop: '15px', cursor: 'pointer', textDecoration: 'underline' }}>
+          No grazie, voglio perdere queste offerte
+        </button>
+      </div>
+    </div>
+  );
+}
 // --- PAGINA PRINCIPALE ---
 function Home({ isDarkMode }) {
   const [prodotti, setProdotti] = useState([])
@@ -344,10 +489,13 @@ function Home({ isDarkMode }) {
 
   return (
     <div style={{ fontFamily: 'Inter, sans-serif', backgroundColor: bgPrincipale, paddingBottom: '100px', minHeight: '100vh', color: textPrincipale }}>
+      {/* Popups e Notifiche */}
       {!popupClosed && <OffersPopup isDarkMode={isDarkMode} onClose={() => setPopupClosed(true)} />}
       <ToastPromo />
+      <ExitIntentPopup isDarkMode={isDarkMode} /> {/* <-- Aggiunto qui */}
+      <FakeSalesToast prodotti={prodotti} /> {/* Aggiungi questa riga! */}
       <HeroSlider />
-
+    
       {/* BANNER SELEZIONE REPARTI */}
       <div style={{ display: 'flex', gap: '20px', padding: '30px 4%', flexWrap: 'wrap' }}>
         
@@ -425,38 +573,93 @@ function Home({ isDarkMode }) {
           </div>
         </div>
 
+        {/* GRIGLIA PRODOTTI OTTIMIZZATA CON SCONTO E STELLE */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px', padding: '0 4%' }}>
-          {prodottiFiltrati.map((prodotto) => (
-            <div key={prodotto.id} onClick={() => setProdottoSelezionato(prodotto)} style={{ cursor: 'pointer', position: 'relative', background: cardBg, borderRadius: '16px', padding: '15px', display: 'flex', flexDirection: 'column', border: `1px solid ${cardBorder}`, boxShadow: isDarkMode ? '0 4px 15px rgba(0,0,0,0.4)' : '0 4px 15px rgba(0,0,0,0.05)', transition: 'transform 0.2s ease-out' }} onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
-              
-              <span style={{ position: 'absolute', top: '25px', left: '25px', background: 'black', color: 'white', fontSize: '10px', fontWeight: 'bold', padding: '4px 8px', borderRadius: '6px', zIndex: 2, textTransform: 'uppercase', letterSpacing: '1px' }}>Temu Pick</span>
+          {prodottiFiltrati.map((prodotto) => {
+            // Calcolo dinamico del prezzo originale barrato (+30%)
+            const prezzoNum = prodotto.prezzo ? parseFloat(prodotto.prezzo.toString().replace(',', '.')) : 0;
+            const prezzoBarrato = (prezzoNum * 1.3).toFixed(2);
+            
+            // Genera uno sconto verosimile tra il 45% e il 75% usando l'ID
+            const scontoPercentuale = 45 + ((prodotto.id * 3) % 30);
 
-              <div style={{ height: '200px', width: '100%', marginBottom: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: isDarkMode ? '#111827' : '#F9FAFB', borderRadius: '10px', overflow: 'hidden' }}>
-                {prodotto.immagine_url ? (
-  <img 
-    src={prodotto.immagine_url} 
-    alt="Prodotto" 
-    onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/200x200/e5e7eb/6b7280?text=Immagine+Non+Disponibile'; }}
-    style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
-  />
-) : <span style={{ color: '#9CA3AF' }}>No Img</span>}
-              </div>
-              
-              <h3 title={prodotto.titolo} style={{ fontSize: '16px', margin: '0 0 8px 0', color: textPrincipale, lineHeight: '1.4', fontWeight: '700', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{prodotto.titolo}</h3>
-              <p style={{ color: '#6B7280', fontSize: '13px', margin: '0 0 15px 0' }}>{prodotto.sottocategoria}</p>
-              
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
-                <div>
-                  <span style={{ fontSize: '12px', color: '#6B7280', display: 'block', textDecoration: 'line-through' }}>{((parseFloat(prodotto.prezzo.toString().replace(',', '.'))) * 1.3).toFixed(2)}€</span>
-                  <span style={{ fontWeight: '900', fontSize: '22px', color: '#FF6600' }}>€ {prodotto.prezzo}</span>
+            return (
+              <div 
+                key={prodotto.id} 
+                onClick={() => setProdottoSelezionato(prodotto)} 
+                style={{ 
+                  cursor: 'pointer',
+                  position: 'relative',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  padding: '15px',
+                  borderRadius: '16px',
+                  background: cardBg, 
+                  border: `1px solid ${cardBorder}`, 
+                  boxShadow: isDarkMode ? '0 4px 15px rgba(0,0,0,0.4)' : '0 4px 15px rgba(0,0,0,0.05)',
+                  transition: 'transform 0.2s ease-out'
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
+              >
+                {/* Badge Angolare */}
+                <span style={{ position: 'absolute', top: '12px', left: '12px', background: '#FF6600', color: 'white', fontSize: '9px', fontWeight: 'bold', padding: '3px 6px', borderRadius: '4px', zIndex: 2, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  Temu Pick
+                </span>
+
+                {/* 1. IMMAGINE CON BADGE SCONTO */}
+                <div style={{ position: 'relative', height: '180px', width: '100%', marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: isDarkMode ? '#111827' : '#F9FAFB', borderRadius: '10px', overflow: 'hidden' }}>
+                  
+                  {/* NUOVO BADGE SCONTO ROSSO IN ALTO A DESTRA */}
+                  <div style={{ position: 'absolute', top: '8px', right: '8px', background: '#EF4444', color: 'white', padding: '4px 8px', borderRadius: '20px', fontSize: '13px', fontWeight: '900', boxShadow: '0 2px 5px rgba(0,0,0,0.2)', zIndex: 5 }}>
+                    -{scontoPercentuale}%
+                  </div>
+
+                  {prodotto.immagine_url ? (
+                    <img 
+                      src={prodotto.immagine_url} 
+                      alt={prodotto.titolo} 
+                      onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/200x200/e5e7eb/6b7280?text=Immagine+Non+Disponibile'; }}
+                      style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
+                    />
+                  ) : <span style={{ color: '#9CA3AF' }}>No Img</span>}
                 </div>
-                {/* Cambiato in "Scopri" per incentivare l'apertura della modale */}
-                <div style={{ background: '#111827', color: 'white', padding: '10px 18px', borderRadius: '50px', fontSize: '13px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                  Scopri
+                
+                {/* 2. PREZZO ATTUALE GIGANTE E PREZZO SBARRATO */}
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '6px', flexWrap: 'wrap' }}>
+                  <span style={{ fontWeight: '900', fontSize: '24px', color: '#FF6600' }}>
+                    € {prodotto.prezzo}
+                  </span>
+                  <span style={{ fontSize: '13px', color: '#6B7280', textDecoration: 'line-through' }}>
+                    {prezzoBarrato}€
+                  </span>
+                </div>
+
+                {/* 3. TITOLO BREVE (Troncato a 2 righe stabili) */}
+                <h3 title={prodotto.titolo} style={{ fontSize: '14px', margin: '0 0 8px 0', color: textPrincipale, lineHeight: '1.3', fontWeight: '700', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', minHeight: '36px' }}>
+                  {prodotto.titolo}
+                </h3>
+
+                {/* 4. LE STELLE E LA SCARSITÀ (SOCIAL PROOF) */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '12px', fontSize: '12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ color: '#FBBF24', fontSize: '14px', letterSpacing: '1px' }}>★★★★★</span> 
+                    <span style={{ color: '#6B7280', fontSize: '11px' }}>(4.8)</span>
+                  </div>
+                  <div style={{ color: '#EF4444', fontWeight: '600', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span>⚡ Offerta Lampo</span> 
+                    <span style={{ color: '#D1D5DB' }}>|</span> 
+                    <span style={{ color: '#059669' }}>+500 venduti</span>
+                  </div>
+                </div>
+                
+                {/* 5. CALL TO ACTION MODALE */}
+                <div style={{ marginTop: 'auto', background: isDarkMode ? '#374151' : '#111827', color: 'white', padding: '10px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: 'bold', textAlign: 'center' }}>
+                  Scopri Dettagli
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
       
