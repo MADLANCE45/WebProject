@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import StarRating from './components/StarRating';
 import { supabase } from './supabaseClient';
 import Admin from './Admin';
 
@@ -50,11 +51,11 @@ function ShareButtons({ prodotto }) {
   const tgLink = `https://t.me/share/url?url=${encodeURIComponent(linkSito)}&text=${encodeURIComponent(messaggio)}`;
 
   return (
-    <div style={{ display: 'flex', gap: '10px', marginTop: '15px', marginBottom: '15px' }}>
-      <a href={waLink} target="_blank" rel="noopener noreferrer" style={{ background: '#25D366', color: 'white', padding: '8px 15px', borderRadius: '50px', textDecoration: 'none', fontSize: '13px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' }}>
+    <div style={{ display: 'flex', gap: '8px' }}>
+      <a href={waLink} target="_blank" rel="noopener noreferrer" style={{ background: '#25D366', color: 'white', padding: '6px 12px', borderRadius: '50px', textDecoration: 'none', fontSize: '12px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' }}>
         💬 WhatsApp
       </a>
-      <a href={tgLink} target="_blank" rel="noopener noreferrer" style={{ background: '#0088cc', color: 'white', padding: '8px 15px', borderRadius: '50px', textDecoration: 'none', fontSize: '13px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' }}>
+      <a href={tgLink} target="_blank" rel="noopener noreferrer" style={{ background: '#0088cc', color: 'white', padding: '6px 12px', borderRadius: '50px', textDecoration: 'none', fontSize: '12px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' }}>
         ✈️ Telegram
       </a>
     </div>
@@ -149,9 +150,16 @@ function ProductModal({ prodotto, tuttiProdotti, onClose, isDarkMode }) {
           </div>
 
           {/* ================= COLONNA DESTRA ================= */}
+          {/* ================= COLONNA DESTRA ================= */}
           <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontSize: '12px', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '1px' }}>{prodotto.reparto} &gt; {prodotto.categoria}</span>
-            <h2 style={{ fontSize: '22px', margin: '10px 0', lineHeight: '1.4' }}>{prodotto.titolo}</h2>
+            <h2 style={{ fontSize: '22px', margin: '8px 0', lineHeight: '1.4' }}>{prodotto.titolo}</h2>
+            
+            {/* Pulsanti Condivisione spostati in ALTO, super compatti */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}>
+              <span style={{ fontSize: '12px', color: '#6B7280', fontWeight: 'bold' }}>Condividi:</span>
+              <ShareButtons prodotto={prodotto} />
+            </div>
             
             <div style={{ background: isDarkMode ? '#374151' : '#FEF2F2', borderLeft: '4px solid #EF4444', padding: '10px', borderRadius: '4px', marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
               <span style={{ fontSize: '18px' }}>⏳</span>
@@ -163,10 +171,15 @@ function ProductModal({ prodotto, tuttiProdotti, onClose, isDarkMode }) {
               <span style={{ fontWeight: '900', fontSize: '38px', color: '#FF6600' }}>€ {prodotto.prezzo}</span>
             </div>
 
-            {/* BOTTONE GIGANTE SUBITO SOTTO IL PREZZO */}
-            <a href={prodotto.link_affiliazione} className="temu-buy-btn" target="_blank" rel="noopener noreferrer" style={{ display: 'block', background: '#FF6600', color: 'white', padding: '16px', textDecoration: 'none', borderRadius: '8px', fontSize: '20px', fontWeight: '900', textAlign: 'center', boxShadow: '0 4px 15px rgba(255,102,0,0.4)', marginBottom: '20px' }}>
+            {/* BOTTONE GIGANTE */}
+            <a href={prodotto.link_affiliazione} className="temu-buy-btn" target="_blank" rel="noopener noreferrer" style={{ display: 'block', background: '#FF6600', color: 'white', padding: '16px', textDecoration: 'none', borderRadius: '8px', fontSize: '20px', fontWeight: '900', textAlign: 'center', boxShadow: '0 4px 15px rgba(255,102,0,0.4)', marginBottom: '8px' }}>
               🔥 Vai all'Offerta su Temu
             </a>
+
+            {/* Disclaimer Affiliato compatto e subito sotto il bottone */}
+            <p style={{ fontSize: '10px', color: '#9CA3AF', lineHeight: '1.2', textAlign: 'center', marginBottom: '20px' }}>
+              * In qualità di Affiliato, ricevo una commissione per gli acquisti idonei.
+            </p>
 
             <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
               <span style={{ fontSize: '13px', color: '#EF4444', fontWeight: 'bold' }}>🔥 {percentualeVenduta}% Venduto</span>
@@ -175,21 +188,14 @@ function ProductModal({ prodotto, tuttiProdotti, onClose, isDarkMode }) {
               </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px', background: isDarkMode ? '#1F2937' : '#F9FAFB', padding: '15px', borderRadius: '8px' }}>
+            {/* Vantaggi Spedizione */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', background: isDarkMode ? '#1F2937' : '#F9FAFB', padding: '15px', borderRadius: '8px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#059669', fontWeight: '600' }}><span>📦</span> Spedizione GRATUITA</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: isDarkMode ? '#D1D5DB' : '#4B5563' }}><span>↩️</span> Reso gratuito entro 90 giorni</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: isDarkMode ? '#D1D5DB' : '#4B5563' }}><span>🔒</span> Pagamenti sicuri al 100%</div>
             </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', marginBottom: '15px' }}>
-              <span style={{ fontSize: '12px', color: '#6B7280', fontWeight: 'bold' }}>Condividi questa offerta:</span>
-              <ShareButtons prodotto={prodotto} />
             </div>
-
-            <p style={{ fontSize: '11px', color: '#9CA3AF', lineHeight: '1.4', textAlign: 'center', marginTop: 'auto' }}>* In qualità di Affiliato, ricevo una commissione per gli acquisti idonei.</p>
-
           </div>
-        </div>
 
         {/* ================= CORRELATI ================= */}
         {correlati.length > 0 && (
@@ -473,6 +479,7 @@ function ExitIntentPopup({ isDarkMode }) {
   );
 }
 // --- GIOCO A PREMI: RUOTA DELLA FORTUNA ---
+// --- GIOCO A PREMI: RUOTA DELLA FORTUNA ---
 function WheelOfFortune({ isDarkMode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [spinning, setSpinning] = useState(false);
@@ -508,9 +515,9 @@ function WheelOfFortune({ isDarkMode }) {
       const isWin = Math.random() > 0.15;
       let prize;
       if (isWin) {
-        prize = prizes[Math.floor(Math.random() * (prizes.length - 1))]; // Prende uno dei primi 5
+        prize = prizes[Math.floor(Math.random() * (prizes.length - 1))];
       } else {
-        prize = prizes[prizes.length - 1]; // Prende l'ultimo "Ritenta domani"
+        prize = prizes[prizes.length - 1]; 
       }
       
       setResult(prize);
@@ -543,17 +550,97 @@ function WheelOfFortune({ isDarkMode }) {
             <p style={{ fontSize: '13px', marginBottom: '20px', color: '#6B7280' }}>Gira e vinci fantastici regali e coupon Temu! Hai 1 giro al giorno.</p>
 
             {!result ? (
-              <div style={{ padding: '10px' }}>
-                <div style={{ fontSize: '80px', display: 'inline-block', transition: 'transform 3s cubic-bezier(0.2, 0.8, 0.2, 1)', transform: spinning ? 'rotate(2160deg)' : 'rotate(0deg)' }}>
-                  🎯
+              <div style={{ padding: '10px', position: 'relative' }}>
+                
+                {/* Il pescatore con la canna da pesca animata */}
+                <div style={{ 
+                  fontSize: '40px', 
+                  marginBottom: '10px', 
+                  position: 'relative', 
+                  zIndex: 2,
+                  animation: spinning ? 'reeling 0.2s infinite alternate' : 'none',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flexDirection: 'column'
+                }}>
+                  <span style={{ fontSize: '45px' }}>🧑‍🎣</span>
+                  {/* Canna da pesca che si inclina durante il giro */}
+                  <span style={{ 
+                    transform: spinning ? 'rotate(-25deg) scale(1.1)' : 'rotate(0deg)', 
+                    transition: 'transform 0.1s ease-in-out',
+                    marginTop: '-12px',
+                    fontSize: '28px',
+                    fontWeight: 'bold',
+                    color: '#4B5563'
+                  }}>
+                    /
+                  </span>
                 </div>
+
+                <style>{`
+                  @keyframes reeling {
+                    0% { transform: translateY(0) rotate(0deg); }
+                    100% { transform: translateY(-5px) rotate(-10deg); }
+                  }
+                `}</style>
+
+                {/* Ruota circolare multicolore a spicchi */}
+                <div style={{
+                  position: 'relative',
+                  width: '230px',
+                  height: '230px',
+                  margin: '0 auto',
+                  borderRadius: '50%',
+                  border: isDarkMode ? '6px solid #4B5563' : '6px solid #111827',
+                  boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
+                  background: 'conic-gradient(#FF6600 0deg 60deg, #10B981 60deg 120deg, #3B82F6 120deg 180deg, #FBBF24 180deg 240deg, #A855F7 240deg 300deg, #EF4444 300deg 360deg)',
+                  transition: 'transform 3.5s cubic-bezier(0.1, 0.8, 0.2, 1)',
+                  transform: spinning ? 'rotate(2160deg)' : 'rotate(0deg)',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  overflow: 'hidden'
+                }}>
+                  {/* Linee divisorie degli spicchi */}
+                  <div style={{ position: 'absolute', width: '100%', height: '2px', background: 'rgba(255,255,255,0.3)', transform: 'rotate(0deg)' }}></div>
+                  <div style={{ position: 'absolute', width: '100%', height: '2px', background: 'rgba(255,255,255,0.3)', transform: 'rotate(60deg)' }}></div>
+                  <div style={{ position: 'absolute', width: '100%', height: '2px', background: 'rgba(255,255,255,0.3)', transform: 'rotate(120deg)' }}></div>
+                  
+                  {/* Icone dei premi allineate negli spicchi */}
+                  <span style={{ position: 'absolute', top: '25px', fontSize: '22px' }}>🎉</span>
+                  <span style={{ position: 'absolute', right: '25px', top: '65px', fontSize: '22px' }}>🎁</span>
+                  <span style={{ position: 'absolute', right: '25px', bottom: '65px', fontSize: '22px' }}>🔥</span>
+                  <span style={{ position: 'absolute', bottom: '25px', fontSize: '22px' }}>⭐️</span>
+                  <span style={{ position: 'absolute', left: '25px', bottom: '65px', fontSize: '22px' }}>🌟</span>
+                  <span style={{ position: 'absolute', left: '25px', top: '65px', fontSize: '22px' }}>😢</span>
+
+                  {/* Centro della ruota a forma di Boa galleggiante */}
+                  <div style={{
+                    width: '45px',
+                    height: '45px',
+                    background: 'white',
+                    border: '4px solid #111827',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    fontSize: '18px',
+                    boxShadow: '0 4px 8px rgba(0,0,0,0.25)',
+                    zIndex: 10
+                  }}>
+                    🔴
+                  </div>
+                </div>
+
+                {/* Bottone di Azione */}
                 <div style={{ marginTop: '30px' }}>
                   {canPlay ? (
-                    <button onClick={handleSpin} disabled={spinning} className={spinning ? "" : "temu-buy-btn"} style={{ background: spinning ? '#D1D5DB' : '#FF6600', color: 'white', padding: '15px 40px', borderRadius: '50px', border: 'none', fontSize: '18px', fontWeight: 'bold', cursor: spinning ? 'not-allowed' : 'pointer' }}>
-                      {spinning ? 'Girando...' : 'GIRA ORA!'}
+                    <button onClick={handleSpin} disabled={spinning} className={spinning ? "" : "temu-buy-btn"} style={{ background: spinning ? '#D1D5DB' : '#FF6600', color: 'white', padding: '14px 40px', borderRadius: '50px', border: 'none', fontSize: '18px', fontWeight: 'bold', cursor: spinning ? 'not-allowed' : 'pointer', boxShadow: '0 4px 15px rgba(255,102,0,0.3)' }}>
+                      {spinning ? 'Pescando...' : 'LANCIA LA LENZA! 🎣'}
                     </button>
                   ) : (
-                    <p style={{ color: '#EF4444', fontWeight: 'bold' }}>Hai già giocato oggi! ⏰ Torna domani.</p>
+                    <p style={{ color: '#EF4444', fontWeight: 'bold', marginTop: '15px' }}>Hai già pescato oggi! ⏰ Torna domani.</p>
                   )}
                 </div>
               </div>
@@ -586,6 +673,8 @@ function WheelOfFortune({ isDarkMode }) {
     </>
   );
 }
+
+
 // --- PAGINA PRINCIPALE ---
 function Home({ isDarkMode }) {
   const [prodotti, setProdotti] = useState([])
@@ -734,14 +823,8 @@ function Home({ isDarkMode }) {
                 key={prodotto.id} 
                 onClick={() => setProdottoSelezionato(prodotto)} 
                 style={{ 
-                  cursor: 'pointer',
-                  position: 'relative',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  padding: '15px',
-                  borderRadius: '16px',
-                  background: cardBg, 
-                  border: `1px solid ${cardBorder}`, 
+                  cursor: 'pointer', position: 'relative', display: 'flex', flexDirection: 'column',
+                  padding: '15px', borderRadius: '16px', background: cardBg, border: `1px solid ${cardBorder}`, 
                   boxShadow: isDarkMode ? '0 4px 15px rgba(0,0,0,0.4)' : '0 4px 15px rgba(0,0,0,0.05)',
                   transition: 'transform 0.2s ease-out'
                 }}
@@ -755,42 +838,29 @@ function Home({ isDarkMode }) {
 
                 {/* 1. IMMAGINE CON BADGE SCONTO */}
                 <div style={{ position: 'relative', height: '180px', width: '100%', marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: isDarkMode ? '#111827' : '#F9FAFB', borderRadius: '10px', overflow: 'hidden' }}>
-                  
-                  {/* NUOVO BADGE SCONTO ROSSO IN ALTO A DESTRA */}
                   <div style={{ position: 'absolute', top: '8px', right: '8px', background: '#EF4444', color: 'white', padding: '4px 8px', borderRadius: '20px', fontSize: '13px', fontWeight: '900', boxShadow: '0 2px 5px rgba(0,0,0,0.2)', zIndex: 5 }}>
                     -{scontoPercentuale}%
                   </div>
-
                   {prodotto.immagine_url ? (
-                    <img 
-                      src={prodotto.immagine_url} 
-                      alt={prodotto.titolo} 
-                      onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/200x200/e5e7eb/6b7280?text=Immagine+Non+Disponibile'; }}
-                      style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
-                    />
+                    <img src={prodotto.immagine_url} alt={prodotto.titolo} onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/200x200/e5e7eb/6b7280?text=Immagine+Non+Disponibile'; }} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                   ) : <span style={{ color: '#9CA3AF' }}>No Img</span>}
                 </div>
                 
                 {/* 2. PREZZO ATTUALE GIGANTE E PREZZO SBARRATO */}
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '6px', flexWrap: 'wrap' }}>
-                  <span style={{ fontWeight: '900', fontSize: '24px', color: '#FF6600' }}>
-                    € {prodotto.prezzo}
-                  </span>
-                  <span style={{ fontSize: '13px', color: '#6B7280', textDecoration: 'line-through' }}>
-                    {prezzoBarrato}€
-                  </span>
+                  <span style={{ fontWeight: '900', fontSize: '24px', color: '#FF6600' }}>€ {prodotto.prezzo}</span>
+                  <span style={{ fontSize: '13px', color: '#6B7280', textDecoration: 'line-through' }}>{prezzoBarrato}€</span>
                 </div>
 
-                {/* 3. TITOLO BREVE (Troncato a 2 righe stabili) */}
+                {/* 3. TITOLO BREVE */}
                 <h3 title={prodotto.titolo} style={{ fontSize: '14px', margin: '0 0 8px 0', color: textPrincipale, lineHeight: '1.3', fontWeight: '700', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', minHeight: '36px' }}>
                   {prodotto.titolo}
                 </h3>
 
-                {/* 4. LE STELLE E LA SCARSITÀ (SOCIAL PROOF) */}
+                {/* 4. LE STELLE E LA SCARSITÀ (Qui c'è il nostro componente corretto!) */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '12px', fontSize: '12px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <span style={{ color: '#FBBF24', fontSize: '14px', letterSpacing: '1px' }}>★★★★★</span> 
-                    <span style={{ color: '#6B7280', fontSize: '11px' }}>(4.8)</span>
+                    <StarRating productId={prodotto.id} />
                   </div>
                   <div style={{ color: '#EF4444', fontWeight: '600', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <span>⚡ Offerta Lampo</span> 
@@ -841,8 +911,15 @@ function App() {
             <button onClick={() => setIsDarkMode(!isDarkMode)} style={{ background: isDarkMode ? '#374151' : '#F3F4F6', border: 'none', borderRadius: '50%', cursor: 'pointer', fontSize: '16px', width: '35px', height: '35px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Cambia Tema">
               {isDarkMode ? '☀️' : '🌙'}
             </button>
-            <a href="https://youtube.com/@recensioniita9?si=Rdg3mXWsViQtWvup" target="_blank" rel="noopener noreferrer" title="Visita il Canale">
-               <svg width="28" height="28" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            
+            {/* LINK E ICONA GRUPPO FACEBOOK */}
+            <a href="https://www.facebook.com/groups/969436699293635/" target="_blank" rel="noopener noreferrer" title="Unisciti al Gruppo Facebook" style={{ display: 'flex', alignItems: 'center', transition: 'transform 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
+               <svg width="26" height="26" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+
+            {/* LINK CANALE YOUTUBE */}
+            <a href="https://youtube.com/@recensioniita9?si=Rdg3mXWsViQtWvup" target="_blank" rel="noopener noreferrer" title="Visita il Canale" style={{ display: 'flex', alignItems: 'center', transition: 'transform 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
+               <svg width="28" height="28" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93-.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
             </a>
           </div>
         </nav>
