@@ -64,19 +64,28 @@ function ShareButtons({ prodotto }) {
 // --- NUOVA PAGINA SINGOLO PRODOTTO (Ottimizzata per Google SEO) ---
 // --- NUOVA PAGINA SINGOLO PRODOTTO (Ottimizzata per Google SEO) ---
 // --- NUOVA PAGINA SINGOLO PRODOTTO (Ottimizzata per Google SEO) ---
+// --- NUOVA PAGINA SINGOLO PRODOTTO (Ottimizzata per Google SEO e Mobile) ---
 function ProductPage({ isDarkMode }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [prodotto, setProdotto] = useState(null);
   const [correlati, setCorrelati] = useState([]);
+  
+  // Rileva automaticamente se siamo su Mobile (schermo più stretto di 768px)
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    // Aggiorna lo stato se l'utente ridimensiona la finestra o gira il telefono
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     async function fetchProdotto() {
-      // 1. Scarica il prodotto specifico dal database
       const { data, error } = await supabase.from('products').select('*').eq('id', id).single();
       if (data) {
         setProdotto(data);
-        // 2. Scarica 3 prodotti correlati della stessa categoria
         const { data: corr } = await supabase.from('products').select('*').eq('categoria', data.categoria).neq('id', data.id).limit(3);
         if (corr) setCorrelati(corr);
       }
@@ -95,7 +104,7 @@ function ProductPage({ isDarkMode }) {
   }
   const percentualeVenduta = 75 + ((prodotto.id * 7) % 20); 
 
-  // --- GENERATORE DI RECENSIONI FITTIZIE ---
+  // Generatore di recensioni fittizie
   const recensioniList = [
     { nome: "Ale A.", testo: "Prodotto eccellente, spedizione super veloce! Davvero consigliato per il prezzo." },
     { nome: "Giulia F.", testo: "Rapporto qualità-prezzo imbattibile. Arrivato prima del previsto e ben imballato." },
@@ -104,120 +113,142 @@ function ProductPage({ isDarkMode }) {
     { nome: "Marco C.", testo: "Preso per un regalo, è stato apprezzatissimo. Montaggio facile e intuitivo. 5 stelle!" },
     { nome: "Elena B.", testo: "All'inizio ero scettica per il prezzo così basso, ma mi sono dovuta ricredere. Top!" }
   ];
-
-  // Seleziona 2 recensioni in base all'ID (così lo stesso prodotto ha sempre le stesse recensioni)
   const idNum = prodotto.id || 1;
   const rec1 = recensioniList[idNum % recensioniList.length];
   const rec2 = recensioniList[(idNum + 3) % recensioniList.length];
+
+  // ================= BLOCCHI DELL'INTERFACCIA =================
+
+  const BloccoTitolo = (
+    <>
+      <span style={{ fontSize: '12px', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '10px', display: 'inline-block' }}>{prodotto.reparto} &gt; {prodotto.categoria}</span>
+      <h1 style={{ fontSize: isMobile ? '22px' : '26px', margin: '0 0 20px 0', lineHeight: '1.4' }}>{prodotto.titolo}</h1>
+    </>
+  );
+
+  const BloccoImmagine = (
+    <div style={{ height: isMobile ? '300px' : '400px', position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', background: isDarkMode ? '#111827' : '#F3F4F6', borderRadius: '12px', overflow: 'hidden', border: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}` }}>
+      <span style={{ position: 'absolute', top: '15px', left: '15px', background: '#FF6600', color: 'white', fontSize: '11px', fontWeight: 'bold', padding: '5px 10px', borderRadius: '6px', zIndex: 2, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Top Scelta</span>
+      {prodotto.immagine_url ? <img src={prodotto.immagine_url} alt={prodotto.titolo} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain', mixBlendMode: isDarkMode ? 'normal' : 'darken' }} /> : 'Nessuna Immagine'}
+    </div>
+  );
+
+  const BloccoAcquisto = (
+    <>
+      <div style={{ background: isDarkMode ? '#374151' : '#FEF2F2', borderLeft: '4px solid #EF4444', padding: '12px 15px', borderRadius: '6px', marginBottom: '25px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <span style={{ fontSize: '22px' }}>⏳</span>
+        <span style={{ fontSize: '13.5px', color: isDarkMode ? '#FCA5A5' : '#B91C1C', fontWeight: 'bold', lineHeight: '1.4' }}>Affrettati! Le offerte lampo e la disponibilità<br/>possono terminare in qualsiasi momento.</span>
+      </div>
+      
+      <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'baseline', gap: '12px' }}>
+        <span style={{ fontWeight: '900', fontSize: '46px', color: '#FF6600', letterSpacing: '-1px' }}>€ {prodotto.prezzo}</span>
+        <span style={{ fontSize: '16px', color: '#9CA3AF', textDecoration: 'line-through' }}>{prezzoBarrato}€</span>
+      </div>
+
+      <div style={{ marginBottom: '25px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <span style={{ fontSize: '13px', color: '#EF4444', fontWeight: 'bold' }}>🔥 {percentualeVenduta}% Venduto</span>
+        <div style={{ flex: 1, height: '8px', background: isDarkMode ? '#374151' : '#FEE2E2', borderRadius: '10px', overflow: 'hidden' }}>
+          <div style={{ width: `${percentualeVenduta}%`, height: '100%', background: '#EF4444', borderRadius: '10px' }}></div>
+        </div>
+      </div>
+
+      <a href={prodotto.link_affiliazione} className="temu-buy-btn" target="_blank" rel="noopener noreferrer" style={{ display: 'block', background: '#FF6600', color: 'white', padding: '18px', textDecoration: 'none', borderRadius: '8px', fontSize: '22px', fontWeight: '900', textAlign: 'center', boxShadow: '0 6px 20px rgba(255,102,0,0.3)', marginBottom: '10px', transition: 'transform 0.1s' }} onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
+        🔥 Vai all'Offerta su Temu
+      </a>
+      <p style={{ fontSize: '11px', color: '#9CA3AF', lineHeight: '1.2', textAlign: 'center', marginBottom: isMobile ? '0' : '30px' }}>
+        * In qualità di Affiliato, ricevo una commissione per gli acquisti idonei.
+      </p>
+    </>
+  );
+
+  const BloccoRecensioni = (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <div style={{ background: isDarkMode ? '#374151' : '#F9FAFB', padding: '20px', borderRadius: '12px', border: `1px solid ${isDarkMode ? '#4B5563' : '#E5E7EB'}`, display: 'flex', flexDirection: 'column', gap: '15px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <StarRating productId={prodotto.id} />
+          </div>
+          <span style={{ fontSize: '12px', color: '#10B981', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px' }}>✓ Acquisto Verificato</span>
+        </div>
+        <hr style={{ border: 'none', borderTop: `1px solid ${isDarkMode ? '#4B5563' : '#E5E7EB'}`, margin: '0' }} />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
+          <span style={{ fontSize: '13px', color: '#6B7280', fontWeight: 'bold' }}>Consiglia agli amici:</span>
+          <ShareButtons prodotto={prodotto} />
+        </div>
+      </div>
+
+      <div>
+        <h4 style={{ fontSize: '14px', marginBottom: '12px', color: text, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Recensioni Recenti</h4>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div style={{ background: isDarkMode ? '#1F2937' : '#FFFFFF', padding: '15px', borderRadius: '10px', border: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}`, boxShadow: '0 2px 5px rgba(0,0,0,0.02)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+              <span style={{ color: '#FBBF24', fontSize: '14px', letterSpacing: '1px' }}>★★★★★</span>
+              <span style={{ fontWeight: 'bold', fontSize: '13px' }}>{rec1.nome}</span>
+              <span style={{ fontSize: '10px', color: '#10B981', marginLeft: 'auto', background: isDarkMode ? '#111827' : '#ECFDF5', padding: '2px 6px', borderRadius: '4px' }}>✓ Verificato</span>
+            </div>
+            <p style={{ fontSize: '13px', margin: 0, color: isDarkMode ? '#D1D5DB' : '#4B5563', fontStyle: 'italic', lineHeight: '1.4' }}>"{rec1.testo}"</p>
+          </div>
+          <div style={{ background: isDarkMode ? '#1F2937' : '#FFFFFF', padding: '15px', borderRadius: '10px', border: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}`, boxShadow: '0 2px 5px rgba(0,0,0,0.02)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+              <span style={{ color: '#FBBF24', fontSize: '14px', letterSpacing: '1px' }}>★★★★★</span>
+              <span style={{ fontWeight: 'bold', fontSize: '13px' }}>{rec2.nome}</span>
+              <span style={{ fontSize: '10px', color: '#10B981', marginLeft: 'auto', background: isDarkMode ? '#111827' : '#ECFDF5', padding: '2px 6px', borderRadius: '4px' }}>✓ Verificato</span>
+            </div>
+            <p style={{ fontSize: '13px', margin: 0, color: isDarkMode ? '#D1D5DB' : '#4B5563', fontStyle: 'italic', lineHeight: '1.4' }}>"{rec2.testo}"</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const BloccoSpedizione = (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', background: isDarkMode ? '#1F2937' : '#F9FAFB', padding: '20px', borderRadius: '12px', border: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}`, marginTop: isMobile ? '10px' : '0' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', color: '#059669', fontWeight: 'bold' }}><span style={{fontSize:'18px'}}>📦</span> Spedizione GRATUITA</div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', color: isDarkMode ? '#D1D5DB' : '#4B5563', fontWeight: '500' }}><span style={{fontSize:'18px'}}>↩️</span> Reso gratuito entro 90 giorni</div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', color: isDarkMode ? '#D1D5DB' : '#4B5563', fontWeight: '500' }}><span style={{fontSize:'18px'}}>🔒</span> Pagamenti sicuri al 100%</div>
+    </div>
+  );
+
+  // ================= RENDER FINALE =================
 
   return (
     <div style={{ backgroundColor: isDarkMode ? '#111827' : '#F9FAFB', minHeight: '100vh', padding: '30px 4%', color: text }}>
       <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
         
-        {/* Pulsante Indietro */}
         <button onClick={() => navigate(-1)} style={{ marginBottom: '20px', background: isDarkMode ? '#374151' : '#E5E7EB', color: text, border: 'none', padding: '10px 20px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', transition: 'background 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.background = isDarkMode ? '#4B5563' : '#D1D5DB'} onMouseLeave={(e) => e.currentTarget.style.background = isDarkMode ? '#374151' : '#E5E7EB'}>
           ← Torna al catalogo
         </button>
 
-        <div style={{ background: bg, borderRadius: '16px', padding: '30px', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', display: 'flex', flexWrap: 'wrap', gap: '40px', alignItems: 'flex-start' }}>
+        <div style={{ background: bg, borderRadius: '16px', padding: isMobile ? '20px' : '30px', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
           
-          {/* ================= COLONNA SINISTRA ================= */}
-          <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            
-            {/* Immagine Prodotto con Badge */}
-            <div style={{ height: '400px', position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', background: isDarkMode ? '#111827' : '#F3F4F6', borderRadius: '12px', overflow: 'hidden', border: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}` }}>
-              <span style={{ position: 'absolute', top: '15px', left: '15px', background: '#FF6600', color: 'white', fontSize: '11px', fontWeight: 'bold', padding: '5px 10px', borderRadius: '6px', zIndex: 2, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Top Scelta</span>
-              {prodotto.immagine_url ? <img src={prodotto.immagine_url} alt={prodotto.titolo} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain', mixBlendMode: isDarkMode ? 'normal' : 'darken' }} /> : 'Nessuna Immagine'}
+          {/* LOGICA DI IMPAGINAZIONE DINAMICA */}
+          {isMobile ? (
+            // LAYOUT PER SMARTPHONE (Singola colonna riordinata)
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <div>{BloccoTitolo}</div>
+              {BloccoImmagine}
+              <div>{BloccoAcquisto}</div>
+              {BloccoRecensioni}
+              {BloccoSpedizione}
             </div>
-            
-            {/* Box Social Proof (Stelle + Condivisione) */}
-            <div style={{ background: isDarkMode ? '#374151' : '#F9FAFB', padding: '20px', borderRadius: '12px', border: `1px solid ${isDarkMode ? '#4B5563' : '#E5E7EB'}`, display: 'flex', flexDirection: 'column', gap: '15px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <StarRating productId={prodotto.id} />
-                </div>
-                <span style={{ fontSize: '12px', color: '#10B981', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px' }}>✓ Acquisto Verificato</span>
+          ) : (
+            // LAYOUT PER PC (Doppia colonna)
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '40px', alignItems: 'flex-start' }}>
+              <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                {BloccoImmagine}
+                {BloccoRecensioni}
               </div>
-              
-              <hr style={{ border: 'none', borderTop: `1px solid ${isDarkMode ? '#4B5563' : '#E5E7EB'}`, margin: '0' }} />
-              
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
-                <span style={{ fontSize: '13px', color: '#6B7280', fontWeight: 'bold' }}>Consiglia agli amici:</span>
-                <ShareButtons prodotto={prodotto} />
+              <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column' }}>
+                {BloccoTitolo}
+                {BloccoAcquisto}
+                {BloccoSpedizione}
               </div>
             </div>
+          )}
 
-            {/* BLOCCO RECENSIONI TESTUALI FITTIZIE */}
-            <div style={{ marginTop: '5px' }}>
-              <h4 style={{ fontSize: '14px', marginBottom: '12px', color: text, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Recensioni Recenti</h4>
-              
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {/* Recensione 1 */}
-                <div style={{ background: isDarkMode ? '#1F2937' : '#FFFFFF', padding: '15px', borderRadius: '10px', border: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}`, boxShadow: '0 2px 5px rgba(0,0,0,0.02)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                    <span style={{ color: '#FBBF24', fontSize: '14px', letterSpacing: '1px' }}>★★★★★</span>
-                    <span style={{ fontWeight: 'bold', fontSize: '13px' }}>{rec1.nome}</span>
-                    <span style={{ fontSize: '10px', color: '#10B981', marginLeft: 'auto', background: isDarkMode ? '#111827' : '#ECFDF5', padding: '2px 6px', borderRadius: '4px' }}>✓ Verificato</span>
-                  </div>
-                  <p style={{ fontSize: '13px', margin: 0, color: isDarkMode ? '#D1D5DB' : '#4B5563', fontStyle: 'italic', lineHeight: '1.4' }}>"{rec1.testo}"</p>
-                </div>
-
-                {/* Recensione 2 */}
-                <div style={{ background: isDarkMode ? '#1F2937' : '#FFFFFF', padding: '15px', borderRadius: '10px', border: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}`, boxShadow: '0 2px 5px rgba(0,0,0,0.02)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                    <span style={{ color: '#FBBF24', fontSize: '14px', letterSpacing: '1px' }}>★★★★★</span>
-                    <span style={{ fontWeight: 'bold', fontSize: '13px' }}>{rec2.nome}</span>
-                    <span style={{ fontSize: '10px', color: '#10B981', marginLeft: 'auto', background: isDarkMode ? '#111827' : '#ECFDF5', padding: '2px 6px', borderRadius: '4px' }}>✓ Verificato</span>
-                  </div>
-                  <p style={{ fontSize: '13px', margin: 0, color: isDarkMode ? '#D1D5DB' : '#4B5563', fontStyle: 'italic', lineHeight: '1.4' }}>"{rec2.testo}"</p>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-          {/* ================= COLONNA DESTRA ================= */}
-          <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: '12px', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '10px', display: 'inline-block' }}>{prodotto.reparto} &gt; {prodotto.categoria}</span>
-            <h1 style={{ fontSize: '26px', margin: '0 0 20px 0', lineHeight: '1.4' }}>{prodotto.titolo}</h1>
-            
-            {/* Banner Scarsità più elegante */}
-            <div style={{ background: isDarkMode ? '#374151' : '#FEF2F2', borderLeft: '4px solid #EF4444', padding: '12px 15px', borderRadius: '6px', marginBottom: '25px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span style={{ fontSize: '22px' }}>⏳</span>
-              <span style={{ fontSize: '13.5px', color: isDarkMode ? '#FCA5A5' : '#B91C1C', fontWeight: 'bold', lineHeight: '1.4' }}>Affrettati! Le offerte lampo e la disponibilità<br/>possono terminare in qualsiasi momento.</span>
-            </div>
-            
-            {/* Blocco Prezzo */}
-            <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-              <span style={{ fontWeight: '900', fontSize: '46px', color: '#FF6600', letterSpacing: '-1px' }}>€ {prodotto.prezzo}</span>
-              <span style={{ fontSize: '16px', color: '#9CA3AF', textDecoration: 'line-through' }}>{prezzoBarrato}€</span>
-            </div>
-
-            {/* Barra Vendite */}
-            <div style={{ marginBottom: '25px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span style={{ fontSize: '13px', color: '#EF4444', fontWeight: 'bold' }}>🔥 {percentualeVenduta}% Venduto</span>
-              <div style={{ flex: 1, height: '8px', background: isDarkMode ? '#374151' : '#FEE2E2', borderRadius: '10px', overflow: 'hidden' }}>
-                <div style={{ width: `${percentualeVenduta}%`, height: '100%', background: '#EF4444', borderRadius: '10px' }}></div>
-              </div>
-            </div>
-
-            <a href={prodotto.link_affiliazione} className="temu-buy-btn" target="_blank" rel="noopener noreferrer" style={{ display: 'block', background: '#FF6600', color: 'white', padding: '18px', textDecoration: 'none', borderRadius: '8px', fontSize: '22px', fontWeight: '900', textAlign: 'center', boxShadow: '0 6px 20px rgba(255,102,0,0.3)', marginBottom: '10px', transition: 'transform 0.1s' }} onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
-              🔥 Vai all'Offerta su Temu
-            </a>
-            
-            <p style={{ fontSize: '11px', color: '#9CA3AF', lineHeight: '1.2', textAlign: 'center', marginBottom: '30px' }}>
-              * In qualità di Affiliato, ricevo una commissione per gli acquisti idonei.
-            </p>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', background: isDarkMode ? '#1F2937' : '#F9FAFB', padding: '20px', borderRadius: '12px', border: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}` }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', color: '#059669', fontWeight: 'bold' }}><span style={{fontSize:'18px'}}>📦</span> Spedizione GRATUITA</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', color: isDarkMode ? '#D1D5DB' : '#4B5563', fontWeight: '500' }}><span style={{fontSize:'18px'}}>↩️</span> Reso gratuito entro 90 giorni</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', color: isDarkMode ? '#D1D5DB' : '#4B5563', fontWeight: '500' }}><span style={{fontSize:'18px'}}>🔒</span> Pagamenti sicuri al 100%</div>
-            </div>
-          </div>
         </div>
 
-        {/* ================= CORRELATI SOTTO AL PRODOTTO ================= */}
+        {/* CORRELATI */}
         {correlati.length > 0 && (
           <div style={{ marginTop: '50px' }}>
             <h3 style={{ fontSize: '24px', marginBottom: '25px', fontWeight: '900' }}>💡 Potrebbe interessarti anche...</h3>
