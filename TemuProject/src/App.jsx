@@ -23,9 +23,11 @@ function CountdownTimer() {
   const [timeLeft, setTimeLeft] = useState(2 * 60 * 60 + 14 * 60 + 59); // 02:14:59 in secondi
 
   useEffect(() => {
+    // Rimuovi il punto e virgola dopo "interval" e usa const o let
     const interval = setInterval(() => {
       setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
+    
     return () => clearInterval(interval);
   }, []);
 
@@ -173,19 +175,57 @@ function OffersPopup({ isDarkMode, onClose }) {
 }
 
 function PromoBanner() {
+  const [isVisible, setIsVisible] = useState(() => {
+    // Controlla se l'utente ha già chiuso questo banner in precedenza
+    return !localStorage.getItem('promo_banner_chiuso');
+  });
+
+  if (!isVisible) return null;
+
   return (
     <div style={{
-      backgroundImage: 'linear-gradient(to right, rgba(255, 102, 0, 0.95), rgba(255, 140, 0, 0.8)), url(/banner2.jpg)',
-      backgroundSize: 'cover', backgroundPosition: 'center', margin: '0 4% 40px 4%', borderRadius: '16px', padding: '40px 20px',
-      color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', boxShadow: '0 10px 25px rgba(255, 102, 0, 0.3)'
+      background: 'linear-gradient(to right, #FF6600, #FF8C00)',
+      margin: '0 4% 30px 4%', 
+      borderRadius: '12px', 
+      padding: '16px 24px',
+      color: 'white', 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'space-between',
+      gap: '20px',
+      boxShadow: '0 4px 15px rgba(255, 102, 0, 0.15)',
+      flexWrap: 'wrap',
+      position: 'relative'
     }}>
-      <h2 style={{ margin: '0 0 10px 0', fontSize: '30px', fontWeight: '900', textTransform: 'uppercase', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>🎁 Regalo per Nuovi Utenti!</h2>
-      <p style={{ margin: '0 0 20px 0', fontSize: '17px', fontWeight: '500', maxWidth: '650px', textShadow: '0 1px 3px rgba(0,0,0,0.3)', lineHeight: '1.5' }}>
-        Scarica l'app Temu dal nostro link esclusivo! Inserisci il codice <strong style={{ background: 'white', color: '#FF6600', padding: '4px 10px', borderRadius: '8px', fontSize: '20px' }}>app39037</strong> prima di pagare per sbloccare uno <strong>sconto esclusivo del 30%</strong> e la <strong>spedizione gratuita</strong> sul tuo primo ordine!
-      </p>
-      <a href="https://temu.to/m/u1te59jbio9" target="_blank" rel="noopener noreferrer" style={{ background: '#111827', color: 'white', padding: '14px 35px', borderRadius: '50px', textDecoration: 'none', fontWeight: 'bold', fontSize: '16px', boxShadow: '0 4px 10px rgba(0,0,0,0.3)' }}>
-        Riscatta Sconto
-      </a>
+      {/* Sezione Testo (Allineata a sinistra, pulita e leggibile) */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '15px', flex: '1 1 450px', textAlign: 'left' }}>
+        <span style={{ fontSize: '24px' }}>🎁</span>
+        <div>
+          <h3 style={{ margin: '0 0 4px 0', fontSize: '15px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            Regalo per Nuovi Utenti!
+          </h3>
+          <p style={{ margin: 0, fontSize: '13px', fontWeight: '500', opacity: 0.95, lineHeight: '1.4' }}>
+            Scarica l'app Temu dal link esclusivo! Inserisci il codice <strong style={{ background: 'white', color: '#FF6600', padding: '2px 6px', borderRadius: '4px', fontSize: '13px', display: 'inline-block' }}>app39037</strong> prima di pagare per sbloccare il <strong>30% di sconto</strong> e la <strong>spedizione gratuita</strong> sul tuo primo ordine!
+          </p>
+        </div>
+      </div>
+
+      {/* Sezione Azioni (Bottone + Pulsante per chiudere) */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+        <a href="https://temu.to/m/u1te59jbio9" target="_blank" rel="noopener noreferrer" style={{ background: '#111827', color: 'white', padding: '10px 24px', borderRadius: '50px', textDecoration: 'none', fontWeight: 'bold', fontSize: '13px', boxShadow: '0 4px 10px rgba(0,0,0,0.15)', whiteSpace: 'nowrap' }}>
+          Riscatta Sconto
+        </a>
+        <button 
+          onClick={() => { 
+            localStorage.setItem('promo_banner_chiuso', 'true'); 
+            setIsVisible(false); 
+          }} 
+          style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '18px', cursor: 'pointer', opacity: 0.7, padding: '5px' }}
+          title="Nascondi annuncio"
+        >
+          ✕
+        </button>
+      </div>
     </div>
   );
 }
