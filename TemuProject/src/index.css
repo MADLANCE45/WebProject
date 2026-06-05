@@ -1,0 +1,25 @@
+/* Resetta i margini di default del browser */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f9f9;
+  font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden; /* Evita la barra di scorrimento orizzontale */
+}
+
+/* Sblocca il contenitore principale di Vite */
+#root {
+  width: 100%;
+  max-width: 100% !important; /* Questo rimuove il limite di 1280px di Vite */
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
