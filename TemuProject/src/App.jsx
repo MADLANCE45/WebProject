@@ -308,9 +308,58 @@ function Home({ isDarkMode }) {
       <ToastPromo />
       <HeroSlider />
 
-      <div style={{ display: 'flex', width: '100%', background: cardBg, borderBottom: `1px solid ${cardBorder}` }}>
-        <div onClick={() => cambiaReparto('🎣 Pesca Sportiva')} style={{ flex: 1, textAlign: 'center', padding: '20px 10px', cursor: 'pointer', fontWeight: '800', fontSize: '18px', color: repartoAttivo === '🎣 Pesca Sportiva' ? '#FF6600' : (isDarkMode ? '#9CA3AF' : '#6B7280'), borderBottom: repartoAttivo === '🎣 Pesca Sportiva' ? '3px solid #FF6600' : '3px solid transparent' }}>🎣 PESCA SPORTIVA</div>
-        <div onClick={() => cambiaReparto('🐠 Acquariofilia')} style={{ flex: 1, textAlign: 'center', padding: '20px 10px', cursor: 'pointer', fontWeight: '800', fontSize: '18px', color: repartoAttivo === '🐠 Acquariofilia' ? '#FF6600' : (isDarkMode ? '#9CA3AF' : '#6B7280'), borderBottom: repartoAttivo === '🐠 Acquariofilia' ? '3px solid #FF6600' : '3px solid transparent' }}>🐠 ACQUARIOFILIA</div>
+      {/* BANNER SELEZIONE REPARTI */}
+      <div style={{ display: 'flex', gap: '20px', padding: '30px 4%', flexWrap: 'wrap' }}>
+        
+        {/* Banner Pesca */}
+        <div 
+          onClick={() => cambiaReparto('🎣 Pesca Sportiva')} 
+          style={{ 
+            flex: '1 1 300px', 
+            height: '140px',
+            backgroundImage: 'linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), url(/banner.jpg)', 
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            borderRadius: '16px',
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center',
+            cursor: 'pointer', 
+            border: repartoAttivo === '🎣 Pesca Sportiva' ? '4px solid #FF6600' : '4px solid transparent',
+            boxShadow: repartoAttivo === '🎣 Pesca Sportiva' ? '0 0 20px rgba(255,102,0,0.4)' : '0 4px 10px rgba(0,0,0,0.1)',
+            transform: repartoAttivo === '🎣 Pesca Sportiva' ? 'scale(1.02)' : 'scale(1)',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          <h2 style={{ color: 'white', fontSize: '26px', fontWeight: '900', margin: 0, textShadow: '0 2px 5px rgba(0,0,0,0.8)', letterSpacing: '1px' }}>
+            🎣 PESCA SPORTIVA
+          </h2>
+        </div>
+
+        {/* Banner Acquariofilia */}
+        <div 
+          onClick={() => cambiaReparto('🐠 Acquariofilia')} 
+          style={{ 
+            flex: '1 1 300px', 
+            height: '140px',
+            backgroundImage: 'linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), url(/banner2.jpg)', 
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            borderRadius: '16px',
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center',
+            cursor: 'pointer', 
+            border: repartoAttivo === '🐠 Acquariofilia' ? '4px solid #FF6600' : '4px solid transparent',
+            boxShadow: repartoAttivo === '🐠 Acquariofilia' ? '0 0 20px rgba(255,102,0,0.4)' : '0 4px 10px rgba(0,0,0,0.1)',
+            transform: repartoAttivo === '🐠 Acquariofilia' ? 'scale(1.02)' : 'scale(1)',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          <h2 style={{ color: 'white', fontSize: '26px', fontWeight: '900', margin: 0, textShadow: '0 2px 5px rgba(0,0,0,0.8)', letterSpacing: '1px' }}>
+            🐠 ACQUARIOFILIA
+          </h2>
+        </div>
       </div>
 
       <div style={{ padding: '40px 0' }}>
@@ -343,7 +392,14 @@ function Home({ isDarkMode }) {
               <span style={{ position: 'absolute', top: '25px', left: '25px', background: 'black', color: 'white', fontSize: '10px', fontWeight: 'bold', padding: '4px 8px', borderRadius: '6px', zIndex: 2, textTransform: 'uppercase', letterSpacing: '1px' }}>Temu Pick</span>
 
               <div style={{ height: '200px', width: '100%', marginBottom: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: isDarkMode ? '#111827' : '#F9FAFB', borderRadius: '10px', overflow: 'hidden' }}>
-                {prodotto.immagine_url ? <img src={prodotto.immagine_url} alt={prodotto.titolo} style={{ width: '100%', height: '100%', objectFit: 'contain' }} /> : <span style={{ color: '#9CA3AF' }}>No Img</span>}
+                {prodotto.immagine_url ? (
+  <img 
+    src={prodotto.immagine_url} 
+    alt="Prodotto" 
+    onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/200x200/e5e7eb/6b7280?text=Immagine+Non+Disponibile'; }}
+    style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
+  />
+) : <span style={{ color: '#9CA3AF' }}>No Img</span>}
               </div>
               
               <h3 title={prodotto.titolo} style={{ fontSize: '16px', margin: '0 0 8px 0', color: textPrincipale, lineHeight: '1.4', fontWeight: '700', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{prodotto.titolo}</h3>
@@ -370,7 +426,9 @@ function Home({ isDarkMode }) {
         tuttiProdotti={prodotti} 
         isDarkMode={isDarkMode} 
         onClose={() => setProdottoSelezionato(null)} 
+        
       />
+      
     </div>
   )
 }
