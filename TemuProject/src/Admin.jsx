@@ -1,246 +1,253 @@
 import { useState, useEffect } from 'react'
 import { supabase } from './supabaseClient'
 
+// Mappa identica a quella di App.jsx per mantenere i menu a tendina sincronizzati
+const repartiMap = {
+  '🎣 Pesca Sportiva': {
+    'Attrezzatura da Pesca': ['Canne da pesca', 'Mulinelli', 'Esche e Ami', 'Fili e Accessori'],
+    'Abbigliamento Tecnico': ['Occhiali polarizzati', 'Cappelli e Visiere', 'Guanti', 'Calzature'],
+    'Accessori e Logistica': ['Borse termiche', 'Zaini impermeabili', 'Scatole porta-attrezzi'],
+    'Elettronica e Utilità': ['Ecoscandagli e Sonar', 'Bilance digitali', 'Torce frontali e Lampade', 'Action Cam e Supporti', 'Powerbank solari']
+  },
+  '🐠 Acquariofilia': {
+    'Vasche e Mobili': ['Acquari in vetro', 'Vaschette in plastica', 'Mobili di supporto', 'Reti da allevamento'],
+    'Tecnica e Manutenzione': ['Filtri e Pompe', 'Illuminazione LED', 'Riscaldatori', 'Sistemi CO2'],
+    'Allestimento (Hardscape)': ['Rocce e Legni', 'Sabbia e Ghiaia', 'Decorazioni in resina'],
+    'Accessori Vari': ['Retini', 'Calamite puliscivetro', 'Mangiatoie automatiche']
+  }
+};
+
 export default function Admin() {
+  // --- STATI PER IL LOGIN ---
   const [session, setSession] = useState(null)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loadingAuth, setLoadingAuth] = useState(false)
+
+  // --- STATI PER I PRODOTTI ---
   const [prodotti, setProdotti] = useState([])
-  const [editingId, setEditingId] = useState(null)
-
-  // 1. LA NUOVA STRUTTURA A REPARTI
-  const repartiMap = {
-    '🎣 Pesca Sportiva': {
-      'Attrezzatura da Pesca': ['Canne da pesca', 'Mulinelli', 'Esche e Ami', 'Fili e Accessori'],
-      'Abbigliamento Tecnico': ['Occhiali polarizzati', 'Cappelli e Visiere', 'Guanti', 'Calzature'],
-      'Accessori e Logistica': ['Borse termiche', 'Zaini impermeabili', 'Scatole porta-attrezzi'],
-      'Elettronica e Utilità': ['Torce frontali', 'Bilance digitali portatili', 'Powerbank solari']
-    },
-    '🐠 Acquariofilia': {
-      'Vasche e Mobili': ['Acquari in vetro', 'Vaschette in plastica', 'Mobili di supporto', 'Reti da allevamento'], // <-- AGGIUNTO QUI
-      'Tecnica e Manutenzione': ['Filtri e Pompe', 'Illuminazione LED', 'Riscaldatori', 'Sistemi CO2'],
-      'Allestimento (Hardscape)': ['Rocce e Legni', 'Sabbia e Ghiaia', 'Decorazioni in resina'],
-      'Accessori Vari': ['Retini', 'Calamite puliscivetro', 'Mangiatoie automatiche']
-    }
-  };
- 
-
-  // 2. STATI DEL FORM
-  const [reparto, setReparto] = useState('🎣 Pesca Sportiva')
-  const [categoria, setCategoria] = useState('Attrezzatura da Pesca')
-  const [sottocategoria, setSottocategoria] = useState('Canne da pesca')
   const [titolo, setTitolo] = useState('')
   const [prezzo, setPrezzo] = useState('')
   const [linkAffiliazione, setLinkAffiliazione] = useState('')
   const [immagineUrl, setImmagineUrl] = useState('')
   
-  // Stati per il Login
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  // Stati di default per i menu a tendina
+  const [reparto, setReparto] = useState('🎣 Pesca Sportiva')
+  const [categoria, setCategoria] = useState('Attrezzatura da Pesca')
+  const [sottocategoria, setSottocategoria] = useState('Canne da pesca')
+  const [loadingDb, setLoadingDb] = useState(false)
 
-  // 3. EFFETTI PER I MENU A TENDINA A CASCATA
-  useEffect(() => {
-    // Se cambio reparto, aggiorno in automatico la prima categoria disponibile
-    const primeCategorie = Object.keys(repartiMap[reparto])
-    if (!primeCategorie.includes(categoria)) {
-      const primaCat = primeCategorie[0]
-      setCategoria(primaCat)
-      setSottocategoria(repartiMap[reparto][primaCat][0])
-    }
-  }, [reparto])
-
-  useEffect(() => {
-    // Se cambio categoria, aggiorno in automatico la prima sottocategoria disponibile
-    if (repartiMap[reparto][categoria] && !repartiMap[reparto][categoria].includes(sottocategoria)) {
-      setSottocategoria(repartiMap[reparto][categoria][0])
-    }
-  }, [categoria, reparto])
-
-  // 4. AUTENTICAZIONE E CARICAMENTO
+  // Controllo Autenticazione all'avvio
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
-      if (session) caricaProdotti()
     })
     supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
-      if (session) caricaProdotti()
     })
   }, [])
 
-  const caricaProdotti = async () => {
-    const { data } = await supabase.from('products').select('*').order('created_at', { ascending: false })
-    if (data) setProdotti(data)
-  }
-
-  // 5. FUNZIONI CRUD (Salva, Elimina, Modifica)
-  const salvaProdotto = async (e) => {
-    e.preventDefault()
-    const payload = { reparto, titolo, prezzo: parseFloat(prezzo), categoria, sottocategoria, link_affiliazione: linkAffiliazione, immagine_url: immagineUrl }
-
-    if (editingId) {
-      const { error } = await supabase.from('products').update(payload).eq('id', editingId)
-      if (error) alert("Errore modifica: " + error.message)
-      else alert("Prodotto aggiornato con successo!")
-    } else {
-      const { error } = await supabase.from('products').insert([payload])
-      if (error) alert("Errore inserimento: " + error.message)
-      else alert("Prodotto aggiunto con successo!")
+  // Carica i prodotti solo se l'utente è loggato
+  useEffect(() => {
+    if (session) {
+      fetchProdotti()
     }
-    resetForm()
-    caricaProdotti()
-  }
+  }, [session])
 
-  const eliminaProdotto = async (id, titoloProdotto) => {
-    if (window.confirm(`Sei sicuro di voler eliminare "${titoloProdotto}"?`)) {
-      const { error } = await supabase.from('products').delete().eq('id', id)
-      if (error) alert("Errore eliminazione: " + error.message)
-      else caricaProdotti()
-    }
-  }
-
-  const avviaModifica = (prod) => {
-    setEditingId(prod.id)
-    setReparto(prod.reparto || '🎣 Pesca Sportiva')
-    setCategoria(prod.categoria)
-    setSottocategoria(prod.sottocategoria)
-    setTitolo(prod.titolo)
-    setPrezzo(prod.prezzo)
-    setLinkAffiliazione(prod.link_affiliazione)
-    setImmagineUrl(prod.immagine_url)
-    window.scrollTo(0, 0)
-  }
-
-  const resetForm = () => {
-    setEditingId(null)
-    setTitolo('')
-    setPrezzo('')
-    setLinkAffiliazione('')
-    setImmagineUrl('')
-  }
-
+  // --- FUNZIONI AUTENTICAZIONE ---
   const handleLogin = async (e) => {
     e.preventDefault()
+    setLoadingAuth(true)
     const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) alert("Errore login: " + error.message)
+    if (error) alert("Errore di accesso: " + error.message)
+    setLoadingAuth(false)
   }
 
-  // --- SCHERMATA LOGIN ---
+  // --- FUNZIONI DATABASE ---
+  const fetchProdotti = async () => {
+    const { data, error } = await supabase.from('products').select('*').order('id', { ascending: false })
+    if (error) console.error("Errore nel caricamento prodotti:", error)
+    else setProdotti(data)
+  }
+
+  const aggiungiProdotto = async (e) => {
+    e.preventDefault()
+    setLoadingDb(true)
+    
+    // Sostituisce l'eventuale virgola nel prezzo con il punto (standard per i database)
+    const prezzoFormattato = prezzo.replace(',', '.')
+
+    const { error } = await supabase.from('products').insert([
+      { 
+        titolo, 
+        prezzo: parseFloat(prezzoFormattato), 
+        link_affiliazione: linkAffiliazione, 
+        immagine_url: immagineUrl,
+        reparto,
+        categoria,
+        sottocategoria
+      }
+    ])
+
+    if (error) {
+      alert("Errore durante l'inserimento: " + error.message)
+    } else {
+      alert("Prodotto aggiunto con successo!")
+      // Svuota i campi testo, ma mantieni i menu a tendina
+      setTitolo('')
+      setPrezzo('')
+      setLinkAffiliazione('')
+      setImmagineUrl('')
+      fetchProdotti() // Aggiorna la lista
+    }
+    setLoadingDb(false)
+  }
+
+  const eliminaProdotto = async (id) => {
+    if (window.confirm("Sei sicuro di voler eliminare questo prodotto?")) {
+      const { error } = await supabase.from('products').delete().eq('id', id)
+      if (error) alert("Errore durante l'eliminazione: " + error.message)
+      else fetchProdotti()
+    }
+  }
+
+  // --- GESTIONE DEI MENU A TENDINA DINAMICI ---
+  const handleRepartoChange = (nuovoReparto) => {
+    setReparto(nuovoReparto)
+    const primaCategoria = Object.keys(repartiMap[nuovoReparto])[0]
+    setCategoria(primaCategoria)
+    setSottocategoria(repartiMap[nuovoReparto][primaCategoria][0])
+  }
+
+  const handleCategoriaChange = (nuovaCategoria) => {
+    setCategoria(nuovaCategoria)
+    setSottocategoria(repartiMap[reparto][nuovaCategoria][0])
+  }
+
+  // ==========================================
+  // RENDER SE L'UTENTE NON E' LOGGATO (LOGIN)
+  // ==========================================
   if (!session) {
     return (
-      <div style={{ padding: '50px', textAlign: 'center', maxWidth: '400px', margin: '0 auto', fontFamily: 'sans-serif' }}>
-        <h2>Login Admin 🔒</h2>
-        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ padding: '10px' }} />
-          <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required style={{ padding: '10px' }} />
-          <button type="submit" style={{ padding: '10px', background: '#333', color: 'white', cursor: 'pointer' }}>Entra nel Pannello</button>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#F9FAFB', padding: '20px' }}>
+        <form onSubmit={handleLogin} style={{ background: 'white', padding: '40px', borderRadius: '16px', boxShadow: '0 10px 25px rgba(0,0,0,0.05)', width: '100%', maxWidth: '400px', border: '1px solid #E5E7EB' }}>
+          <h2 style={{ textAlign: 'center', color: '#111827', marginBottom: '25px', fontSize: '24px', fontWeight: '900' }}>🔒 Accesso Admin</h2>
+          
+          <div style={{ marginBottom: '20px' }}>
+            <label style={{ display: 'block', marginBottom: '8px', color: '#374151', fontWeight: 'bold', fontSize: '14px' }}>Email</label>
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #D1D5DB', boxSizing: 'border-box', outline: 'none' }} placeholder="admin@tuaemail.com" />
+          </div>
+          
+          <div style={{ marginBottom: '30px' }}>
+            <label style={{ display: 'block', marginBottom: '8px', color: '#374151', fontWeight: 'bold', fontSize: '14px' }}>Password</label>
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #D1D5DB', boxSizing: 'border-box', outline: 'none' }} placeholder="••••••••" />
+          </div>
+          
+          <button type="submit" disabled={loadingAuth} style={{ width: '100%', background: '#FF6600', color: 'white', padding: '14px', borderRadius: '8px', border: 'none', fontWeight: 'bold', cursor: 'pointer', fontSize: '16px', transition: 'background 0.2s' }}>
+            {loadingAuth ? 'Verifica in corso...' : 'Entra nel Pannello'}
+          </button>
         </form>
       </div>
     )
   }
 
-  // --- SCHERMATA ADMIN PRINCIPALE ---
+  // ==========================================
+  // RENDER SE L'UTENTE E' LOGGATO (DASHBOARD)
+  // ==========================================
   return (
-    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto', fontFamily: 'sans-serif' }}>
+    <div style={{ padding: '40px 4%', fontFamily: 'Inter, sans-serif', backgroundColor: '#F9FAFB', minHeight: '100vh', color: '#111827' }}>
       
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #eee', paddingBottom: '10px', marginBottom: '20px' }}>
-        <h2>Dashboard di Amministrazione ⚙️</h2>
-        <button onClick={() => supabase.auth.signOut()} style={{ background: '#dc3545', color: 'white', padding: '8px 15px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Esci</button>
+      {/* HEADER ADMIN */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px', flexWrap: 'wrap', gap: '20px' }}>
+        <div>
+          <h1 style={{ margin: '0 0 5px 0', fontSize: '28px', fontWeight: '900' }}>Gestione Prodotti 📦</h1>
+          <p style={{ margin: 0, color: '#6B7280' }}>Aggiungi, modifica o elimina i prodotti affiliati di Temu.</p>
+        </div>
+        <button onClick={() => supabase.auth.signOut()} style={{ background: '#111827', color: 'white', padding: '10px 20px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}>
+          Esci dal Pannello
+        </button>
       </div>
 
-      <div style={{ display: 'flex', gap: '40px', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: '30px', flexWrap: 'wrap', alignItems: 'flex-start' }}>
         
-        {/* LATO SINISTRO: FORM */}
-        <div style={{ flex: '1', minWidth: '300px', background: '#f8f9fa', padding: '20px', borderRadius: '8px', height: 'fit-content' }}>
-          <h3>{editingId ? '✏️ Modifica Prodotto' : '➕ Aggiungi Prodotto'}</h3>
+        {/* FORM AGGIUNTA PRODOTTI */}
+        <div style={{ flex: '1 1 400px', background: 'white', padding: '30px', borderRadius: '16px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)', border: '1px solid #E5E7EB' }}>
+          <h2 style={{ margin: '0 0 20px 0', fontSize: '20px', color: '#FF6600' }}>Aggiungi Nuovo Prodotto</h2>
           
-          <form onSubmit={salvaProdotto} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+          <form onSubmit={aggiungiProdotto} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
             
+            {/* Input Testuali */}
             <div>
-              <label style={{ fontSize: '12px', fontWeight: 'bold' }}>Titolo Prodotto</label>
-              <input type="text" value={titolo} onChange={(e) => setTitolo(e.target.value)} required style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }} />
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 'bold', marginBottom: '5px' }}>Titolo Prodotto *</label>
+              <input type="text" required value={titolo} onChange={(e) => setTitolo(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #D1D5DB', boxSizing: 'border-box' }} />
+            </div>
+
+            <div style={{ display: 'flex', gap: '15px' }}>
+              <div style={{ flex: 1 }}>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: 'bold', marginBottom: '5px' }}>Prezzo (€) *</label>
+                <input type="number" step="0.01" required value={prezzo} onChange={(e) => setPrezzo(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #D1D5DB', boxSizing: 'border-box' }} placeholder="Es: 19.99" />
+              </div>
             </div>
 
             <div>
-              <label style={{ fontSize: '12px', fontWeight: 'bold' }}>Prezzo Indicativo (€)</label>
-              <input type="number" step="0.01" value={prezzo} onChange={(e) => setPrezzo(e.target.value)} required style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }} />
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 'bold', marginBottom: '5px' }}>Link Affiliato Temu *</label>
+              <input type="url" required value={linkAffiliazione} onChange={(e) => setLinkAffiliazione(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #D1D5DB', boxSizing: 'border-box' }} placeholder="https://temu.to/m/..." />
             </div>
-            
-            {/* I TRE MENU A TENDINA COLLEGATI */}
+
             <div>
-              <label style={{ fontSize: '12px', fontWeight: 'bold' }}>Reparto</label>
-              <select value={reparto} onChange={(e) => setReparto(e.target.value)} style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 'bold', marginBottom: '5px' }}>Link Immagine (Opzionale)</label>
+              <input type="url" value={immagineUrl} onChange={(e) => setImmagineUrl(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #D1D5DB', boxSizing: 'border-box' }} placeholder="https://..." />
+            </div>
+
+            {/* Menu a Tendina Categorie */}
+            <div style={{ background: '#F3F4F6', padding: '15px', borderRadius: '8px', marginTop: '10px' }}>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 'bold', marginBottom: '5px' }}>Reparto Principale *</label>
+              <select value={reparto} onChange={(e) => handleRepartoChange(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #D1D5DB', marginBottom: '15px', cursor: 'pointer' }}>
                 {Object.keys(repartiMap).map(rep => <option key={rep} value={rep}>{rep}</option>)}
               </select>
-            </div>
 
-            <div>
-              <label style={{ fontSize: '12px', fontWeight: 'bold' }}>Categoria</label>
-              <select value={categoria} onChange={(e) => setCategoria(e.target.value)} style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 'bold', marginBottom: '5px' }}>Categoria *</label>
+              <select value={categoria} onChange={(e) => handleCategoriaChange(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #D1D5DB', marginBottom: '15px', cursor: 'pointer' }}>
                 {Object.keys(repartiMap[reparto]).map(cat => <option key={cat} value={cat}>{cat}</option>)}
               </select>
-            </div>
-            
-            <div>
-              <label style={{ fontSize: '12px', fontWeight: 'bold' }}>Sottocategoria</label>
-              <select value={sottocategoria} onChange={(e) => setSottocategoria(e.target.value)} style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}>
-                {repartiMap[reparto][categoria]?.map(sub => <option key={sub} value={sub}>{sub}</option>)}
+
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 'bold', marginBottom: '5px' }}>Sottocategoria *</label>
+              <select value={sottocategoria} onChange={(e) => setSottocategoria(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #D1D5DB', cursor: 'pointer' }}>
+                {repartiMap[reparto][categoria].map(sub => <option key={sub} value={sub}>{sub}</option>)}
               </select>
             </div>
-            
-            <div>
-              <label style={{ fontSize: '12px', fontWeight: 'bold' }}>Link Affiliazione</label>
-              <input type="url" value={linkAffiliazione} onChange={(e) => setLinkAffiliazione(e.target.value)} required style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }} />
-            </div>
-            
-            <div>
-              <label style={{ fontSize: '12px', fontWeight: 'bold' }}>URL Immagine</label>
-              <input type="url" value={immagineUrl} onChange={(e) => setImmagineUrl(e.target.value)} required style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }} />
-            </div>
-            
-            <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-              <button type="submit" style={{ flex: 1, padding: '10px', background: editingId ? '#007bff' : '#28a745', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
-                {editingId ? 'Aggiorna Prodotto' : 'Aggiungi al Catalogo'}
-              </button>
-              
-              {editingId && (
-                <button type="button" onClick={resetForm} style={{ padding: '10px', background: '#6c757d', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-                  Annulla
-                </button>
-              )}
-            </div>
+
+            <button type="submit" disabled={loadingDb} style={{ background: '#FF6600', color: 'white', padding: '12px', border: 'none', borderRadius: '8px', fontWeight: 'bold', fontSize: '16px', cursor: 'pointer', marginTop: '10px' }}>
+              {loadingDb ? 'Salvataggio...' : '➕ Salva Prodotto'}
+            </button>
           </form>
         </div>
 
-        {/* LATO DESTRO: LISTA PRODOTTI */}
-        <div style={{ flex: '2', minWidth: '400px' }}>
-          <h3>Prodotti nel Catalogo ({prodotti.length})</h3>
+        {/* LISTA PRODOTTI INVENTARIO */}
+        <div style={{ flex: '2 1 500px', background: 'white', padding: '30px', borderRadius: '16px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)', border: '1px solid #E5E7EB' }}>
+          <h2 style={{ margin: '0 0 20px 0', fontSize: '20px', color: '#111827' }}>Prodotti Online ({prodotti.length})</h2>
           
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-            {prodotti.map(prod => (
-              <div key={prod.id} style={{ display: 'flex', alignItems: 'center', background: 'white', border: '1px solid #ddd', padding: '10px', borderRadius: '8px', gap: '15px' }}>
-                
-                {prod.immagine_url ? 
-                  <img src={prod.immagine_url} alt="anteprima" style={{ width: '60px', height: '60px', objectFit: 'contain', borderRadius: '4px' }}/> : 
-                  <div style={{ width: '60px', height: '60px', background: '#eee', borderRadius: '4px' }}></div>
-                }
-
-                <div style={{ flex: 1 }}>
-                  <h4 style={{ margin: '0 0 5px 0' }}>{prod.titolo}</h4>
-                  {/* Sostituito > con &gt; per evitare errori JSX */}
-                  <span style={{ fontSize: '12px', color: '#666', background: '#eee', padding: '2px 6px', borderRadius: '4px' }}>
-                    {prod.reparto} &gt; {prod.categoria} &gt; {prod.sottocategoria}
-                  </span>
-                  <p style={{ margin: '5px 0 0 0', fontWeight: 'bold', color: '#0056b3' }}>~ €{prod.prezzo}</p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', maxHeight: '700px', overflowY: 'auto', paddingRight: '10px' }}>
+            {prodotti.length === 0 ? (
+              <p style={{ color: '#6B7280', fontStyle: 'italic' }}>Nessun prodotto caricato.</p>
+            ) : (
+              prodotti.map((p) => (
+                <div key={p.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '15px', border: '1px solid #E5E7EB', borderRadius: '8px', background: '#F9FAFB' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                    <div style={{ width: '50px', height: '50px', background: 'white', borderRadius: '6px', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid #E5E7EB' }}>
+                      {p.immagine_url ? <img src={p.immagine_url} style={{ width: '100%', height: '100%', objectFit: 'contain' }} alt="img" /> : <span style={{ fontSize: '10px', color: '#9CA3AF' }}>Img</span>}
+                    </div>
+                    <div>
+                      <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', color: '#111827', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{p.titolo}</h4>
+                      <p style={{ margin: 0, fontSize: '12px', color: '#6B7280' }}>€{p.prezzo} • {p.sottocategoria}</p>
+                    </div>
+                  </div>
+                  <button onClick={() => eliminaProdotto(p.id)} style={{ background: '#FEE2E2', color: '#EF4444', border: 'none', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '12px', transition: 'background 0.2s' }} onMouseEnter={(e) => e.target.style.background = '#FECACA'} onMouseLeave={(e) => e.target.style.background = '#FEE2E2'}>
+                    Elimina
+                  </button>
                 </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                  <button onClick={() => avviaModifica(prod)} style={{ padding: '5px 10px', background: '#ffc107', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}>✏️ Modifica</button>
-                  <button onClick={() => eliminaProdotto(prod.id, prod.titolo)} style={{ padding: '5px 10px', background: '#dc3545', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}>🗑️ Elimina</button>
-                </div>
-
-              </div>
-            ))}
-            
-            {prodotti.length === 0 && <p style={{ color: '#666' }}>Nessun prodotto presente.</p>}
+              ))
+            )}
           </div>
         </div>
 

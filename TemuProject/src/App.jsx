@@ -8,7 +8,6 @@ const repartiMap = {
     'Attrezzatura da Pesca': ['Canne da pesca', 'Mulinelli', 'Esche e Ami', 'Fili e Accessori'],
     'Abbigliamento Tecnico': ['Occhiali polarizzati', 'Cappelli e Visiere', 'Guanti', 'Calzature'],
     'Accessori e Logistica': ['Borse termiche', 'Zaini impermeabili', 'Scatole porta-attrezzi'],
-    // Sottocategorie elettroniche aggiornate:
     'Elettronica e Utilità': ['Ecoscandagli e Sonar', 'Bilance digitali', 'Torce frontali e Lampade', 'Action Cam e Supporti', 'Powerbank solari']
   },
   '🐠 Acquariofilia': {
@@ -19,13 +18,19 @@ const repartiMap = {
   }
 };
 
-// --- POP-UP OFFERTE DELLA SETTIMANA ---
+// --- TOP BAR PROMOZIONALE ---
+function TopBar() {
+  return (
+    <div style={{ background: '#111827', color: 'white', textAlign: 'center', padding: '8px 4%', fontSize: '13px', fontWeight: '600', letterSpacing: '0.5px' }}>
+      🔥 Spedizione Gratuita e Resi Gratuiti su Temu per 90 giorni! Scopri le offerte in basso.
+    </div>
+  )
+}
+
 function OffersPopup({ isDarkMode, onClose }) {
   const [isVisible, setIsVisible] = useState(false);
-
   useEffect(() => {
-    // Mostra il popup dopo 3 secondi
-    const timer = setTimeout(() => setIsVisible(true), 3000);
+    const timer = setTimeout(() => setIsVisible(true), 3500);
     return () => clearTimeout(timer);
   }, []);
 
@@ -33,92 +38,52 @@ function OffersPopup({ isDarkMode, onClose }) {
 
   return (
     <div style={{
-      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-      backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 10000,
-      display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px',
-      backdropFilter: 'blur(5px)'
+      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 10000,
+      display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px', backdropFilter: 'blur(5px)'
     }}>
       <div style={{
-        background: isDarkMode ? '#1F2937' : '#FFFFFF',
-        color: isDarkMode ? '#F9FAFB' : '#111827',
-        width: '100%', maxWidth: '450px', borderRadius: '16px', overflow: 'hidden',
-        boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)', position: 'relative',
-        animation: 'slideUp 0.4s ease-out'
+        background: isDarkMode ? '#1F2937' : '#FFFFFF', color: isDarkMode ? '#F9FAFB' : '#111827',
+        width: '100%', maxWidth: '450px', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)', position: 'relative'
       }}>
         <button onClick={() => { setIsVisible(false); onClose(); }} style={{
-          position: 'absolute', top: '15px', right: '15px', background: 'rgba(0,0,0,0.5)', color: 'white',
-          border: 'none', borderRadius: '50%', width: '30px', height: '30px', cursor: 'pointer', fontWeight: 'bold'
+          position: 'absolute', top: '15px', right: '15px', background: 'rgba(0,0,0,0.5)', color: 'white', border: 'none', borderRadius: '50%', width: '30px', height: '30px', cursor: 'pointer', fontWeight: 'bold'
         }}>X</button>
-        
-        <div style={{
-          height: '180px',
-          backgroundImage: 'url(https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=2070&auto=format&fit=crop)',
-          backgroundSize: 'cover', backgroundPosition: 'center'
-        }}></div>
-        
+        <div style={{ height: '180px', backgroundImage: 'url(/banner.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
         <div style={{ padding: '25px', textAlign: 'center' }}>
-          <h2 style={{ margin: '0 0 10px 0', color: '#FF6600', fontSize: '24px', fontWeight: '900' }}>🔥 SUPER OFFERTE DELLA SETTIMANA</h2>
-          <p style={{ margin: '0 0 20px 0', fontSize: '15px' }}>
-            Abbiamo selezionato per te i migliori articoli di <strong>Pesca</strong> e <strong>Acquariofilia</strong> in super sconto su Temu. Fino al 70% in meno!
-          </p>
-          <button onClick={() => { setIsVisible(false); onClose(); }} style={{
-            background: '#FF6600', color: 'white', border: 'none', padding: '12px 25px',
-            borderRadius: '50px', fontWeight: 'bold', fontSize: '16px', cursor: 'pointer', width: '100%'
-          }}>
+          <h2 style={{ margin: '0 0 10px 0', color: '#FF6600', fontSize: '24px', fontWeight: '900' }}>🔥 SELEZIONE PREMIUM</h2>
+          <p style={{ margin: '0 0 20px 0', fontSize: '15px' }}>Abbiamo selezionato per te le migliori attrezzature su Temu. Fino al 70% in meno!</p>
+          <button onClick={() => { setIsVisible(false); onClose(); }} style={{ background: '#FF6600', color: 'white', border: 'none', padding: '12px 25px', borderRadius: '50px', fontWeight: 'bold', fontSize: '16px', cursor: 'pointer', width: '100%' }}>
             Scopri i Prodotti
           </button>
         </div>
       </div>
-      <style>{`@keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }`}</style>
     </div>
   );
 }
 
-// --- BANNER PROMOZIONALE CON IMMAGINE ---
 function PromoBanner() {
   return (
     <div style={{
-      backgroundImage: 'linear-gradient(to right, rgba(255, 102, 0, 0.95), rgba(255, 140, 0, 0.8)), url(https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?q=80&w=2070&auto=format&fit=crop)',
-      backgroundSize: 'cover', backgroundPosition: 'center',
-      margin: '0 4% 40px 4%', borderRadius: '16px', padding: '40px 20px',
-      color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center',
-      boxShadow: '0 10px 25px rgba(255, 102, 0, 0.3)'
+      backgroundImage: 'linear-gradient(to right, rgba(255, 102, 0, 0.95), rgba(255, 140, 0, 0.8)), url(/banner2.jpg)',
+      backgroundSize: 'cover', backgroundPosition: 'center', margin: '0 4% 40px 4%', borderRadius: '16px', padding: '40px 20px',
+      color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', boxShadow: '0 10px 25px rgba(255, 102, 0, 0.3)'
     }}>
-      <h2 style={{ margin: '0 0 10px 0', fontSize: '32px', fontWeight: '900', textTransform: 'uppercase', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
-        🎁 Regalo per i Nuovi Utenti!
-      </h2>
-      <p style={{ margin: '0 0 20px 0', fontSize: '18px', fontWeight: '500', maxWidth: '600px', textShadow: '0 1px 3px rgba(0,0,0,0.3)' }}>
-        Scarica l'app Temu dal nostro link e usa il codice <strong style={{ background: 'white', color: '#FF6600', padding: '4px 10px', borderRadius: '8px' }}>app39037</strong> per un 30% di sconto sul tuo primo ordine!
+      <h2 style={{ margin: '0 0 10px 0', fontSize: '30px', fontWeight: '900', textTransform: 'uppercase', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>🎁 Regalo Nuovi Utenti!</h2>
+      <p style={{ margin: '0 0 20px 0', fontSize: '17px', fontWeight: '500', maxWidth: '600px', textShadow: '0 1px 3px rgba(0,0,0,0.3)' }}>
+        Scarica l'app Temu dal nostro link e usa il codice <strong style={{ background: 'white', color: '#FF6600', padding: '4px 10px', borderRadius: '8px' }}>RECENSIONI30</strong> per un 30% di sconto sul tuo primo ordine!
       </p>
-      <a href="https://temu.to/k/eq781iq9pn5" target="_blank" rel="noopener noreferrer" 
-         style={{
-           background: '#111827', color: 'white', padding: '14px 35px', borderRadius: '50px',
-           textDecoration: 'none', fontWeight: 'bold', fontSize: '16px', transition: 'transform 0.2s', boxShadow: '0 4px 6px rgba(0,0,0,0.2)'
-         }}
-         onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
-         onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}>
-        Riscatta Sconto Ora
+      <a href="INSERISCI_LINK" target="_blank" rel="noopener noreferrer" style={{ background: '#111827', color: 'white', padding: '14px 35px', borderRadius: '50px', textDecoration: 'none', fontWeight: 'bold', fontSize: '16px' }}>
+        Riscatta Sconto
       </a>
     </div>
   );
 }
 
-// --- CAROSELLO HERO ---
 function HeroSlider() {
   const [current, setCurrent] = useState(0);
   const slides = [
-    { 
-      id: 1, 
-      image: '/banner.jpg', 
-      title: 'Attrezzatura da Pesca 🎣', 
-      subtitle: 'Le migliori canne, mulinelli ed esche testate per te.' 
-    },
-    { 
-      id: 2, 
-      image: '/banner2.jpg', 
-      title: 'Il Tuo Acquario Perfetto 🐠', 
-      subtitle: 'Tecnica, filtri e decorazioni a prezzi imbattibili.' 
-    }
+    { id: 1, image: '/banner.jpg', title: 'Attrezzatura da Pesca Pro 🎣', subtitle: 'Ecoscandagli, mulinelli ed esche testate per te.' },
+    { id: 2, image: '/banner2.jpg', title: 'Acquascaping Perfetto 🐠', subtitle: 'Illuminazione LED e filtri a prezzi imbattibili.' }
   ];
 
   useEffect(() => {
@@ -127,21 +92,15 @@ function HeroSlider() {
   }, [slides.length]);
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '450px', overflow: 'hidden', backgroundColor: '#111827' }}>
+    <div style={{ position: 'relative', width: '100%', height: '400px', overflow: 'hidden', backgroundColor: '#111827' }}>
       {slides.map((slide, index) => (
         <div key={slide.id} style={{
-          position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
-          backgroundImage: `linear-gradient(rgba(0,0,0, 0.3), rgba(0,0,0, 0.7)), url(${slide.image})`,
-          backgroundSize: 'cover', backgroundPosition: 'center',
-          opacity: current === index ? 1 : 0, transition: 'opacity 1s ease-in-out',
+          position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundImage: `linear-gradient(rgba(0,0,0, 0.4), rgba(0,0,0, 0.7)), url(${slide.image})`,
+          backgroundSize: 'cover', backgroundPosition: 'center', opacity: current === index ? 1 : 0, transition: 'opacity 1s ease-in-out',
           display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', color: 'white', padding: '0 20px'
         }}>
-          <h1 style={{ fontSize: '48px', fontWeight: '900', margin: '0 0 10px 0', textShadow: '0 4px 10px rgba(0,0,0,0.7)' }}>
-            {slide.title}
-          </h1>
-          <p style={{ fontSize: '20px', maxWidth: '600px', fontWeight: '400', textShadow: '0 2px 4px rgba(0,0,0,0.7)' }}>
-            {slide.subtitle}
-          </p>
+          <h1 style={{ fontSize: '42px', fontWeight: '900', margin: '0 0 10px 0' }}>{slide.title}</h1>
+          <p style={{ fontSize: '18px', maxWidth: '600px', fontWeight: '400' }}>{slide.subtitle}</p>
         </div>
       ))}
     </div>
@@ -150,15 +109,12 @@ function HeroSlider() {
 
 function CookieBanner() {
   const [visibile, setVisibile] = useState(false);
-  useEffect(() => {
-    if (!localStorage.getItem('cookie_accettati')) setVisibile(true);
-  }, []);
-  const accettaCookie = () => { localStorage.setItem('cookie_accettati', 'true'); setVisibile(false); }
+  useEffect(() => { if (!localStorage.getItem('cookie_accettati')) setVisibile(true); }, []);
   if (!visibile) return null;
   return (
     <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: '#111827', color: '#fff', padding: '15px 4%', zIndex: 9999, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
-      <p style={{ margin: 0, fontSize: '13px', flex: 1 }}>Utilizziamo i link affiliati Temu. Acquistando supporti il canale YouTube senza rincari sul tuo prezzo.</p>
-      <button onClick={accettaCookie} style={{ background: '#FF6600', color: 'white', border: 'none', padding: '10px 25px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>OK, ho capito</button>
+      <p style={{ margin: 0, fontSize: '13px', flex: 1 }}>Utilizziamo i link affiliati Temu. Acquistando supporti il canale YouTube senza rincari.</p>
+      <button onClick={() => { localStorage.setItem('cookie_accettati', 'true'); setVisibile(false); }} style={{ background: '#FF6600', color: 'white', border: 'none', padding: '10px 25px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>OK</button>
     </div>
   )
 }
@@ -168,6 +124,7 @@ function Home({ isDarkMode }) {
   const [repartoAttivo, setRepartoAttivo] = useState('🎣 Pesca Sportiva')
   const [filtroCategoria, setFiltroCategoria] = useState('Tutte')
   const [filtroSottocategoria, setFiltroSottocategoria] = useState('Tutte') 
+  const [filtroPrezzo, setFiltroPrezzo] = useState('Tutti') // NUOVO STATO PREZZO
   const [ricerca, setRicerca] = useState('')
   const [popupClosed, setPopupClosed] = useState(false)
 
@@ -179,10 +136,7 @@ function Home({ isDarkMode }) {
   }
 
   const cambiaReparto = (nuovoReparto) => {
-    setRepartoAttivo(nuovoReparto)
-    setFiltroCategoria('Tutte')
-    setFiltroSottocategoria('Tutte')
-    setRicerca('')
+    setRepartoAttivo(nuovoReparto); setFiltroCategoria('Tutte'); setFiltroSottocategoria('Tutte'); setFiltroPrezzo('Tutti'); setRicerca('');
   }
 
   const prodottiFiltrati = prodotti.filter(p => {
@@ -190,79 +144,86 @@ function Home({ isDarkMode }) {
     let passaRicerca = p.titolo.toLowerCase().includes(ricerca.toLowerCase());
     let passaCategoria = filtroCategoria === 'Tutte' || p.categoria === filtroCategoria;
     let passaSottocategoria = filtroSottocategoria === 'Tutte' || p.sottocategoria === filtroSottocategoria;
-    return passaReparto && passaRicerca && passaCategoria && passaSottocategoria;
+    
+    // LOGICA FILTRO PREZZO
+    let passaPrezzo = true;
+    if (p.prezzo) {
+      const prezzoNum = parseFloat(p.prezzo.toString().replace(',', '.'));
+      if (filtroPrezzo === '0-10') passaPrezzo = prezzoNum < 10;
+      else if (filtroPrezzo === '10-30') passaPrezzo = prezzoNum >= 10 && prezzoNum <= 30;
+      else if (filtroPrezzo === '30+') passaPrezzo = prezzoNum > 30;
+    }
+
+    return passaReparto && passaRicerca && passaCategoria && passaSottocategoria && passaPrezzo;
   });
 
-  // Stili dinamici in base al tema
   const bgPrincipale = isDarkMode ? '#111827' : '#F9FAFB';
   const textPrincipale = isDarkMode ? '#F3F4F6' : '#111827';
   const cardBg = isDarkMode ? '#1F2937' : '#FFFFFF';
-  const cardBorder = isDarkMode ? '#374151' : '#F3F4F6';
-  const btnFiltroBg = isDarkMode ? '#374151' : '#E5E7EB';
-  const btnFiltroBgActive = isDarkMode ? '#FF6600' : '#111827';
-  const btnFiltroText = isDarkMode ? '#D1D5DB' : '#374151';
+  const cardBorder = isDarkMode ? '#374151' : '#E5E7EB';
 
   return (
-    <div style={{ fontFamily: 'Inter, sans-serif', backgroundColor: bgPrincipale, paddingBottom: '100px', minHeight: '100vh', color: textPrincipale, transition: 'background-color 0.3s, color 0.3s' }}>
-      
+    <div style={{ fontFamily: 'Inter, sans-serif', backgroundColor: bgPrincipale, paddingBottom: '100px', minHeight: '100vh', color: textPrincipale }}>
       {!popupClosed && <OffersPopup isDarkMode={isDarkMode} onClose={() => setPopupClosed(true)} />}
-
       <HeroSlider />
 
-      {/* REPARTI MACRO */}
-      <div style={{ display: 'flex', width: '100%', background: cardBg, borderBottom: `1px solid ${cardBorder}`, transition: 'background-color 0.3s' }}>
-        <div onClick={() => cambiaReparto('🎣 Pesca Sportiva')} 
-             style={{ flex: 1, textAlign: 'center', padding: '25px 10px', cursor: 'pointer', fontWeight: '800', fontSize: '20px',
-                      color: repartoAttivo === '🎣 Pesca Sportiva' ? '#FF6600' : (isDarkMode ? '#9CA3AF' : '#6B7280'), 
-                      borderBottom: repartoAttivo === '🎣 Pesca Sportiva' ? '4px solid #FF6600' : '4px solid transparent' }}>
-          🎣 PESCA SPORTIVA
-        </div>
-        <div onClick={() => cambiaReparto('🐠 Acquariofilia')} 
-             style={{ flex: 1, textAlign: 'center', padding: '25px 10px', cursor: 'pointer', fontWeight: '800', fontSize: '20px',
-                      color: repartoAttivo === '🐠 Acquariofilia' ? '#FF6600' : (isDarkMode ? '#9CA3AF' : '#6B7280'), 
-                      borderBottom: repartoAttivo === '🐠 Acquariofilia' ? '4px solid #FF6600' : '4px solid transparent' }}>
-          🐠 ACQUARIOFILIA
-        </div>
+      {/* REPARTI MACRO TABS */}
+      <div style={{ display: 'flex', width: '100%', background: cardBg, borderBottom: `1px solid ${cardBorder}` }}>
+        <div onClick={() => cambiaReparto('🎣 Pesca Sportiva')} style={{ flex: 1, textAlign: 'center', padding: '20px 10px', cursor: 'pointer', fontWeight: '800', fontSize: '18px', color: repartoAttivo === '🎣 Pesca Sportiva' ? '#FF6600' : (isDarkMode ? '#9CA3AF' : '#6B7280'), borderBottom: repartoAttivo === '🎣 Pesca Sportiva' ? '3px solid #FF6600' : '3px solid transparent' }}>🎣 PESCA SPORTIVA</div>
+        <div onClick={() => cambiaReparto('🐠 Acquariofilia')} style={{ flex: 1, textAlign: 'center', padding: '20px 10px', cursor: 'pointer', fontWeight: '800', fontSize: '18px', color: repartoAttivo === '🐠 Acquariofilia' ? '#FF6600' : (isDarkMode ? '#9CA3AF' : '#6B7280'), borderBottom: repartoAttivo === '🐠 Acquariofilia' ? '3px solid #FF6600' : '3px solid transparent' }}>🐠 ACQUARIOFILIA</div>
       </div>
 
       <div style={{ padding: '40px 0' }}>
-        
         <PromoBanner />
 
-        {/* FILTRI */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '40px', padding: '0 4%' }}>
-          <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '10px' }}>
-            <button onClick={() => setFiltroCategoria('Tutte')} style={{ padding: '8px 20px', borderRadius: '50px', border: 'none', background: filtroCategoria === 'Tutte' ? btnFiltroBgActive : btnFiltroBg, color: filtroCategoria === 'Tutte' ? 'white' : btnFiltroText, cursor: 'pointer', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Tutte le Categorie</button>
+        {/* CONTROLLI DI RICERCA E FILTRI */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginBottom: '30px', padding: '0 4%' }}>
+          
+          {/* Categorie Pills */}
+          <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '5px' }}>
+            <button onClick={() => setFiltroCategoria('Tutte')} style={{ padding: '8px 20px', borderRadius: '50px', border: 'none', background: filtroCategoria === 'Tutte' ? '#FF6600' : (isDarkMode?'#374151':'#E5E7EB'), color: filtroCategoria === 'Tutte' ? 'white' : (isDarkMode?'#D1D5DB':'#374151'), cursor: 'pointer', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Tutte le Categorie</button>
             {Object.keys(repartiMap[repartoAttivo]).map(cat => (
-              <button key={cat} onClick={() => {setFiltroCategoria(cat); setFiltroSottocategoria('Tutte');}} style={{ padding: '8px 20px', borderRadius: '50px', border: 'none', background: filtroCategoria === cat ? btnFiltroBgActive : btnFiltroBg, color: filtroCategoria === cat ? 'white' : btnFiltroText, cursor: 'pointer', fontWeight: 'bold', whiteSpace: 'nowrap' }}>{cat}</button>
+              <button key={cat} onClick={() => {setFiltroCategoria(cat); setFiltroSottocategoria('Tutte');}} style={{ padding: '8px 20px', borderRadius: '50px', border: 'none', background: filtroCategoria === cat ? '#FF6600' : (isDarkMode?'#374151':'#E5E7EB'), color: filtroCategoria === cat ? 'white' : (isDarkMode?'#D1D5DB':'#374151'), cursor: 'pointer', fontWeight: 'bold', whiteSpace: 'nowrap' }}>{cat}</button>
             ))}
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
-            <input type="text" placeholder="Cerca prodotto..." value={ricerca} onChange={(e) => setRicerca(e.target.value)} style={{ flex: 1, minWidth: '250px', padding: '12px 20px', borderRadius: '8px', border: `1px solid ${cardBorder}`, background: cardBg, color: textPrincipale, fontSize: '15px', outline: 'none' }} />
+          {/* Ricerca e Filtro Prezzo Avanzati */}
+          <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
+            <input type="text" placeholder="Cerca prodotto..." value={ricerca} onChange={(e) => setRicerca(e.target.value)} style={{ flex: 2, minWidth: '200px', padding: '12px 20px', borderRadius: '10px', border: `1px solid ${cardBorder}`, background: cardBg, color: textPrincipale, outline: 'none' }} />
+            
+            {/* MENU A TENDINA PREZZO */}
+            <select value={filtroPrezzo} onChange={(e) => setFiltroPrezzo(e.target.value)} style={{ flex: 1, minWidth: '150px', padding: '12px 20px', borderRadius: '10px', border: `1px solid ${cardBorder}`, background: cardBg, color: textPrincipale, outline: 'none', cursor: 'pointer', fontWeight: 'bold' }}>
+              <option value="Tutti">Tutti i prezzi</option>
+              <option value="0-10">Sotto i 10 €</option>
+              <option value="10-30">Tra 10 € e 30 €</option>
+              <option value="30+">Oltre 30 €</option>
+            </select>
           </div>
         </div>
 
-        {/* GRIGLIA PRODOTTI */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '25px', padding: '0 4%' }}>
+        {/* GRIGLIA PRODOTTI PREMIUM */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px', padding: '0 4%' }}>
           {prodottiFiltrati.map((prodotto) => (
-            <div key={prodotto.id} style={{ background: cardBg, borderRadius: '12px', padding: '15px', display: 'flex', flexDirection: 'column', height: '100%', border: `1px solid ${cardBorder}`, boxShadow: isDarkMode ? '0 4px 6px rgba(0,0,0,0.3)' : '0 4px 6px rgba(0,0,0,0.04)', transition: 'transform 0.2s, box-shadow 0.2s' }} onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-5px)' }} onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)' }}>
+            <div key={prodotto.id} style={{ position: 'relative', background: cardBg, borderRadius: '16px', padding: '15px', display: 'flex', flexDirection: 'column', border: `1px solid ${cardBorder}`, boxShadow: isDarkMode ? '0 4px 15px rgba(0,0,0,0.4)' : '0 4px 15px rgba(0,0,0,0.05)', transition: 'transform 0.2s ease-out' }} onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
               
-              <div style={{ height: '220px', width: '100%', marginBottom: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: isDarkMode ? '#111827' : '#F9FAFB', borderRadius: '8px', overflow: 'hidden' }}>
-                {prodotto.immagine_url ? (
-                  <img src={prodotto.immagine_url} alt={prodotto.titolo} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                ) : (
-                  <span style={{ color: '#9CA3AF' }}>Immagine</span>
-                )}
+              {/* Badge Temu */}
+              <span style={{ position: 'absolute', top: '25px', left: '25px', background: 'black', color: 'white', fontSize: '10px', fontWeight: 'bold', padding: '4px 8px', borderRadius: '6px', zIndex: 2, textTransform: 'uppercase', letterSpacing: '1px' }}>Temu Pick</span>
+
+              <div style={{ height: '200px', width: '100%', marginBottom: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: isDarkMode ? '#111827' : '#F9FAFB', borderRadius: '10px', overflow: 'hidden' }}>
+                {prodotto.immagine_url ? <img src={prodotto.immagine_url} alt={prodotto.titolo} style={{ width: '100%', height: '100%', objectFit: 'contain' }} /> : <span style={{ color: '#9CA3AF' }}>No Img</span>}
               </div>
               
-              <h3 title={prodotto.titolo} style={{ fontSize: '16px', margin: '0 0 8px 0', color: textPrincipale, lineHeight: '1.4', fontWeight: '600', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{prodotto.titolo}</h3>
+              <h3 title={prodotto.titolo} style={{ fontSize: '16px', margin: '0 0 8px 0', color: textPrincipale, lineHeight: '1.4', fontWeight: '700', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{prodotto.titolo}</h3>
               <p style={{ color: '#6B7280', fontSize: '13px', margin: '0 0 15px 0' }}>{prodotto.sottocategoria}</p>
               
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
-                <span style={{ fontWeight: '900', fontSize: '22px', color: isDarkMode ? '#F9FAFB' : '#111827' }}>€ {prodotto.prezzo}</span>
-                <a href={prodotto.link_affiliazione} target="_blank" rel="noopener noreferrer" style={{ background: '#FF6600', color: 'white', padding: '10px 18px', textDecoration: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 'bold', transition: 'background 0.2s' }} onMouseEnter={(e) => e.target.style.background = '#E65C00'} onMouseLeave={(e) => e.target.style.background = '#FF6600'}>
-                  Vedi su Temu
+                <div>
+                  <span style={{ fontSize: '12px', color: '#6B7280', display: 'block', textDecoration: 'line-through' }}>{((parseFloat(prodotto.prezzo.toString().replace(',', '.'))) * 1.3).toFixed(2)}€</span>
+                  <span style={{ fontWeight: '900', fontSize: '22px', color: '#FF6600' }}>€ {prodotto.prezzo}</span>
+                </div>
+                <a href={prodotto.link_affiliazione} target="_blank" rel="noopener noreferrer" style={{ background: '#111827', color: 'white', padding: '10px 18px', textDecoration: 'none', borderRadius: '50px', fontSize: '13px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  Acquista
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </a>
               </div>
             </div>
@@ -274,45 +235,32 @@ function Home({ isDarkMode }) {
 }
 
 function App() {
-  // Gestione del Tema (Chiaro/Scuro)
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   return (
     <Router>
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: isDarkMode ? '#111827' : '#F9FAFB' }}>
+        <TopBar />
         <CookieBanner />
         
-        {/* NAVBAR */}
-        <nav style={{ padding: '15px 4%', background: isDarkMode ? '#1F2937' : 'white', borderBottom: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 100, transition: 'background-color 0.3s' }}>
+        <nav style={{ padding: '15px 4%', background: isDarkMode ? '#1F2937' : 'white', borderBottom: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 100 }}>
           <Link to="/" style={{ textDecoration: 'none', color: isDarkMode ? '#F9FAFB' : '#111827', display: 'flex', alignItems: 'center' }}>
-            <span style={{ fontSize: '24px', fontWeight: '900' }}>
-              Recensioni<span style={{ color: '#FF6600' }}>ITA</span>
-            </span>
+            <span style={{ fontSize: '24px', fontWeight: '900' }}>Recensioni<span style={{ color: '#FF6600' }}>ITA</span></span>
           </Link>
           
-          <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-            {/* Bottone Toggle Tema Chiaro/Scuro */}
-            <button 
-              onClick={() => setIsDarkMode(!isDarkMode)} 
-              style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '20px', padding: '5px' }}
-              title="Cambia Tema"
-            >
+          <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+            <button onClick={() => setIsDarkMode(!isDarkMode)} style={{ background: isDarkMode ? '#374151' : '#F3F4F6', border: 'none', borderRadius: '50%', cursor: 'pointer', fontSize: '16px', width: '35px', height: '35px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Cambia Tema">
               {isDarkMode ? '☀️' : '🌙'}
             </button>
-
-            {/* Link YouTube */}
             <a href="https://youtube.com/@recensioniita9?si=Rdg3mXWsViQtWvup" target="_blank" rel="noopener noreferrer" title="Visita il Canale">
                <svg width="28" height="28" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
             </a>
-            
-            {/* IL LINK ADMIN E' STATO RIMOSSO DA QUI PER NASCONDERLO AGLI UTENTI */}
           </div>
         </nav>
         
         <div style={{ flex: 1 }}>
           <Routes>
             <Route path="/" element={<Home isDarkMode={isDarkMode} />} />
-            {/* LA ROTTA ADMIN ESISTE ANCORA, BASTA DIGITARE /admin NELL'URL */}
             <Route path="/admin" element={<Admin />} />
           </Routes>
         </div>
