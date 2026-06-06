@@ -127,7 +127,7 @@ function ProductPage({ isDarkMode }) {
 
   // --- 2. LOGICA DI LAYOUT ALTERNATO ---
   // Se l'ID è pari, immagine a sx. Se è dispari, immagine a dx.
-  const isLayoutInvertito = prodotto.id % 2 !== 0;
+  //const isLayoutInvertito = prodotto.id % 2 !== 0;
 
   // Generatore recensioni fittizie
   const recensioniList = [
@@ -169,7 +169,7 @@ function ProductPage({ isDarkMode }) {
         <span style={{ fontSize: '16px', color: '#9CA3AF', textDecoration: 'line-through' }}>{prezzoBarrato}€</span>
       </div>
 
-      <a href={prodotto.link_affiliazione} className="temu-buy-btn" target="_blank" rel="noopener noreferrer" style={{ display: 'block', background: '#FF6600', color: 'white', padding: '18px', textDecoration: 'none', borderRadius: '8px', fontSize: '22px', fontWeight: '900', textAlign: 'center', boxShadow: '0 6px 20px rgba(255,102,0,0.3)', marginBottom: '10px', transition: 'transform 0.1s' }} onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
+      <a href={prodotto.link_affiliazione} className="temu-buy-btn" target="_blank" rel="noopener noreferrer" style={{ display: 'block', background: 'linear-gradient(135deg, #FF7B00 0%, #FF4400 100%)', color: 'white', padding: '18px', textDecoration: 'none', borderRadius: '14px', fontSize: '22px', fontWeight: '900', textAlign: 'center', boxShadow: '0 10px 25px -5px rgba(255, 102, 0, 0.5)', marginBottom: '10px', transition: 'transform 0.2s ease, box-shadow 0.2s ease' }} onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
         🔥 Vai all'Offerta su Temu
       </a>
       <p style={{ fontSize: '11px', color: '#9CA3AF', lineHeight: '1.2', textAlign: 'center', marginBottom: isMobile ? '0' : '30px' }}>
@@ -208,14 +208,40 @@ function ProductPage({ isDarkMode }) {
 
   // ================= RENDER FINALE =================
   return (
-    <div style={{ backgroundColor: isDarkMode ? '#111827' : '#F9FAFB', minHeight: '100vh', padding: '30px 4%', color: text }}>
+    <div style={{ background: isDarkMode ? 'radial-gradient(circle at top, #1E293B 0%, #0F172A 100%)' : 'radial-gradient(circle at top, #FFFFFF 0%, #F1F5F9 100%)', minHeight: '100vh', padding: '30px 4%' }}>
       
       {/* INIETTA I TAG SEO DINAMICI */}
+      {/* INIETTA I TAG SEO DINAMICI */}
+      {/* INIETTA I TAG SEO DINAMICI E I DATI STRUTTURATI PER GOOGLE */}
       <Helmet>
         <title>{titoloOttimizzato} | Recensioni ITA</title>
         <meta name="description" content={`Stai cercando opinioni su ${titoloOttimizzato}? Scoprilo oggi a soli €${prodotto.prezzo}. Spedizione sempre gratuita.`} />
         <meta property="og:title" content={titoloOttimizzato} />
         <meta property="og:image" content={prodotto.immagine_url} />
+        
+        {/* LA MAGIA PER GOOGLE: JSON-LD */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org/",
+            "@type": "Product",
+            "name": titoloOttimizzato,
+            "image": [prodotto.immagine_url],
+            "description": `Recensione e dettagli di ${titoloOttimizzato}.`,
+            "offers": {
+              "@type": "Offer",
+              "url": window.location.href,
+              "priceCurrency": "EUR",
+              "price": prodotto.prezzo ? prodotto.prezzo.toString().replace(',', '.') : "0.00",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition"
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.8",
+              "reviewCount": "124"
+            }
+          })}
+        </script>
       </Helmet>
 
       <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
@@ -230,7 +256,8 @@ function ProductPage({ isDarkMode }) {
             </div>
           ) : (
             // MAGIA DEL LAYOUT ALTERNATO: Usiamo row-reverse se l'ID è dispari!
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '40px', alignItems: 'flex-start', flexDirection: isLayoutInvertito ? 'row-reverse' : 'row' }}>
+            // LAYOUT CLASSICO: Immagine sempre a sinistra, dettagli a destra
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '40px', alignItems: 'flex-start', flexDirection: 'row' }}>
               <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 {BloccoImmagine}
                 {BloccoRecensioni}
@@ -1021,16 +1048,12 @@ function Home({ isDarkMode }) {
             return (
               
                 <Link 
-              to={`/prodotto/${prodotto.id}`}
-                key={prodotto.id} 
-                  style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer', position: 'relative', display: 'flex',flexDirection: 'column',
-                  padding: '15px', borderRadius: '16px', background: cardBg, border: `1px solid ${cardBorder}`, 
-                  boxShadow: isDarkMode ? '0 4px 15px rgba(0,0,0,0.4)' : '0 4px 15px rgba(0,0,0,0.05)',
-                  transition: 'transform 0.2s ease-out'
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
-              >
+                  to={`/prodotto/${prodotto.id}`}
+                  key={prodotto.id} 
+                  style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer', position: 'relative', display: 'flex', flexDirection: 'column', padding: '15px', borderRadius: '20px', background: cardBg, border: 'none', boxShadow: isDarkMode ? '0 20px 40px -10px rgba(0,0,0,0.5)' : '0 20px 40px -10px rgba(15,23,42,0.06)', transition: 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease' }}
+                  onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
+                >
                 {/* Badge Angolare */}
                 <span style={{ position: 'absolute', top: '12px', left: '12px', background: '#FF6600', color: 'white', fontSize: '9px', fontWeight: 'bold', padding: '3px 6px', borderRadius: '4px', zIndex: 2, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                   Temu Pick
@@ -1125,20 +1148,35 @@ function Home({ isDarkMode }) {
 // --- COMPONENTE ROOT ---
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
-
+  const [searchInput, setSearchInput] = useState("");
   return (
     <Router>
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: isDarkMode ? '#111827' : '#F9FAFB' }}>
         <TopBar />
         <CookieBanner />
         
-        <nav style={{ padding: '15px 4%', background: isDarkMode ? '#1F2937' : 'white', borderBottom: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 100 }}>
-          <Link to="/" style={{ textDecoration: 'none', color: isDarkMode ? '#F9FAFB' : '#111827', display: 'flex', alignItems: 'center' }}>
+        {/* HEADER EFFETTO VETRO (APPLE STYLE) */}
+        <nav style={{ 
+          padding: '15px 4%', 
+          background: isDarkMode ? 'rgba(31, 41, 55, 0.75)' : 'rgba(255, 255, 255, 0.85)', 
+          backdropFilter: 'blur(16px)', 
+          WebkitBackdropFilter: 'blur(16px)', 
+          borderBottom: isDarkMode ? '1px solid rgba(255,255,255,0.05)' : '1px solid rgba(0,0,0,0.08)', 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center', 
+          position: 'sticky', 
+          top: 0, 
+          zIndex: 100,
+          boxShadow: isDarkMode ? 'none' : '0 10px 30px -10px rgba(0,0,0,0.05)'
+        }}>
+          <Link to="/" style={{ textDecoration: 'none', color: isDarkMode ? 'white' : '#111827', display: 'flex', alignItems: 'center' }}>
             <span style={{ fontSize: '24px', fontWeight: '900' }}>Recensioni<span style={{ color: '#FF6600' }}>ITA</span></span>
           </Link>
           
           <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-            <button onClick={() => setIsDarkMode(!isDarkMode)} style={{ background: isDarkMode ? '#374151' : '#F3F4F6', border: 'none', borderRadius: '50%', cursor: 'pointer', fontSize: '16px', width: '35px', height: '35px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Cambia Tema">
+            {/* Tasto Dark Mode */}
+            <button onClick={() => setIsDarkMode(!isDarkMode)} style={{ background: isDarkMode ? '#374151' : '#F3F4F6', border: 'none', borderRadius: '50%', cursor: 'pointer', fontSize: '16px', width: '35px', height: '35px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }} title="Cambia Tema">
               {isDarkMode ? '☀️' : '🌙'}
             </button>
             
