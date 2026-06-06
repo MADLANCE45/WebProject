@@ -897,7 +897,7 @@ function Home({ isDarkMode }) {
   const [popupClosed, setPopupClosed] = useState(false)
   const [prodottoSelezionato, setProdottoSelezionato] = useState(null) // STATO MODALE
   const [currentPage, setCurrentPage] = useState(1);
-  const prodottiPerPagina = 15; // Puoi scegliere quanti prodotti mostrare (es. 12, 16, 20)
+ const prodottiPerPagina = 18; // Puoi scegliere quanti prodotti mostrare (es. 12, 16, 20)
 
   useEffect(() => {
     async function getProdotti() {
