@@ -1,0 +1,2 @@
+User-agent: *
+Sitemap: https://recensioni-ita.vercel.app/sitemap.xml
