@@ -1,0 +1,40 @@
+.site-header {
+  background: #ffffff;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo { font-size: 1.5rem; font-weight: bold; color: #0056b3; }
+
+.nav-menu button {
+  padding: 10px 20px;
+  margin-left: 10px;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  background: #f9f9f9;
+  border-radius: 5px;
+  font-size: 16px; /* Ottimo per leggibilità */
+}
+
+.nav-menu button.attivo {
+  background: #0056b3;
+  color: white;
+  border-color: #0056b3;
+}
+
+@media (max-width: 768px) {
+  .menu-toggle { display: block; }
+  .nav-menu { display: none; flex-direction: column; width: 100%; }
+  .nav-menu.active { display: flex; }
+}

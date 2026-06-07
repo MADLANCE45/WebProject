@@ -1,49 +1,90 @@
-/* Griglia ottimizzata per le Card Prodotto */
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 20px;
-  padding: 0 4%;
+/* --- HEADER STICKY E LEGGIBILE (OVER 40) --- */
+.app-header {
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 3px solid #0056b3; /* Linea blu che trasmette sicurezza */
+  margin-bottom: 2rem;
 }
 
-/* Regola per Mobile: 2 colonne precise su schermi piccoli */
-@media (max-width: 640px) {
-  .product-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    padding: 0 2%;
-  }
-}
-
-/* Stile di base per la card trasformata in link racchiuso */
-.product-card-link {
-  text-decoration: none;
-  color: inherit;
-  position: relative;
-  border-radius: 16px;
-  padding: 15px;
+.header-container {
   display: flex;
-  flex-direction: column;
-  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 15px 20px;
 }
 
-@media (max-width: 640px) {
-  .product-card-link {
-    padding: 10px;
-    border-radius: 12px;
+.logo-btn {
+  font-size: 24px;
+  font-weight: 800;
+  color: #0056b3;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+}
+
+/* Nascondiamo la navigazione mobile su schermi grandi */
+.mobile-nav {
+  display: none;
+}
+
+.nav-btn {
+  background: #f0f4f8;
+  border: 1px solid #d1d9e0;
+  color: #333333;
+  font-size: 18px; /* Testo grande e leggibile */
+  font-weight: 500;
+  padding: 12px 24px; /* Bottoni ampi, facili da cliccare */
+  margin-left: 15px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+  background-color: #e2e8f0;
+  border-color: #0056b3;
+}
+
+.nav-btn.attivo {
+  background-color: #0056b3;
+  color: #ffffff;
+  font-weight: bold;
+  border-color: #0056b3;
+  box-shadow: 0 2px 4px rgba(0,86,179,0.3);
+}
+
+/* --- VERSIONE SMARTPHONE (Sotto i 768px) --- */
+@media screen and (max-width: 768px) {
+  .header-container {
+    justify-content: center; /* Centra il logo su mobile */
+    padding: 15px 10px 10px 10px;
   }
-}
-@keyframes pulse-btn {
-  0% { transform: scale(1); box-shadow: 0 4px 10px rgba(255,102,0,0.3); }
-  50% { transform: scale(1.03); box-shadow: 0 8px 20px rgba(255,102,0,0.5); }
-  100% { transform: scale(1); box-shadow: 0 4px 10px rgba(255,102,0,0.3); }
-}
 
-.temu-buy-btn {
-  animation: pulse-btn 2s infinite;
-  transition: all 0.2s ease-in-out;
-}
-.temu-buy-btn:hover {
-  background: #E65C00 !important;
-  transform: scale(1.05);
+  .desktop-nav {
+    display: none; /* Nasconde i bottoni grandi su mobile */
+  }
+
+  /* Mostra una barra di filtri orizzontale comoda per i pollici */
+  .mobile-nav {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #eeeeee;
+  }
+
+  .mobile-nav .nav-btn {
+    font-size: 16px;
+    padding: 10px 15px;
+    margin-left: 0;
+    margin: 0 5px;
+    flex-grow: 1; /* I bottoni occupano tutto lo spazio in larghezza */
+  }
 }
