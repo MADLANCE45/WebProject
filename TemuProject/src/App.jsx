@@ -890,22 +890,23 @@ function WheelOfFortune({ isDarkMode }) {
 
 // --- PAGINA PRINCIPALE ---
 function Home({ isDarkMode }) {
-  const [prodotti, setProdotti] = useState([])
-  const [repartoAttivo, setRepartoAttivo] = useState('🎣 Pesca Sportiva')
-  const [filtroCategoria, setFiltroCategoria] = useState('Tutte')
-  const [filtroSottocategoria, setFiltroSottocategoria] = useState('Tutte') 
-  const [filtroPrezzo, setFiltroPrezzo] = useState('Tutti') 
-  const [ricerca, setRicerca] = useState('')
-  const [popupClosed, setPopupClosed] = useState(false)
-  const [prodottoSelezionato, setProdottoSelezionato] = useState(null) // STATO MODALE
+  // 1. STATI (Senza doppioni)
+  const [prodotti, setProdotti] = useState([]);
+  const [repartoAttivo, setRepartoAttivo] = useState('🎣 Pesca Sportiva');
+  const [filtroCategoria, setFiltroCategoria] = useState('Tutte');
+  const [filtroSottocategoria, setFiltroSottocategoria] = useState('Tutte'); 
+  const [filtroPrezzo, setFiltroPrezzo] = useState('Tutti');
+  const [ricerca, setRicerca] = useState('');
+  const [filtroSconto, setFiltroSconto] = useState('Tutti'); // AGGIUNTO QUI IN ALTO
+  const [popupClosed, setPopupClosed] = useState(false);
+  const [prodottoSelezionato, setProdottoSelezionato] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
- const prodottiPerPagina = 18; // Puoi scegliere quanti prodotti mostrare (es. 12, 16, 20)
+  const prodottiPerPagina = 18;
 
   useEffect(() => {
     async function getProdotti() {
       const { data } = await supabase.from('products').select('*');
       if (data) {
-        // Mescola i prodotti in modo casuale
         const prodottiMescolati = data.sort(() => Math.random() - 0.5);
         setProdotti(prodottiMescolati);
       }
@@ -913,13 +914,16 @@ function Home({ isDarkMode }) {
     getProdotti();
   }, []);
 
-  // Se l'utente cerca qualcosa o cambia categoria, riportalo alla Pagina 1
-  
-
   const cambiaReparto = (nuovoReparto) => {
-    setRepartoAttivo(nuovoReparto); setFiltroCategoria('Tutte'); setFiltroSottocategoria('Tutte'); setFiltroPrezzo('Tutti'); setRicerca('');
+    setRepartoAttivo(nuovoReparto); 
+    setFiltroCategoria('Tutte'); 
+    setFiltroSottocategoria('Tutte'); 
+    setFiltroPrezzo('Tutti'); 
+    setRicerca('');
+    setFiltroSconto('Tutti'); // Resetta anche lo sconto
   }
 
+  // 2. FILTRAGGIO PRODOTTI (Logica unita e corretta)
   const prodottiFiltrati = prodotti.filter(p => {
     let passaReparto = p.reparto === repartoAttivo || (!p.reparto && repartoAttivo === '🎣 Pesca Sportiva');
     let passaRicerca = p.titolo.toLowerCase().includes(ricerca.toLowerCase());
@@ -934,107 +938,91 @@ function Home({ isDarkMode }) {
       else if (filtroPrezzo === '30+') passaPrezzo = prezzoNum > 30;
     }
 
-    return passaReparto && passaRicerca && passaCategoria && passaSottocategoria && passaPrezzo;
+    // Controllo sconto dinamico (calcolato con la tua formula)
+    let passaSconto = true;
+    if (filtroSconto !== 'Tutti') {
+      const scontoGenerato = 45 + ((p.id * 3) % 30);
+      passaSconto = scontoGenerato >= parseInt(filtroSconto);
+    }
+
+    // Unico return finale che combina tutto!
+    return passaReparto && passaRicerca && passaCategoria && passaSottocategoria && passaPrezzo && passaSconto;
   });
 
+  // 3. COLORI E PAGINAZIONE
   const bgPrincipale = isDarkMode ? '#111827' : '#F9FAFB';
   const textPrincipale = isDarkMode ? '#F3F4F6' : '#111827';
   const cardBg = isDarkMode ? '#1F2937' : '#FFFFFF';
   const cardBorder = isDarkMode ? '#374151' : '#E5E7EB';
-// Calcolo per la paginazione
+
   const indiceUltimoProdotto = currentPage * prodottiPerPagina;
   const indicePrimoProdotto = indiceUltimoProdotto - prodottiPerPagina;
   
-  // Questa è la lista TAGLIATA che mostreremo (sostituirà prodottiFiltrati)
   const prodottiPaginati = prodottiFiltrati.slice(indicePrimoProdotto, indiceUltimoProdotto);
   const totalePagine = Math.ceil(prodottiFiltrati.length / prodottiPerPagina);
+
+  // 4. RENDER HTML
   return (
+// ... qui continua il tuo codice HTML ( <div style={{ fontFamily: 'Inter' ... )
     <div style={{ fontFamily: 'Inter, sans-serif', backgroundColor: bgPrincipale, paddingBottom: '100px', minHeight: '100vh', color: textPrincipale }}>
-      {/* Popups e Notifiche */}
-      {/* Popups e Notifiche */}
       {!popupClosed && <OffersPopup isDarkMode={isDarkMode} onClose={() => setPopupClosed(true)} />}
       <ToastPromo />
       <FakeSalesToast prodotti={prodotti} />
       <ExitIntentPopup isDarkMode={isDarkMode} />
       <WheelOfFortune isDarkMode={isDarkMode} />
-       {/* Aggiungi questa riga! */}
+      
       <HeroSlider />
     
-      {/* BANNER SELEZIONE REPARTI */}
-      <div style={{ display: 'flex', gap: '20px', padding: '30px 4%', flexWrap: 'wrap' }}>
-        
-        {/* Banner Pesca */}
-        <div 
-          onClick={() => cambiaReparto('🎣 Pesca Sportiva')} 
-          style={{ 
-            flex: '1 1 300px', 
-            height: '140px',
-            backgroundImage: 'linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), url(/banner.jpg)', 
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            borderRadius: '16px',
-            display: 'flex', 
-            justifyContent: 'center', 
-            alignItems: 'center',
-            cursor: 'pointer', 
-            border: repartoAttivo === '🎣 Pesca Sportiva' ? '4px solid #FF6600' : '4px solid transparent',
-            boxShadow: repartoAttivo === '🎣 Pesca Sportiva' ? '0 0 20px rgba(255,102,0,0.4)' : '0 4px 10px rgba(0,0,0,0.1)',
-            transform: repartoAttivo === '🎣 Pesca Sportiva' ? 'scale(1.02)' : 'scale(1)',
-            transition: 'all 0.3s ease'
-          }}
-        >
-          <h2 style={{ color: 'white', fontSize: '26px', fontWeight: '900', margin: 0, textShadow: '0 2px 5px rgba(0,0,0,0.8)', letterSpacing: '1px' }}>
-            🎣 PESCA SPORTIVA
-          </h2>
-        </div>
+      {/* IL NUOVO HEADER DINAMICO INSERITO QUI */}
+      {/* IL NUOVO HEADER DINAMICO INSERITO QUI */}
+      <Header 
+        repartiMap={repartiMap}
+        repartoAttivo={repartoAttivo}
+        setRepartoAttivo={setRepartoAttivo}
+        filtroCategoria={filtroCategoria}
+        setFiltroCategoria={setFiltroCategoria}
+        isDarkMode={isDarkMode} /* <--- AGGIUNGI QUESTA RIGA */
+      />
 
-        {/* Banner Acquariofilia */}
-        <div 
-          onClick={() => cambiaReparto('🐠 Acquariofilia')} 
-          style={{ 
-            flex: '1 1 300px', 
-            height: '140px',
-            backgroundImage: 'linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), url(/banner2.jpg)', 
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            borderRadius: '16px',
-            display: 'flex', 
-            justifyContent: 'center', 
-            alignItems: 'center',
-            cursor: 'pointer', 
-            border: repartoAttivo === '🐠 Acquariofilia' ? '4px solid #FF6600' : '4px solid transparent',
-            boxShadow: repartoAttivo === '🐠 Acquariofilia' ? '0 0 20px rgba(255,102,0,0.4)' : '0 4px 10px rgba(0,0,0,0.1)',
-            transform: repartoAttivo === '🐠 Acquariofilia' ? 'scale(1.02)' : 'scale(1)',
-            transition: 'all 0.3s ease'
-          }}
-        >
-          <h2 style={{ color: 'white', fontSize: '26px', fontWeight: '900', margin: 0, textShadow: '0 2px 5px rgba(0,0,0,0.8)', letterSpacing: '1px' }}>
-            🐠 ACQUARIOFILIA
-          </h2>
-        </div>
-      </div>
-
-      <div style={{ padding: '40px 0' }}>
+      <div style={{ padding: '20px 0' }}>
         <PromoBanner />
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginBottom: '30px', padding: '0 4%' }}>
-          <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '5px' }}>
-            <button onClick={() => setFiltroCategoria('Tutte')} style={{ padding: '8px 20px', borderRadius: '50px', border: 'none', background: filtroCategoria === 'Tutte' ? '#FF6600' : (isDarkMode?'#374151':'#E5E7EB'), color: filtroCategoria === 'Tutte' ? 'white' : (isDarkMode?'#D1D5DB':'#374151'), cursor: 'pointer', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Tutte le Categorie</button>
-            {Object.keys(repartiMap[repartoAttivo]).map(cat => (
-              <button key={cat} onClick={() => {setFiltroCategoria(cat); setFiltroSottocategoria('Tutte');}} style={{ padding: '8px 20px', borderRadius: '50px', border: 'none', background: filtroCategoria === cat ? '#FF6600' : (isDarkMode?'#374151':'#E5E7EB'), color: filtroCategoria === cat ? 'white' : (isDarkMode?'#D1D5DB':'#374151'), cursor: 'pointer', fontWeight: 'bold', whiteSpace: 'nowrap' }}>{cat}</button>
-            ))}
-          </div>
+        {/* Manteniamo solo la barra di ricerca e il filtro prezzo */}
+        {/* BARRA DI RICERCA E FILTRI */}
+        <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginBottom: '30px', padding: '0 4%' }}>
+          
+          <input 
+             type="text" 
+             placeholder="Cerca prodotto..." 
+             value={ricerca} 
+             onChange={(e) => setRicerca(e.target.value)} 
+             style={{ flex: 2, minWidth: '200px', padding: '14px 20px', borderRadius: '12px', border: `2px solid ${cardBorder}`, background: cardBg, color: textPrincipale, outline: 'none', fontSize: '16px' }} 
+          />
+          
+          {/* Filtro Prezzo */}
+          <select 
+             value={filtroPrezzo} 
+             onChange={(e) => setFiltroPrezzo(e.target.value)} 
+             style={{ flex: 1, minWidth: '150px', padding: '14px 20px', borderRadius: '12px', border: `2px solid ${cardBorder}`, background: cardBg, color: textPrincipale, outline: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '16px' }}
+          >
+            <option value="Tutti">Tutti i prezzi</option>
+            <option value="0-10">Sotto i 10 €</option>
+            <option value="10-30">Tra 10 € e 30 €</option>
+            <option value="30+">Oltre 30 €</option>
+          </select>
 
-          <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
-            <input type="text" placeholder="Cerca prodotto..." value={ricerca} onChange={(e) => setRicerca(e.target.value)} style={{ flex: 2, minWidth: '200px', padding: '12px 20px', borderRadius: '10px', border: `1px solid ${cardBorder}`, background: cardBg, color: textPrincipale, outline: 'none' }} />
-            
-            <select value={filtroPrezzo} onChange={(e) => setFiltroPrezzo(e.target.value)} style={{ flex: 1, minWidth: '150px', padding: '12px 20px', borderRadius: '10px', border: `1px solid ${cardBorder}`, background: cardBg, color: textPrincipale, outline: 'none', cursor: 'pointer', fontWeight: 'bold' }}>
-              <option value="Tutti">Tutti i prezzi</option>
-              <option value="0-10">Sotto i 10 €</option>
-              <option value="10-30">Tra 10 € e 30 €</option>
-              <option value="30+">Oltre 30 €</option>
-            </select>
-          </div>
+          {/* NUOVO Filtro Sconti */}
+          <select 
+             value={filtroSconto} 
+             onChange={(e) => setFiltroSconto(e.target.value)} 
+             style={{ flex: 1, minWidth: '150px', padding: '14px 20px', borderRadius: '12px', border: `2px solid ${cardBorder}`, background: cardBg, color: textPrincipale, outline: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '16px' }}
+          >
+            <option value="Tutti">Tutti gli sconti</option>
+            <option value="30">Offerte 30% e oltre</option>
+            <option value="50">Offerte 50% e oltre</option>
+            <option value="70">Offerte 70% e oltre</option>
+          </select>
+          
         </div>
 
         {/* GRIGLIA PRODOTTI OTTIMIZZATA CON SCONTO E STELLE */}
@@ -1151,6 +1139,7 @@ function Home({ isDarkMode }) {
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [searchInput, setSearchInput] = useState("");
+  
   return (
     <Router>
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: isDarkMode ? '#111827' : '#F9FAFB' }}>

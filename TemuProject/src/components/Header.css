@@ -1,40 +1,131 @@
-.site-header {
-  background: #ffffff;
-  padding: 1rem 2rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+/* CONTENITORE PRINCIPALE STICKY */
+.nav-container {
   position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-.header-content {
+  top: 0px; 
+  z-index: 100;
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  padding: 15px 4%;
+  border-bottom: 4px solid rgb(255, 102, 0);
+  border-radius: 0 0 20px 20px;
+  margin-bottom: 30px;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* REPARTI AFFIANCATI (Con i tuoi stili esatti) */
+.reparti-horizontal-container {
+  display: flex;
+  flex-direction: row; 
+  gap: 15px;
+  width: 100%;
+}
+
+.reparto-banner {
+  flex: 1 1 300px;
+  height: 140px;
+  background-size: cover;
+  background-position: center center;
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
   align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.logo { font-size: 1.5rem; font-weight: bold; color: #0056b3; }
-
-.nav-menu button {
-  padding: 10px 20px;
-  margin-left: 10px;
   cursor: pointer;
-  border: 1px solid #ddd;
-  background: #f9f9f9;
-  border-radius: 5px;
-  font-size: 16px; /* Ottimo per leggibilità */
+  border: 4px solid transparent; /* Trasparente di base per non sballare le misure */
+  transition: 0.3s;
 }
 
-.nav-menu button.attivo {
-  background: #0056b3;
-  color: white;
-  border-color: #0056b3;
+.reparto-banner.attivo {
+  border: 4px solid rgb(255, 102, 0);
+  box-shadow: rgba(255, 102, 0, 0.4) 0px 0px 20px;
+  transform: scale(1.02);
+  z-index: 2; /* Lo mantiene sopra gli altri elementi durante l'ingrandimento */
 }
 
+.reparto-title {
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.9);
+  text-align: center;
+  padding: 0 5px;
+}
+
+/* CATEGORIE (SCORRIMENTO ORIZZONTALE) */
+.categorie-clean-container {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.categorie-clean-container::-webkit-scrollbar {
+  display: none;
+}
+
+.categoria-tab {
+  background: #F3F4F6;
+  border: 2px solid #E5E7EB;
+  color: #4B5563;
+  font-size: 18px; 
+  font-weight: 700;
+  padding: 14px 26px; 
+  border-radius: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: 0.3s;
+}
+
+.categoria-tab.attivo {
+  background: #111827;
+  color: #ffffff;
+  border-color: #111827;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* =========================================
+   INTEGRAZIONE TEMA SCURO FORZATA 
+   ========================================= */
+.nav-container.dark-theme-active {
+  background-color: rgb(17, 24, 39) !important; /* Il colore esatto dello sfondo del tuo sito */
+  border-bottom: 4px solid rgb(255, 102, 0) !important;
+}
+
+.nav-container.dark-theme-active .categoria-tab {
+  background-color: rgb(31, 41, 55) !important; /* Colore delle card dei prodotti per i bottoni inattivi */
+  border-color: rgb(55, 65, 81) !important;
+  color: rgb(243, 244, 246) !important; /* Il colore esatto del testo del tuo sito */
+}
+
+.nav-container.dark-theme-active .categoria-tab:hover {
+  background-color: rgb(55, 65, 81) !important;
+  color: #ffffff !important;
+}
+
+.nav-container.dark-theme-active .categoria-tab.attivo {
+  background-color: rgb(255, 102, 0) !important;
+  border-color: rgb(255, 102, 0) !important;
+  color: #ffffff !important; 
+}
+
+/* OTTIMIZZAZIONE RESPONSIVE PER TELEFONI */
 @media (max-width: 768px) {
-  .menu-toggle { display: block; }
-  .nav-menu { display: none; flex-direction: column; width: 100%; }
-  .nav-menu.active { display: flex; }
+  .nav-container {
+    padding: 15px;
+  }
+  .reparto-banner {
+    height: 100px; /* Un po' più bassi su mobile per comodità visiva */
+  }
+  .reparto-title {
+    font-size: 16px; 
+  }
+  .categoria-tab {
+    font-size: 16px;
+    padding: 12px 20px;
+  }
 }
