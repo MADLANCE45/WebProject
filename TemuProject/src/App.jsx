@@ -2,11 +2,13 @@ import { BrowserRouter as Router, Routes, Route, Link, useParams, useNavigate } 
 import { useEffect, useState } from 'react';
 import StarRating from './components/StarRating';
 import { supabase } from './supabaseClient';
-import { Helmet } from 'react-helmet-async'; // Aggiungi in cima al file
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 import Admin from './Admin';
 import Header from './components/Header';
 import './App.css';
-
+import ProductPage from './components/ProductPage'; // Modifica il percorso se l'hai salvato altrove
+import ShareButtons from './components/ShareButtons'; // Modifica il percorso se l'hai salvato altrove
+import ProductModal from './components/ProductModal'; // Modifica il percorso se l'hai salvato altrove
 const repartiMap = {
   '🎣 Pesca Sportiva': {
     'Attrezzatura da Pesca': ['Canne da pesca', 'Mulinelli', 'Esche e Ami', 'Fili e Accessori'],
@@ -46,390 +48,11 @@ function CountdownTimer() {
   );
 }
 
-function ShareButtons({ prodotto }) {
-  const messaggio = `Guarda questa offerta: ${prodotto.titolo} a soli €${prodotto.prezzo}!`;
-  const linkSito = window.location.href; 
-  
-  const waLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(messaggio + " " + linkSito)}`;
-  const tgLink = `https://t.me/share/url?url=${encodeURIComponent(linkSito)}&text=${encodeURIComponent(messaggio)}`;
 
-  return (
-    <div style={{ display: 'flex', gap: '8px' }}>
-      <a href={waLink} target="_blank" rel="noopener noreferrer" style={{ background: '#25D366', color: 'white', padding: '6px 12px', borderRadius: '50px', textDecoration: 'none', fontSize: '12px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' }}>
-        💬 WhatsApp
-      </a>
-      <a href={tgLink} target="_blank" rel="noopener noreferrer" style={{ background: '#0088cc', color: 'white', padding: '6px 12px', borderRadius: '50px', textDecoration: 'none', fontSize: '12px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' }}>
-        ✈️ Telegram
-      </a>
-    </div>
-  );
-}
-// --- NUOVA PAGINA SINGOLO PRODOTTO (Ottimizzata per Google SEO) ---
-// --- NUOVA PAGINA SINGOLO PRODOTTO (Ottimizzata per Google SEO) ---
-// --- NUOVA PAGINA SINGOLO PRODOTTO (Ottimizzata per Google SEO) ---
-// --- NUOVA PAGINA SINGOLO PRODOTTO (Ottimizzata per Google SEO e Mobile) ---
-// --- NUOVA PAGINA SINGOLO PRODOTTO (SEO Dinamica e Layout Alternato) ---
-function ProductPage({ isDarkMode }) {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [prodotto, setProdotto] = useState(null);
-  const [correlati, setCorrelati] = useState([]);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 768);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
-    async function fetchProdotto() {
-      const { data, error } = await supabase.from('products').select('*').eq('id', id).single();
-      if (data) {
-        setProdotto(data);
-        const { data: corr } = await supabase.from('products').select('*').eq('categoria', data.categoria).neq('id', data.id).limit(3);
-        if (corr) setCorrelati(corr);
-      }
-    }
-    fetchProdotto();
-    window.scrollTo(0, 0);
-  }, [id]);
-
-  if (!prodotto) return <div style={{ padding: '100px', textAlign: 'center', color: isDarkMode ? '#FFF' : '#000', fontSize: '20px' }}>🎣 Pescando i dettagli dell'offerta...</div>;
-
-  const bg = isDarkMode ? '#1F2937' : '#FFFFFF';
-  const text = isDarkMode ? '#F9FAFB' : '#111827';
-  let prezzoBarrato = "0.00";
-  if(prodotto.prezzo) {
-    prezzoBarrato = ((parseFloat(prodotto.prezzo.toString().replace(',', '.'))) * 1.3).toFixed(2);
-  }
-  const percentualeVenduta = 75 + ((prodotto.id * 7) % 20); 
-
-  // --- 1. FUNZIONE: MANIPOLAZIONE DINAMICA DEL TITOLO (SEO) ---
-  const generaTitoloSEO = (titoloOriginale, idProd) => {
-    if (!titoloOriginale) return "Offerta Speciale";
-    // Prende le prime 6 parole e rimuove eventuali virgole finali
-    const titoloBreve = titoloOriginale.split(' ').slice(0, 6).join(' ').replace(/,$/, ''); 
-    
-    // Array di suffissi strategici per la SEO
-    const suffissi = [
-      " - Offerta Lampo ⚡",
-      " | Recensione e Test 2026",
-      " - Miglior Prezzo 🔥",
-      " | Opinioni Reali",
-      " - Sconto Esclusivo 🎁"
-    ];
-    // Seleziona un suffisso in base all'ID (così è sempre lo stesso per quel prodotto)
-    const suffisso = suffissi[(idProd || 0) % suffissi.length];
-    
-    return `${titoloBreve}${suffisso}`;
-  };
-
-  const titoloOttimizzato = generaTitoloSEO(prodotto.titolo, prodotto.id);
-
-  // --- 2. LOGICA DI LAYOUT ALTERNATO ---
-  // Se l'ID è pari, immagine a sx. Se è dispari, immagine a dx.
-  //const isLayoutInvertito = prodotto.id % 2 !== 0;
-
-  // Generatore recensioni fittizie
-  const recensioniList = [
-    { nome: "Ale A.", testo: "Prodotto eccellente, spedizione super veloce! Davvero consigliato per il prezzo." },
-    { nome: "Giulia F.", testo: "Rapporto qualità-prezzo imbattibile. Arrivato prima del previsto e ben imballato." },
-    { nome: "Matteo R.", testo: "Tutto perfetto, i materiali sembrano di ottima qualità. Sicuramente comprerò ancora da qui." },
-    { nome: "Simona C.", testo: "Esattamente come in foto. Molto utile e pratico, fa esattamente quello che promette." }
-  ];
-  const idNum = prodotto.id || 1;
-  const rec1 = recensioniList[idNum % recensioniList.length];
-  const rec2 = recensioniList[(idNum + 3) % recensioniList.length];
-
-  // ================= BLOCCHI DELL'INTERFACCIA =================
-
-  const BloccoTitolo = (
-    <>
-      <span style={{ fontSize: '12px', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '10px', display: 'inline-block' }}>{prodotto.reparto} &gt; {prodotto.categoria}</span>
-      {/* Usiamo il nuovo Titolo SEO qui */}
-      <h1 style={{ fontSize: isMobile ? '22px' : '26px', margin: '0 0 20px 0', lineHeight: '1.4' }}>{titoloOttimizzato}</h1>
-    </>
-  );
-
-  const BloccoImmagine = (
-    <div style={{ height: isMobile ? '300px' : '400px', width: '100%', position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', background: isDarkMode ? '#111827' : '#F3F4F6', borderRadius: '12px', overflow: 'hidden', border: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}` }}>
-      <span style={{ position: 'absolute', top: '15px', left: '15px', background: '#FF6600', color: 'white', fontSize: '11px', fontWeight: 'bold', padding: '5px 10px', borderRadius: '6px', zIndex: 2, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Top Scelta</span>
-      {prodotto.immagine_url ? <img src={prodotto.immagine_url} alt={titoloOttimizzato} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain', mixBlendMode: isDarkMode ? 'normal' : 'darken' }} /> : 'Nessuna Immagine'}
-    </div>
-  );
-
-  const BloccoAcquisto = (
-    <>
-      <div style={{ background: isDarkMode ? '#374151' : '#FEF2F2', borderLeft: '4px solid #EF4444', padding: '12px 15px', borderRadius: '6px', marginBottom: '25px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <span style={{ fontSize: '22px' }}>⏳</span>
-        <span style={{ fontSize: '13.5px', color: isDarkMode ? '#FCA5A5' : '#B91C1C', fontWeight: 'bold', lineHeight: '1.4' }}>Affrettati! Le offerte lampo e la disponibilità<br/>possono terminare in qualsiasi momento.</span>
-      </div>
-      
-      <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-        <span style={{ fontWeight: '900', fontSize: '46px', color: '#FF6600', letterSpacing: '-1px' }}>€ {prodotto.prezzo}</span>
-        <span style={{ fontSize: '16px', color: '#9CA3AF', textDecoration: 'line-through' }}>{prezzoBarrato}€</span>
-      </div>
-
-      <a href={prodotto.link_affiliazione} className="temu-buy-btn" target="_blank" rel="noopener noreferrer" style={{ display: 'block', background: 'linear-gradient(135deg, #FF7B00 0%, #FF4400 100%)', color: 'white', padding: '18px', textDecoration: 'none', borderRadius: '14px', fontSize: '22px', fontWeight: '900', textAlign: 'center', boxShadow: '0 10px 25px -5px rgba(255, 102, 0, 0.5)', marginBottom: '10px', transition: 'transform 0.2s ease, box-shadow 0.2s ease' }} onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
-        🔥 Vai all'Offerta su Temu
-      </a>
-      <p style={{ fontSize: '11px', color: '#9CA3AF', lineHeight: '1.2', textAlign: 'center', marginBottom: isMobile ? '0' : '30px' }}>
-        * In qualità di Affiliato, ricevo una commissione per gli acquisti idonei.
-      </p>
-    </>
-  );
-
-  const BloccoRecensioni = (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%' }}>
-      <div style={{ background: isDarkMode ? '#374151' : '#F9FAFB', padding: '20px', borderRadius: '12px', border: `1px solid ${isDarkMode ? '#4B5563' : '#E5E7EB'}`, display: 'flex', flexDirection: 'column', gap: '15px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><StarRating productId={prodotto.id} /></div>
-          <span style={{ fontSize: '12px', color: '#10B981', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px' }}>✓ Acquisto Verificato</span>
-        </div>
-        <hr style={{ border: 'none', borderTop: `1px solid ${isDarkMode ? '#4B5563' : '#E5E7EB'}`, margin: '0' }} />
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
-          <span style={{ fontSize: '13px', color: '#6B7280', fontWeight: 'bold' }}>Consiglia agli amici:</span>
-          <ShareButtons prodotto={prodotto} />
-        </div>
-      </div>
-
-      <div>
-        <h4 style={{ fontSize: '14px', marginBottom: '12px', color: text, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Recensioni Recenti</h4>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <div style={{ background: isDarkMode ? '#1F2937' : '#FFFFFF', padding: '15px', borderRadius: '10px', border: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}` }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <span style={{ color: '#FBBF24', fontSize: '14px' }}>★★★★★</span><span style={{ fontWeight: 'bold', fontSize: '13px' }}>{rec1.nome}</span>
-            </div>
-            <p style={{ fontSize: '13px', margin: 0, color: isDarkMode ? '#D1D5DB' : '#4B5563', fontStyle: 'italic' }}>"{rec1.testo}"</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  // ================= RENDER FINALE =================
-  return (
-    <div style={{ background: isDarkMode ? 'radial-gradient(circle at top, #1E293B 0%, #0F172A 100%)' : 'radial-gradient(circle at top, #FFFFFF 0%, #F1F5F9 100%)', minHeight: '100vh', padding: '30px 4%' }}>
-      
-      {/* INIETTA I TAG SEO DINAMICI */}
-      {/* INIETTA I TAG SEO DINAMICI */}
-      {/* INIETTA I TAG SEO DINAMICI E I DATI STRUTTURATI PER GOOGLE */}
-      <Helmet>
-        <title>{titoloOttimizzato} | Recensioni ITA</title>
-        <meta name="description" content={`Stai cercando opinioni su ${titoloOttimizzato}? Scoprilo oggi a soli €${prodotto.prezzo}. Spedizione sempre gratuita.`} />
-        <meta property="og:title" content={titoloOttimizzato} />
-        <meta property="og:image" content={prodotto.immagine_url} />
-        
-        {/* LA MAGIA PER GOOGLE: JSON-LD */}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org/",
-            "@type": "Product",
-            "name": titoloOttimizzato,
-            "image": [prodotto.immagine_url],
-            "description": `Recensione e dettagli di ${titoloOttimizzato}.`,
-            "offers": {
-              "@type": "Offer",
-              "url": window.location.href,
-              "priceCurrency": "EUR",
-              "price": prodotto.prezzo ? prodotto.prezzo.toString().replace(',', '.') : "0.00",
-              "availability": "https://schema.org/InStock",
-              "itemCondition": "https://schema.org/NewCondition"
-            },
-            "aggregateRating": {
-              "@type": "AggregateRating",
-              "ratingValue": "4.8",
-              "reviewCount": "124"
-            }
-          })}
-        </script>
-      </Helmet>
-
-      <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-        <button onClick={() => navigate(-1)} style={{ marginBottom: '20px', background: isDarkMode ? '#374151' : '#E5E7EB', color: text, border: 'none', padding: '10px 20px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>
-          ← Torna al catalogo
-        </button>
-
-        <div style={{ background: bg, borderRadius: '16px', padding: isMobile ? '20px' : '30px', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
-          {isMobile ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <div>{BloccoTitolo}</div>{BloccoImmagine}<div>{BloccoAcquisto}</div>{BloccoRecensioni}
-            </div>
-          ) : (
-            // MAGIA DEL LAYOUT ALTERNATO: Usiamo row-reverse se l'ID è dispari!
-            // LAYOUT CLASSICO: Immagine sempre a sinistra, dettagli a destra
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '40px', alignItems: 'flex-start', flexDirection: 'row' }}>
-              <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                {BloccoImmagine}
-                {BloccoRecensioni}
-              </div>
-              <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column' }}>
-                {BloccoTitolo}
-                {BloccoAcquisto}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
 // --- MODALE PRODOTTO OTTIMIZZATA ---
 // --- MODALE PRODOTTO OTTIMIZZATA ---
 // --- MODALE PRODOTTO OTTIMIZZATA ---
-function ProductModal({ prodotto, tuttiProdotti, onClose, isDarkMode }) {
-  if (!prodotto) return null;
 
-  const bg = isDarkMode ? '#1F2937' : '#FFFFFF';
-  const text = isDarkMode ? '#F9FAFB' : '#111827';
-  const categoriaSafe = prodotto.categoria || '';
-  
-  const correlati = tuttiProdotti
-    .filter(p => p.categoria === categoriaSafe && p.id !== prodotto.id)
-    .slice(0, 3);
-
-  let prezzoBarrato = "0.00";
-  if(prodotto.prezzo) {
-    prezzoBarrato = ((parseFloat(prodotto.prezzo.toString().replace(',', '.'))) * 1.3).toFixed(2);
-  }
-
-  const percentualeVenduta = 75 + ((prodotto.id * 7) % 20); 
-
-  return (
-    <div onClick={onClose} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 10000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px', backdropFilter: 'blur(5px)' }}>
-      <div onClick={(e) => e.stopPropagation()} style={{ background: bg, color: text, width: '100%', maxWidth: '800px', maxHeight: '90vh', borderRadius: '16px', overflowY: 'auto', position: 'relative', display: 'flex', flexDirection: 'column', padding: '25px' }}>
-        
-        <button onClick={onClose} style={{ position: 'absolute', top: '15px', right: '15px', background: '#E5E7EB', color: '#111827', border: 'none', borderRadius: '50%', width: '35px', height: '35px', cursor: 'pointer', fontWeight: 'bold', zIndex: 10 }}>X</button>
-
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', alignItems: 'flex-start' }}>
-          
-          {/* ================= COLONNA SINISTRA ================= */}
-          <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
-            <div style={{ height: '300px', display: 'flex', justifyContent: 'center', alignItems: 'center', background: isDarkMode ? '#111827' : '#F3F4F6', borderRadius: '12px', overflow: 'hidden' }}>
-               {prodotto.immagine_url ? <img src={prodotto.immagine_url} alt={prodotto.titolo} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} /> : 'Nessuna Immagine'}
-            </div>
-            
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
-              <span style={{ color: '#FBBF24', fontSize: '22px', letterSpacing: '2px' }}>★★★★★</span>
-              <span style={{ color: '#6B7280', fontSize: '15px', fontWeight: 'bold' }}>(4.8)</span>
-            </div>
-
-            {/* RECENSIONI SOTTO L'IMMAGINE */}
-            <div style={{ borderTop: isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB', paddingTop: '15px', textAlign: 'left' }}>
-              <h4 style={{ fontSize: '13px', margin: '0 0 10px 0', color: '#6B7280', textTransform: 'uppercase' }}>Recensioni Recenti</h4>
-              
-              {(() => {
-                const nomiList = ['Marco D.', 'Simona R.', 'Alessandro T.', 'Francesca B.', 'Giuseppe M.', 'Valentina C.', 'Luca F.', 'Chiara S.', 'Andrea P.', 'Martina L.'];
-                const recensioniList = [
-                  "Prodotto fantastico, arrivato in soli 6 giorni. Identico alla foto!",
-                  "Rapporto qualità prezzo imbattibile. Lo consiglio vivamente.",
-                  "Ottimo acquisto! La spedizione è stata più veloce del previsto.",
-                  "Qualità sorprendente per il prezzo pagato. Ne comprerò sicuramente un altro.",
-                  "Esattamente quello che cercavo, molto utile e ben imballato.",
-                  "Tutto perfetto, non delude mai. 5 stelle super meritate!",
-                  "L'ho preso per un regalo ed è stato apprezzatissimo. Top!",
-                  "Materiali ottimi, non me lo aspettavo a questo prezzo così basso."
-                ];
-
-                const nome1 = nomiList[(prodotto.id * 2) % nomiList.length];
-                const nome2 = nomiList[(prodotto.id * 5 + 3) % nomiList.length];
-                const rec1 = recensioniList[(prodotto.id * 3) % recensioniList.length];
-                const rec2 = recensioniList[(prodotto.id * 7 + 1) % recensioniList.length];
-
-                return (
-                  <>
-                    <div style={{ marginBottom: '10px', background: isDarkMode ? '#1F2937' : '#F9FAFB', padding: '10px', borderRadius: '8px' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ color: '#FBBF24', fontSize: '12px' }}>★★★★★</span>
-                        <span style={{ fontSize: '10px', color: '#10B981', fontWeight: 'bold' }}>✓ Acquisto Verificato</span>
-                      </div>
-                      <div style={{ fontSize: '12px', fontWeight: 'bold', marginTop: '4px' }}>{nome1}</div>
-                      <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '2px', fontStyle: 'italic' }}>"{rec1}"</div>
-                    </div>
-
-                    <div style={{ background: isDarkMode ? '#1F2937' : '#F9FAFB', padding: '10px', borderRadius: '8px' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ color: '#FBBF24', fontSize: '12px' }}>★★★★★</span>
-                        <span style={{ fontSize: '10px', color: '#10B981', fontWeight: 'bold' }}>✓ Acquisto Verificato</span>
-                      </div>
-                      <div style={{ fontSize: '12px', fontWeight: 'bold', marginTop: '4px' }}>{nome2}</div>
-                      <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '2px', fontStyle: 'italic' }}>"{rec2}"</div>
-                    </div>
-                  </>
-                );
-              })()}
-            </div>
-          </div>
-
-          {/* ================= COLONNA DESTRA ================= */}
-          {/* ================= COLONNA DESTRA ================= */}
-          <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: '12px', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '1px' }}>{prodotto.reparto} &gt; {prodotto.categoria}</span>
-            <h2 style={{ fontSize: '22px', margin: '8px 0', lineHeight: '1.4' }}>{prodotto.titolo}</h2>
-            
-            {/* Pulsanti Condivisione spostati in ALTO, super compatti */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}>
-              <span style={{ fontSize: '12px', color: '#6B7280', fontWeight: 'bold' }}>Condividi:</span>
-              <ShareButtons prodotto={prodotto} />
-            </div>
-            
-            <div style={{ background: isDarkMode ? '#374151' : '#FEF2F2', borderLeft: '4px solid #EF4444', padding: '10px', borderRadius: '4px', marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span style={{ fontSize: '18px' }}>⏳</span>
-              <span style={{ fontSize: '13px', color: isDarkMode ? '#FCA5A5' : '#B91C1C', fontWeight: 'bold', lineHeight: '1.3' }}>Le offerte lampo e la disponibilità<br/>possono terminare in qualsiasi momento.</span>
-            </div>
-            
-            <div style={{ marginBottom: '15px' }}>
-              <span style={{ fontSize: '14px', color: '#6B7280', textDecoration: 'line-through', marginRight: '10px' }}>{prezzoBarrato}€</span>
-              <span style={{ fontWeight: '900', fontSize: '38px', color: '#FF6600' }}>€ {prodotto.prezzo}</span>
-            </div>
-
-            {/* BOTTONE GIGANTE */}
-            <a href={prodotto.link_affiliazione} className="temu-buy-btn" target="_blank" rel="noopener noreferrer" style={{ display: 'block', background: '#FF6600', color: 'white', padding: '16px', textDecoration: 'none', borderRadius: '8px', fontSize: '20px', fontWeight: '900', textAlign: 'center', boxShadow: '0 4px 15px rgba(255,102,0,0.4)', marginBottom: '8px' }}>
-              🔥 Vai all'Offerta su Temu
-            </a>
-
-            {/* Disclaimer Affiliato compatto e subito sotto il bottone */}
-            <p style={{ fontSize: '10px', color: '#9CA3AF', lineHeight: '1.2', textAlign: 'center', marginBottom: '20px' }}>
-              * In qualità di Affiliato, ricevo una commissione per gli acquisti idonei.
-            </p>
-
-            <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span style={{ fontSize: '13px', color: '#EF4444', fontWeight: 'bold' }}>🔥 {percentualeVenduta}% Venduto</span>
-              <div style={{ flex: 1, height: '6px', background: '#FEE2E2', borderRadius: '10px', overflow: 'hidden' }}>
-                <div style={{ width: `${percentualeVenduta}%`, height: '100%', background: '#EF4444', borderRadius: '10px' }}></div>
-              </div>
-            </div>
-
-            {/* Vantaggi Spedizione */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', background: isDarkMode ? '#1F2937' : '#F9FAFB', padding: '15px', borderRadius: '8px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#059669', fontWeight: '600' }}><span>📦</span> Spedizione GRATUITA</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: isDarkMode ? '#D1D5DB' : '#4B5563' }}><span>↩️</span> Reso gratuito entro 90 giorni</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: isDarkMode ? '#D1D5DB' : '#4B5563' }}><span>🔒</span> Pagamenti sicuri al 100%</div>
-            </div>
-            </div>
-          </div>
-
-        {/* ================= CORRELATI ================= */}
-        {correlati.length > 0 && (
-          <div style={{ marginTop: '30px', borderTop: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}`, paddingTop: '20px' }}>
-            <h3 style={{ fontSize: '18px', marginBottom: '15px' }}>💡 Potrebbe interessarti anche...</h3>
-            <div style={{ display: 'flex', gap: '15px', overflowX: 'auto', paddingBottom: '10px' }}>
-              {correlati.map(corr => (
-                <div onClick={() => { window.open(corr.link_affiliazione, '_blank'); }} key={corr.id} style={{ minWidth: '160px', flex: '1', cursor: 'pointer', textDecoration: 'none', color: 'inherit', border: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}`, borderRadius: '8px', padding: '15px', display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
-                  <img src={corr.immagine_url} alt={corr.titolo} style={{ height: '100px', width: '100%', objectFit: 'contain', marginBottom: '10px' }} />
-                  <h4 style={{ fontSize: '12px', margin: '0 0 10px 0', textAlign: 'center', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', minHeight: '34px', lineHeight: '1.4' }}>{corr.titolo}</h4>
-                  <span style={{ fontWeight: '900', color: '#FF6600', fontSize: '16px', marginTop: 'auto' }}>€ {corr.prezzo}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-      </div>
-    </div>
-  );
-}
 
 // --- TOP BAR PROMOZIONALE ---
 function TopBar() {
@@ -1040,6 +663,10 @@ function Home({ isDarkMode }) {
                 <Link 
                   to={`/prodotto/${prodotto.id}`}
                   key={prodotto.id} 
+                  onClick={(e) => {
+                    e.preventDefault(); // Blocca il caricamento della nuova pagina
+                    setProdottoSelezionato(prodotto); // Apre il Modal istantaneamente
+                  }}
                   style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer', position: 'relative', display: 'flex', flexDirection: 'column', padding: '15px', borderRadius: '20px', background: cardBg, border: 'none', boxShadow: isDarkMode ? '0 20px 40px -10px rgba(0,0,0,0.5)' : '0 20px 40px -10px rgba(15,23,42,0.06)', transition: 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease' }}
                   onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; }}
                   onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
@@ -1122,14 +749,12 @@ function Home({ isDarkMode }) {
             
           </div>
         )}
-      {/* RICHIESTA MODALE 
-      <ProductModal 
+     <ProductModal 
         prodotto={prodottoSelezionato} 
-        tuttiProdotti={prodotti} 
+        tuttiProdotti={prodotti} /* Passa l'array completo dei tuoi prodotti qui */
         isDarkMode={isDarkMode} 
         onClose={() => setProdottoSelezionato(null)} 
-        
-      />*/}
+      />
       
     </div>
   )
@@ -1188,6 +813,7 @@ function App() {
   <Route path="/" element={<Home isDarkMode={isDarkMode} />} />
   <Route path="/admin" element={<Admin />} />
   <Route path="/prodotto/:id" element={<ProductPage isDarkMode={isDarkMode} />} /> {/* LA NUOVA ROTTA */}
+  
 </Routes>
         </div>
         
