@@ -6,6 +6,8 @@ import ProductModal from './ProductModal';
 import StarRating from './StarRating';
 import WheelOfFortune from './WheelOfFortune';
 import ProductCard from './ProductCard';
+
+
 // ---> INCOLLA LA MAPPA QUI <---
 const repartiMap = {
   '🎣 Pesca Sportiva': {
@@ -23,18 +25,14 @@ const repartiMap = {
 };
 
 export default function Home({ isDarkMode }) {
-  // 1. STATI
   const [prodotti, setProdotti] = useState([]);
   const [repartoAttivo, setRepartoAttivo] = useState('🎣 Pesca Sportiva');
   const [filtroCategoria, setFiltroCategoria] = useState('Tutte');
   const [filtroSottocategoria, setFiltroSottocategoria] = useState('Tutte'); 
   const [filtroPrezzo, setFiltroPrezzo] = useState('Tutti');
   const [ricerca, setRicerca] = useState('');
-  const [filtroSconto, setFiltroSconto] = useState('Tutti');
+  const [filtroSconto, setFiltroSconto] = useState('Tutti'); 
   const [popupClosed, setPopupClosed] = useState(false);
-  
-  // RIMOSSO: const [prodottoSelezionato, setProdottoSelezionato] = useState(null);
-  
   const [currentPage, setCurrentPage] = useState(1);
   const prodottiPerPagina = 18;
 
@@ -55,13 +53,12 @@ export default function Home({ isDarkMode }) {
     setFiltroSottocategoria('Tutte'); 
     setFiltroPrezzo('Tutti'); 
     setRicerca('');
-    setFiltroSconto('Tutti');
+    setFiltroSconto('Tutti'); 
   }
 
-  // 2. FILTRAGGIO PRODOTTI
   const prodottiFiltrati = prodotti.filter(p => {
     let passaReparto = p.reparto === repartoAttivo || (!p.reparto && repartoAttivo === '🎣 Pesca Sportiva');
-    let passaRicerca = p.titolo?.toLowerCase().includes(ricerca.toLowerCase());
+    let passaRicerca = p.titolo ? p.titolo.toLowerCase().includes(ricerca.toLowerCase()) : false;
     let passaCategoria = filtroCategoria === 'Tutte' || p.categoria === filtroCategoria;
     let passaSottocategoria = filtroSottocategoria === 'Tutte' || p.sottocategoria === filtroSottocategoria;
     
@@ -82,7 +79,6 @@ export default function Home({ isDarkMode }) {
     return passaReparto && passaRicerca && passaCategoria && passaSottocategoria && passaPrezzo && passaSconto;
   });
 
-  // 3. COLORI E PAGINAZIONE
   const bgPrincipale = isDarkMode ? '#111827' : '#F9FAFB';
   const textPrincipale = isDarkMode ? '#F3F4F6' : '#111827';
   const cardBg = isDarkMode ? '#1F2937' : '#FFFFFF';
@@ -94,24 +90,21 @@ export default function Home({ isDarkMode }) {
   const prodottiPaginati = prodottiFiltrati.slice(indicePrimoProdotto, indiceUltimoProdotto);
   const totalePagine = Math.ceil(prodottiFiltrati.length / prodottiPerPagina);
 
-  // 4. RENDER HTML
   return (
     <div style={{ fontFamily: 'Inter, sans-serif', backgroundColor: bgPrincipale, paddingBottom: '100px', minHeight: '100vh', color: textPrincipale }}>
-      {/* 
-        Decommenta i tuoi popup e header qui:
-        {!popupClosed && <OffersPopup isDarkMode={isDarkMode} onClose={() => setPopupClosed(true)} />}
-        <ToastPromo />
-        <FakeSalesToast prodotti={prodotti} />
-        <ExitIntentPopup isDarkMode={isDarkMode} />
-        <WheelOfFortune isDarkMode={isDarkMode} />
-        <HeroSlider />
-        <Header ... /> 
-        <PromoBanner />
-      */}
+      
+      {/* Seleziona l'Header se lo usi */}
+       <Header 
+        repartiMap={repartiMap}
+        repartoAttivo={repartoAttivo}
+        setRepartoAttivo={setRepartoAttivo}
+        filtroCategoria={filtroCategoria}
+        setFiltroCategoria={setFiltroCategoria}
+        isDarkMode={isDarkMode}
+      /> 
 
       <div style={{ padding: '20px 0' }}>
-
-        {/* BARRA DI RICERCA E FILTRI */}
+        
         <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginBottom: '30px', padding: '0 4%' }}>
           <input 
              type="text" 
@@ -144,7 +137,6 @@ export default function Home({ isDarkMode }) {
           </select>
         </div>
 
-        {/* GRIGLIA PRODOTTI */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px', padding: '0 4%' }}>
           {prodottiPaginati.map((prodotto) => {
             const prezzoNum = prodotto.prezzo ? parseFloat(prodotto.prezzo.toString().replace(',', '.')) : 0;
@@ -155,17 +147,14 @@ export default function Home({ isDarkMode }) {
                 <Link 
                   to={`/prodotto/${prodotto.id}`}
                   key={prodotto.id} 
-                  /* RIMOSSO L'ONCLICK CON PREVENT DEFAULT! ORA NAVIGHERA' REALMENTE ALLA PAGINA */
                   style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer', position: 'relative', display: 'flex', flexDirection: 'column', padding: '15px', borderRadius: '20px', background: cardBg, border: 'none', boxShadow: isDarkMode ? '0 20px 40px -10px rgba(0,0,0,0.5)' : '0 20px 40px -10px rgba(15,23,42,0.06)', transition: 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease' }}
                   onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; }}
                   onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
                 >
-                {/* Badge Angolare */}
                 <span style={{ position: 'absolute', top: '12px', left: '12px', background: '#FF6600', color: 'white', fontSize: '9px', fontWeight: 'bold', padding: '3px 6px', borderRadius: '4px', zIndex: 2, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                   Temu Pick
                 </span>
 
-                {/* 1. IMMAGINE CON BADGE SCONTO */}
                 <div style={{ position: 'relative', height: '180px', width: '100%', marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: isDarkMode ? '#111827' : '#F9FAFB', borderRadius: '10px', overflow: 'hidden' }}>
                   <div style={{ position: 'absolute', top: '8px', right: '8px', background: '#EF4444', color: 'white', padding: '4px 8px', borderRadius: '20px', fontSize: '13px', fontWeight: '900', boxShadow: '0 2px 5px rgba(0,0,0,0.2)', zIndex: 5 }}>
                     -{scontoPercentuale}%
@@ -175,23 +164,16 @@ export default function Home({ isDarkMode }) {
                   ) : <span style={{ color: '#9CA3AF' }}>No Img</span>}
                 </div>
                 
-                {/* 2. PREZZO ATTUALE GIGANTE E PREZZO SBARRATO */}
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '6px', flexWrap: 'wrap' }}>
                   <span style={{ fontWeight: '900', fontSize: '24px', color: '#FF6600' }}>€ {prodotto.prezzo}</span>
                   <span style={{ fontSize: '13px', color: '#6B7280', textDecoration: 'line-through' }}>{prezzoBarrato}€</span>
                 </div>
 
-                {/* 3. TITOLO BREVE */}
                 <h3 title={prodotto.titolo} style={{ fontSize: '14px', margin: '0 0 8px 0', color: textPrincipale, lineHeight: '1.3', fontWeight: '700', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', minHeight: '36px' }}>
                   {prodotto.titolo}
                 </h3>
 
-                {/* 4. LE STELLE E LA SCARSITÀ */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '12px', fontSize: '12px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    {/* Assicurati di importare o avere StarRating se lo usi */}
-                    {/* <StarRating productId={prodotto.id} /> */}
-                  </div>
                   <div style={{ color: '#EF4444', fontWeight: '600', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <span>⚡ Offerta Lampo</span> 
                     <span style={{ color: '#D1D5DB' }}>|</span> 
@@ -199,7 +181,6 @@ export default function Home({ isDarkMode }) {
                   </div>
                 </div>
                 
-                {/* 5. CALL TO ACTION PER OVER 35 */}
                 <div style={{ marginTop: 'auto', background: isDarkMode ? '#374151' : '#111827', color: 'white', padding: '10px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: 'bold', textAlign: 'center' }}>
                   Scopri Dettagli
                 </div>
@@ -208,8 +189,7 @@ export default function Home({ isDarkMode }) {
           })}
         </div>
       </div>
-
-      {/* CONTROLLI DI PAGINAZIONE (Frecce) */}
+          
       {totalePagine > 1 && (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px', marginTop: '40px', paddingBottom: '20px' }}>
           
@@ -232,43 +212,9 @@ export default function Home({ isDarkMode }) {
           >
             Successiva →
           </button>
+          
         </div>
       )}
-      
-      {/* RIMOSSO IL COMPONENTE ProductModal PERCHE' ORA NAVIGHIAMO ALLA PAGINA VERA E PROPRIA */}
-    </div>
-  )
-}
-function OffersPopup({ isDarkMode, onClose }) {
-  const [isVisible, setIsVisible] = useState(false);
-  useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(true), 3500);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (!isVisible) return null;
-
-  return (
-    <div style={{
-      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 10000,
-      display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px', backdropFilter: 'blur(5px)'
-    }}>
-      <div style={{
-        background: isDarkMode ? '#1F2937' : '#FFFFFF', color: isDarkMode ? '#F9FAFB' : '#111827',
-        width: '100%', maxWidth: '450px', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)', position: 'relative'
-      }}>
-        <button onClick={() => { setIsVisible(false); onClose(); }} style={{
-          position: 'absolute', top: '15px', right: '15px', background: 'rgba(0,0,0,0.5)', color: 'white', border: 'none', borderRadius: '50%', width: '30px', height: '30px', cursor: 'pointer', fontWeight: 'bold'
-        }}>X</button>
-        <div style={{ height: '180px', backgroundImage: 'url(/banner.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
-        <div style={{ padding: '25px', textAlign: 'center' }}>
-          <h2 style={{ margin: '0 0 10px 0', color: '#FF6600', fontSize: '24px', fontWeight: '900' }}>🔥 SELEZIONE PREMIUM</h2>
-          <p style={{ margin: '0 0 20px 0', fontSize: '15px' }}>Abbiamo selezionato per te le migliori attrezzature su Temu. Fino al 70% in meno!</p>
-          <button onClick={() => { setIsVisible(false); onClose(); }} style={{ background: '#FF6600', color: 'white', border: 'none', padding: '12px 25px', borderRadius: '50px', fontWeight: 'bold', fontSize: '16px', cursor: 'pointer', width: '100%' }}>
-            Scopri i Prodotti
-          </button>
-        </div>
-      </div>
     </div>
   );
 }

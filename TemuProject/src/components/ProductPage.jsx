@@ -33,7 +33,11 @@ export default function ProductPage({ isDarkMode }) {
   }, [id]);
 
   if (!prodotto) return <div style={{ padding: '100px', textAlign: 'center', color: isDarkMode ? '#FFF' : '#000', fontSize: '20px' }}>🎣 Pescando i dettagli dell'offerta...</div>;
-
+const bgPrincipale = isDarkMode ? '#111827' : '#F9FAFB'; // Sfondo generale
+  const cardBg = isDarkMode ? '#1F2937' : '#FFFFFF'; // Sfondo del box prodotto
+  const textPrincipale = isDarkMode ? '#F9FAFB' : '#111827'; // Testo BIANCO in dark mode
+  const textSecondario = isDarkMode ? '#D1D5DB' : '#4B5563'; // Grigio chiaro per le descrizioni
+  const cardBorder = isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB';
   const bg = isDarkMode ? '#1F2937' : '#FFFFFF';
   const text = isDarkMode ? '#F9FAFB' : '#111827';
   let prezzoBarrato = "0.00";
