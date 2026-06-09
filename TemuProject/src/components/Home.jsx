@@ -34,7 +34,7 @@ export default function Home({ isDarkMode }) {
   const [filtroSconto, setFiltroSconto] = useState('Tutti'); 
   const [popupClosed, setPopupClosed] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const prodottiPerPagina = 18;
+  const prodottiPerPagina = 20;
 
   useEffect(() => {
     async function getProdotti() {

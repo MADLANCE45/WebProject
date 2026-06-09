@@ -24,7 +24,7 @@ export default function ProductPage({ isDarkMode }) {
       const { data, error } = await supabase.from('products').select('*').eq('id', id).single();
       if (data) {
         setProdotto(data);
-        const { data: corr } = await supabase.from('products').select('*').eq('categoria', data.categoria).neq('id', data.id).limit(3);
+       const { data: corr } = await supabase.from('products').select('*').eq('categoria', data.categoria).neq('id', data.id).limit(4);
         if (corr) setCorrelati(corr);
       }
     }
@@ -143,6 +143,30 @@ const bgPrincipale = isDarkMode ? '#111827' : '#F9FAFB'; // Sfondo generale
     </div>
   );
 
+  // --- NUOVO BLOCCO PRODOTTI CORRELATI ---
+  const BloccoCorrelati = correlati.length > 0 && (
+    <div style={{ marginTop: '50px' }}>
+      <h3 style={{ fontSize: '20px', marginBottom: '20px', color: textPrincipale, display: 'inline-block', borderBottom: '3px solid #FF6600', paddingBottom: '8px' }}>
+        💡 Potrebbe interessarti anche...
+      </h3>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px' }}>
+        {correlati.map(corr => (
+          <div 
+            onClick={() => { navigate(`/prodotto/${corr.id}`); window.scrollTo(0,0); }} 
+            key={corr.id} 
+            style={{ cursor: 'pointer', background: cardBg, border: cardBorder, borderRadius: '12px', padding: '15px', display: 'flex', flexDirection: 'column', alignItems: 'center', transition: 'transform 0.2s', boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }} 
+            onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; }} 
+            onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
+          >
+            <img src={corr.immagine_url} alt={corr.titolo} style={{ height: '120px', width: '100%', objectFit: 'contain', marginBottom: '15px', mixBlendMode: isDarkMode ? 'normal' : 'darken' }} />
+            <h4 style={{ fontSize: '13px', margin: '0 0 10px 0', textAlign: 'center', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', minHeight: '36px', lineHeight: '1.4', color: textPrincipale }}>{corr.titolo}</h4>
+            <span style={{ fontWeight: '900', color: '#FF6600', fontSize: '18px', marginTop: 'auto' }}>€ {corr.prezzo}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <HelmetProvider>
       <div style={{ background: isDarkMode ? 'radial-gradient(circle at top, #1E293B 0%, #0F172A 100%)' : 'radial-gradient(circle at top, #FFFFFF 0%, #F1F5F9 100%)', minHeight: '100vh', padding: '30px 4%' }}>
@@ -152,32 +176,12 @@ const bgPrincipale = isDarkMode ? '#111827' : '#F9FAFB'; // Sfondo generale
           <meta name="description" content={`Stai cercando opinioni su ${titoloOttimizzato}? Scoprilo oggi a soli €${prodotto.prezzo}. Spedizione sempre gratuita.`} />
           <meta property="og:title" content={titoloOttimizzato} />
           <meta property="og:image" content={prodotto.immagine_url} />
-          <script type="application/ld+json">
-            {JSON.stringify({
-              "@context": "https://schema.org/",
-              "@type": "Product",
-              "name": titoloOttimizzato,
-              "image": [prodotto.immagine_url],
-              "description": `Recensione e dettagli di ${titoloOttimizzato}.`,
-              "offers": {
-                "@type": "Offer",
-                "url": window.location.href,
-                "priceCurrency": "EUR",
-                "price": prodotto.prezzo ? prodotto.prezzo.toString().replace(',', '.') : "0.00",
-                "availability": "https://schema.org/InStock",
-                "itemCondition": "https://schema.org/NewCondition"
-              },
-              "aggregateRating": {
-                "@type": "AggregateRating",
-                "ratingValue": "4.8",
-                "reviewCount": "124"
-              }
-            })}
-          </script>
         </Helmet>
 
         <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-          <button onClick={() => navigate(-1)} style={{ marginBottom: '20px', background: isDarkMode ? '#374151' : '#E5E7EB', color: text, border: 'none', padding: '10px 20px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>
+          
+          {/* FIX TASTO INDIETRO: Ora porta sempre alla home ('/') */}
+          <button onClick={() => navigate('/')} style={{ marginBottom: '20px', background: isDarkMode ? '#374151' : '#E5E7EB', color: text, border: 'none', padding: '10px 20px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', transition: 'background 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.background = isDarkMode ? '#4B5563' : '#D1D5DB'} onMouseLeave={(e) => e.currentTarget.style.background = isDarkMode ? '#374151' : '#E5E7EB'}>
             ← Torna al catalogo
           </button>
 
@@ -199,6 +203,10 @@ const bgPrincipale = isDarkMode ? '#111827' : '#F9FAFB'; // Sfondo generale
               </div>
             )}
           </div>
+
+          {/* ECCO LA SEZIONE DEI PRODOTTI CONSIGLIATI */}
+          {BloccoCorrelati}
+
         </div>
       </div>
     </HelmetProvider>
