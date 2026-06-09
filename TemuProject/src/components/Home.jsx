@@ -41,8 +41,9 @@ export default function Home({ isDarkMode }) {
     async function getProdotti() {
       const { data } = await supabase.from('products').select('*');
       if (data) {
-        const prodottiMescolati = data.sort(() => Math.random() - 0.5);
-        setProdotti(prodottiMescolati);
+        // Ordinati dal più recente al più vecchio (fissi, senza rimescolamento casuale)
+        const prodottiOrdinati = data.sort((a, b) => b.id - a.id);
+        setProdotti(prodottiOrdinati);
       }
     }
     getProdotti();
