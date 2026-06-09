@@ -121,16 +121,15 @@ export default function Admin() {
   }
 
   // --- GESTIONE DEI MENU A TENDINA DINAMICI ---
-  const handleRepartoChange = (nuovoReparto) => {
-    setReparto(nuovoReparto)
-    const primaCategoria = Object.keys(repartiMap[nuovoReparto])[0]
-    setCategoria(primaCategoria)
-    setSottocategoria(repartiMap[nuovoReparto][primaCategoria][0])
+ const handleRepartoChange = (nuovoReparto) => {
+    setReparto(nuovoReparto);
+    setCategoria(''); // Svuota la categoria quando cambi reparto
+    setSottocategoria(''); // Svuota la sottocategoria
   }
 
   const handleCategoriaChange = (nuovaCategoria) => {
-    setCategoria(nuovaCategoria)
-    setSottocategoria(repartiMap[reparto][nuovaCategoria][0])
+    setCategoria(nuovaCategoria);
+    setSottocategoria(''); // Svuota la sottocategoria quando cambi categoria
   }
 
   // ==========================================
@@ -210,19 +209,23 @@ export default function Admin() {
 
             {/* Menu a Tendina Categorie */}
             <div style={{ background: '#F3F4F6', padding: '15px', borderRadius: '8px', marginTop: '10px' }}>
+              
               <label style={{ display: 'block', fontSize: '13px', fontWeight: 'bold', marginBottom: '5px' }}>Reparto Principale *</label>
-              <select value={reparto} onChange={(e) => handleRepartoChange(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #D1D5DB', marginBottom: '15px', cursor: 'pointer' }}>
+              <select required value={reparto} onChange={(e) => handleRepartoChange(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #D1D5DB', marginBottom: '15px', cursor: 'pointer' }}>
+                <option value="" disabled>-- Seleziona Reparto --</option>
                 {Object.keys(repartiMap).map(rep => <option key={rep} value={rep}>{rep}</option>)}
               </select>
 
               <label style={{ display: 'block', fontSize: '13px', fontWeight: 'bold', marginBottom: '5px' }}>Categoria *</label>
-              <select value={categoria} onChange={(e) => handleCategoriaChange(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #D1D5DB', marginBottom: '15px', cursor: 'pointer' }}>
-                {Object.keys(repartiMap[reparto]).map(cat => <option key={cat} value={cat}>{cat}</option>)}
+              <select required disabled={!reparto} value={categoria} onChange={(e) => handleCategoriaChange(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #D1D5DB', marginBottom: '15px', cursor: 'pointer' }}>
+                <option value="" disabled>-- Seleziona Categoria --</option>
+                {reparto && Object.keys(repartiMap[reparto]).map(cat => <option key={cat} value={cat}>{cat}</option>)}
               </select>
 
               <label style={{ display: 'block', fontSize: '13px', fontWeight: 'bold', marginBottom: '5px' }}>Sottocategoria *</label>
-              <select value={sottocategoria} onChange={(e) => setSottocategoria(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #D1D5DB', cursor: 'pointer' }}>
-                {repartiMap[reparto][categoria].map(sub => <option key={sub} value={sub}>{sub}</option>)}
+              <select required disabled={!categoria} value={sottocategoria} onChange={(e) => setSottocategoria(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #D1D5DB', cursor: 'pointer' }}>
+                <option value="" disabled>-- Seleziona Sottocategoria --</option>
+                {categoria && repartiMap[reparto][categoria].map(sub => <option key={sub} value={sub}>{sub}</option>)}
               </select>
             </div>
 

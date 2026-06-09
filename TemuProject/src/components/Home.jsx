@@ -36,6 +36,7 @@ export default function Home({ isDarkMode }) {
   const [currentPage, setCurrentPage] = useState(1);
   const prodottiPerPagina = 20;
 
+  // 1. Il tuo useEffect che carica e mescola i prodotti
   useEffect(() => {
     async function getProdotti() {
       const { data } = await supabase.from('products').select('*');
@@ -47,6 +48,11 @@ export default function Home({ isDarkMode }) {
     getProdotti();
   }, []);
 
+  // 2. IL NUOVO useEffect DA INCOLLARE QUI SOTTO:
+  // Resetta sempre alla pagina 1 quando l'utente cambia un qualsiasi filtro
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [repartoAttivo, filtroCategoria, filtroSottocategoria, filtroPrezzo, filtroSconto, ricerca]);
   const cambiaReparto = (nuovoReparto) => {
     setRepartoAttivo(nuovoReparto); 
     setFiltroCategoria('Tutte'); 
