@@ -76,7 +76,14 @@ const bgPrincipale = isDarkMode ? '#111827' : '#F9FAFB'; // Sfondo generale
   const BloccoTitolo = (
     <>
       <span style={{ fontSize: '12px', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '10px', display: 'inline-block' }}>{prodotto.reparto} &gt; {prodotto.categoria}</span>
-      <h1 style={{ fontSize: isMobile ? '22px' : '26px', margin: '0 0 20px 0', lineHeight: '1.4' }}>{titoloOttimizzato}</h1>
+      <h1 style={{ 
+  fontSize: isMobile ? '22px' : '26px', 
+  margin: '0 0 20px 0', 
+  lineHeight: '1.4',
+  color: isDarkMode ? '#F9FAFB' : '#111827' 
+}}>
+  {titoloOttimizzato}
+</h1>
     </>
   );
 

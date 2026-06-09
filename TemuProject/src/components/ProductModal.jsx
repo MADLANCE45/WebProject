@@ -1,14 +1,15 @@
 import React from 'react';
-import ShareButtons from './ShareButtons'; // <--- AGGIUNGI QUESTA RIGA!
+import ShareButtons from './ShareButtons'; 
 
-
-
-// ... il resto del codice continua sotto uguale a prima ...
 export default function ProductModal({ prodotto, tuttiProdotti, onClose, isDarkMode }) {
   if (!prodotto) return null;
 
+  // Variabili per i colori base
   const bg = isDarkMode ? '#1F2937' : '#FFFFFF';
   const text = isDarkMode ? '#F9FAFB' : '#111827';
+  const textMuted = isDarkMode ? '#9CA3AF' : '#6B7280'; // Grigio che si adatta
+  const border = isDarkMode ? '#374151' : '#E5E7EB'; // Bordo che si adatta
+
   const categoriaSafe = prodotto.categoria || '';
   
   const correlati = tuttiProdotti
@@ -26,7 +27,8 @@ export default function ProductModal({ prodotto, tuttiProdotti, onClose, isDarkM
     <div onClick={onClose} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 10000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px', backdropFilter: 'blur(5px)' }}>
       <div onClick={(e) => e.stopPropagation()} style={{ background: bg, color: text, width: '100%', maxWidth: '800px', maxHeight: '90vh', borderRadius: '16px', overflowY: 'auto', position: 'relative', display: 'flex', flexDirection: 'column', padding: '25px' }}>
         
-        <button onClick={onClose} style={{ position: 'absolute', top: '15px', right: '15px', background: '#E5E7EB', color: '#111827', border: 'none', borderRadius: '50%', width: '35px', height: '35px', cursor: 'pointer', fontWeight: 'bold', zIndex: 10 }}>X</button>
+        {/* Pulsante Chiusura (adattato al dark mode) */}
+        <button onClick={onClose} style={{ position: 'absolute', top: '15px', right: '15px', background: isDarkMode ? '#374151' : '#E5E7EB', color: text, border: 'none', borderRadius: '50%', width: '35px', height: '35px', cursor: 'pointer', fontWeight: 'bold', zIndex: 10 }}>X</button>
 
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', alignItems: 'flex-start' }}>
           
@@ -38,12 +40,12 @@ export default function ProductModal({ prodotto, tuttiProdotti, onClose, isDarkM
             
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
               <span style={{ color: '#FBBF24', fontSize: '22px', letterSpacing: '2px' }}>★★★★★</span>
-              <span style={{ color: '#6B7280', fontSize: '15px', fontWeight: 'bold' }}>(4.8)</span>
+              <span style={{ color: textMuted, fontSize: '15px', fontWeight: 'bold' }}>(4.8)</span>
             </div>
 
             {/* RECENSIONI SOTTO L'IMMAGINE */}
-            <div style={{ borderTop: isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB', paddingTop: '15px', textAlign: 'left' }}>
-              <h4 style={{ fontSize: '13px', margin: '0 0 10px 0', color: '#6B7280', textTransform: 'uppercase' }}>Recensioni Recenti</h4>
+            <div style={{ borderTop: `1px solid ${border}`, paddingTop: '15px', textAlign: 'left' }}>
+              <h4 style={{ fontSize: '13px', margin: '0 0 10px 0', color: textMuted, textTransform: 'uppercase' }}>Recensioni Recenti</h4>
               
               {(() => {
                 const nomiList = ['Marco D.', 'Simona R.', 'Alessandro T.', 'Francesca B.', 'Giuseppe M.', 'Valentina C.', 'Luca F.', 'Chiara S.', 'Andrea P.', 'Martina L.'];
@@ -65,22 +67,22 @@ export default function ProductModal({ prodotto, tuttiProdotti, onClose, isDarkM
 
                 return (
                   <>
-                    <div style={{ marginBottom: '10px', background: isDarkMode ? '#1F2937' : '#F9FAFB', padding: '10px', borderRadius: '8px' }}>
+                    <div style={{ marginBottom: '10px', background: isDarkMode ? '#111827' : '#F9FAFB', padding: '10px', borderRadius: '8px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <span style={{ color: '#FBBF24', fontSize: '12px' }}>★★★★★</span>
                         <span style={{ fontSize: '10px', color: '#10B981', fontWeight: 'bold' }}>✓ Acquisto Verificato</span>
                       </div>
-                      <div style={{ fontSize: '12px', fontWeight: 'bold', marginTop: '4px' }}>{nome1}</div>
-                      <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '2px', fontStyle: 'italic' }}>"{rec1}"</div>
+                      <div style={{ fontSize: '12px', color: text, fontWeight: 'bold', marginTop: '4px' }}>{nome1}</div>
+                      <div style={{ fontSize: '12px', color: textMuted, marginTop: '2px', fontStyle: 'italic' }}>"{rec1}"</div>
                     </div>
 
-                    <div style={{ background: isDarkMode ? '#1F2937' : '#F9FAFB', padding: '10px', borderRadius: '8px' }}>
+                    <div style={{ background: isDarkMode ? '#111827' : '#F9FAFB', padding: '10px', borderRadius: '8px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <span style={{ color: '#FBBF24', fontSize: '12px' }}>★★★★★</span>
                         <span style={{ fontSize: '10px', color: '#10B981', fontWeight: 'bold' }}>✓ Acquisto Verificato</span>
                       </div>
-                      <div style={{ fontSize: '12px', fontWeight: 'bold', marginTop: '4px' }}>{nome2}</div>
-                      <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '2px', fontStyle: 'italic' }}>"{rec2}"</div>
+                      <div style={{ fontSize: '12px', color: text, fontWeight: 'bold', marginTop: '4px' }}>{nome2}</div>
+                      <div style={{ fontSize: '12px', color: textMuted, marginTop: '2px', fontStyle: 'italic' }}>"{rec2}"</div>
                     </div>
                   </>
                 );
@@ -89,14 +91,13 @@ export default function ProductModal({ prodotto, tuttiProdotti, onClose, isDarkM
           </div>
 
           {/* ================= COLONNA DESTRA ================= */}
-          {/* ================= COLONNA DESTRA ================= */}
           <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: '12px', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '1px' }}>{prodotto.reparto} &gt; {prodotto.categoria}</span>
-            <h2 style={{ fontSize: '22px', margin: '8px 0', lineHeight: '1.4' }}>{prodotto.titolo}</h2>
+            <span style={{ fontSize: '12px', color: textMuted, textTransform: 'uppercase', letterSpacing: '1px' }}>{prodotto.reparto} &gt; {prodotto.categoria}</span>
+            <h2 style={{ fontSize: '22px', margin: '8px 0', lineHeight: '1.4', color: text }}>{prodotto.titolo}</h2>
             
-            {/* Pulsanti Condivisione spostati in ALTO, super compatti */}
+            {/* Pulsanti Condivisione */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}>
-              <span style={{ fontSize: '12px', color: '#6B7280', fontWeight: 'bold' }}>Condividi:</span>
+              <span style={{ fontSize: '12px', color: textMuted, fontWeight: 'bold' }}>Condividi:</span>
               <ShareButtons prodotto={prodotto} />
             </div>
             
@@ -106,7 +107,7 @@ export default function ProductModal({ prodotto, tuttiProdotti, onClose, isDarkM
             </div>
             
             <div style={{ marginBottom: '15px' }}>
-              <span style={{ fontSize: '14px', color: '#6B7280', textDecoration: 'line-through', marginRight: '10px' }}>{prezzoBarrato}€</span>
+              <span style={{ fontSize: '14px', color: textMuted, textDecoration: 'line-through', marginRight: '10px' }}>{prezzoBarrato}€</span>
               <span style={{ fontWeight: '900', fontSize: '38px', color: '#FF6600' }}>€ {prodotto.prezzo}</span>
             </div>
 
@@ -115,36 +116,36 @@ export default function ProductModal({ prodotto, tuttiProdotti, onClose, isDarkM
               🔥 Vai all'Offerta su Temu
             </a>
 
-            {/* Disclaimer Affiliato compatto e subito sotto il bottone */}
-            <p style={{ fontSize: '10px', color: '#9CA3AF', lineHeight: '1.2', textAlign: 'center', marginBottom: '20px' }}>
+            {/* Disclaimer Affiliato */}
+            <p style={{ fontSize: '10px', color: textMuted, lineHeight: '1.2', textAlign: 'center', marginBottom: '20px' }}>
               * In qualità di Affiliato, ricevo una commissione per gli acquisti idonei.
             </p>
 
             <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
               <span style={{ fontSize: '13px', color: '#EF4444', fontWeight: 'bold' }}>🔥 {percentualeVenduta}% Venduto</span>
-              <div style={{ flex: 1, height: '6px', background: '#FEE2E2', borderRadius: '10px', overflow: 'hidden' }}>
+              <div style={{ flex: 1, height: '6px', background: isDarkMode ? '#374151' : '#FEE2E2', borderRadius: '10px', overflow: 'hidden' }}>
                 <div style={{ width: `${percentualeVenduta}%`, height: '100%', background: '#EF4444', borderRadius: '10px' }}></div>
               </div>
             </div>
 
             {/* Vantaggi Spedizione */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', background: isDarkMode ? '#1F2937' : '#F9FAFB', padding: '15px', borderRadius: '8px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', background: isDarkMode ? '#111827' : '#F9FAFB', padding: '15px', borderRadius: '8px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#059669', fontWeight: '600' }}><span>📦</span> Spedizione GRATUITA</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: isDarkMode ? '#D1D5DB' : '#4B5563' }}><span>↩️</span> Reso gratuito entro 90 giorni</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: isDarkMode ? '#D1D5DB' : '#4B5563' }}><span>🔒</span> Pagamenti sicuri al 100%</div>
             </div>
-            </div>
           </div>
+        </div>
 
         {/* ================= CORRELATI ================= */}
         {correlati.length > 0 && (
-          <div style={{ marginTop: '30px', borderTop: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}`, paddingTop: '20px' }}>
-            <h3 style={{ fontSize: '18px', marginBottom: '15px' }}>💡 Potrebbe interessarti anche...</h3>
+          <div style={{ marginTop: '30px', borderTop: `1px solid ${border}`, paddingTop: '20px' }}>
+            <h3 style={{ fontSize: '18px', marginBottom: '15px', color: text }}>💡 Potrebbe interessarti anche...</h3>
             <div style={{ display: 'flex', gap: '15px', overflowX: 'auto', paddingBottom: '10px' }}>
               {correlati.map(corr => (
-                <div onClick={() => { window.open(corr.link_affiliazione, '_blank'); }} key={corr.id} style={{ minWidth: '160px', flex: '1', cursor: 'pointer', textDecoration: 'none', color: 'inherit', border: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}`, borderRadius: '8px', padding: '15px', display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
+                <div onClick={() => { window.open(corr.link_affiliazione, '_blank'); }} key={corr.id} style={{ minWidth: '160px', flex: '1', cursor: 'pointer', textDecoration: 'none', color: text, border: `1px solid ${border}`, borderRadius: '8px', padding: '15px', display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
                   <img src={corr.immagine_url} alt={corr.titolo} style={{ height: '100px', width: '100%', objectFit: 'contain', marginBottom: '10px' }} />
-                  <h4 style={{ fontSize: '12px', margin: '0 0 10px 0', textAlign: 'center', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', minHeight: '34px', lineHeight: '1.4' }}>{corr.titolo}</h4>
+                  <h4 style={{ fontSize: '12px', margin: '0 0 10px 0', textAlign: 'center', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', minHeight: '34px', lineHeight: '1.4', color: text }}>{corr.titolo}</h4>
                   <span style={{ fontWeight: '900', color: '#FF6600', fontSize: '16px', marginTop: 'auto' }}>€ {corr.prezzo}</span>
                 </div>
               ))}

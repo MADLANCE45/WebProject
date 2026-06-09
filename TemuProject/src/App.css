@@ -126,4 +126,5 @@
     background: linear-gradient(to right, rgba(248, 249, 250, 0), rgba(248, 249, 250, 1));
     pointer-events: none; /* Rende la sfumatura "invisibile" al tocco per non bloccare i clic */
   }
+  
 }

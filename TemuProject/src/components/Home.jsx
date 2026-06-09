@@ -93,12 +93,17 @@ export default function Home({ isDarkMode }) {
 return (
     <div style={{ fontFamily: 'Inter, sans-serif', backgroundColor: bgPrincipale, paddingBottom: '100px', minHeight: '100vh', color: textPrincipale }}>
       
-      {/* ECCO LA TUA RUOTA DELLA FORTUNA! */}
+      {/* 1. POPUP E INTERFACCIE SULLO SCHERMO (Overlay fissi) */}
       <WheelOfFortune isDarkMode={isDarkMode} />
-
+      <ToastPromo />
+      <ExitIntentPopup isDarkMode={isDarkMode} />
+      <FakeSalesToast prodotti={prodotti} isDarkMode={isDarkMode} /> {/* Passiamo l'array dei prodotti reali caricati da Supabase */}
+      
+      {/* 2. SLIDER DEI BANNER PRINCIPALI */}
       <HeroSlider />
       
-      <Header
+      {/* 3. MENU DELLE CATEGORIE (HEADER) */}
+      <Header 
         repartiMap={repartiMap}
         repartoAttivo={repartoAttivo}
         setRepartoAttivo={cambiaReparto}
@@ -107,10 +112,13 @@ return (
         isDarkMode={isDarkMode}
       />
 
-      {/* 3. IL RESTO DELLA PAGINA (Filtri e Griglia Prodotti) */}
+      {/* 4. BANNER PROMOZIONALE REGALO NUOVO UTENTE (Orizzontale tra Header e Prodotti) */}
+      <PromoBanner />
+
+      {/* 5. IL RESTO DELLA PAGINA (Filtri e Griglia Prodotti) */}
       <div style={{ padding: '20px 0' }}>
-         {/* ... i tuoi filtri e il .map() dei prodotti ... */}
       
+        {/* Barra di ricerca e Filtri per prezzo/sconto */}
         <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginBottom: '30px', padding: '0 4%' }}>
           <input 
              type="text" 
@@ -143,6 +151,7 @@ return (
           </select>
         </div>
 
+        {/* Griglia dei Prodotti */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px', padding: '0 4%' }}>
           {prodottiPaginati.map((prodotto) => {
             const prezzoNum = prodotto.prezzo ? parseFloat(prodotto.prezzo.toString().replace(',', '.')) : 0;
@@ -196,6 +205,7 @@ return (
         </div>
       </div>
           
+      {/* Impaginazione dei Prodotti */}
       {totalePagine > 1 && (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px', marginTop: '40px', paddingBottom: '20px' }}>
           
@@ -338,7 +348,7 @@ function ToastPromo() {
 // --- FAKE SALES TOAST (RIPROVA SOCIALE) ---
 // --- FAKE SALES TOAST (CLICCABILE) ---
 
-function FakeSalesToast({ prodotti }) {
+function FakeSalesToast({ prodotti, isDarkMode }) { // <-- Aggiunto isDarkMode
   const [vendita, setVendita] = useState(null);
 
   useEffect(() => {
@@ -350,7 +360,6 @@ function FakeSalesToast({ prodotti }) {
       const nomeCasuale = nomi[Math.floor(Math.random() * nomi.length)];
       const minutiCasuali = Math.floor(Math.random() * 12) + 1;
       
-      // Salviamo anche il link di affiliazione per aprirlo al click
       setVendita({ 
         nome: nomeCasuale, 
         titolo: prodottoCasuale.titolo, 
@@ -358,27 +367,33 @@ function FakeSalesToast({ prodotti }) {
         link: prodottoCasuale.link_affiliazione 
       });
       
-      setTimeout(() => setVendita(null), 6000);
-    }, 18000);
+      setTimeout(() => setVendita(null), 4000); // <-- Ridotto a 4 secondi di visibilità
+    }, 18000); 
 
     return () => clearInterval(interval);
   }, [prodotti]);
 
   if (!vendita) return null;
 
+  // Colori dinamici in base al tema
+  const bg = isDarkMode ? '#1F2937' : 'white';
+  const text = isDarkMode ? '#F9FAFB' : '#111827';
+  const textMuted = isDarkMode ? '#9CA3AF' : '#6B7280';
+
   return (
     <div 
-      onClick={() => window.open(vendita.link, '_blank')} /* Apre il link Temu se l'utente clicca */
+      onClick={() => window.open(vendita.link, '_blank')} 
       style={{
-        cursor: 'pointer', /* Mostra la manina */
-        position: 'fixed', bottom: '20px', left: '20px', background: 'white', color: '#111827', 
+        cursor: 'pointer', 
+        position: 'fixed', bottom: '20px', left: '20px', 
+        background: bg, color: text, // <-- Applica i colori dinamici
         padding: '12px 15px', borderRadius: '10px', boxShadow: '0 8px 25px rgba(0,0,0,0.3)', 
         zIndex: 9999, display: 'flex', alignItems: 'center', gap: '12px', maxWidth: '320px',
         borderLeft: '4px solid #059669', transition: 'all 0.3s ease-in-out'
       }}>
       <div style={{ fontSize: '24px' }}>🛍️</div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={{ margin: 0, fontSize: '11px', color: '#6B7280' }}>{vendita.nome} ha appena acquistato:</p>
+        <p style={{ margin: 0, fontSize: '11px', color: textMuted }}>{vendita.nome} ha appena acquistato:</p>
         <p style={{ margin: '2px 0', fontSize: '13px', fontWeight: 'bold', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           {vendita.titolo}
         </p>
