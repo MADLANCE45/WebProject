@@ -4,8 +4,8 @@ import { supabase } from '../supabaseClient';
 import Header from './Header';
 import ProductModal from './ProductModal';
 import StarRating from './StarRating';
-import WheelOfFortune from './WheelOfFortune';
 import ProductCard from './ProductCard';
+import WheelOfFortune from './WheelOfFortune';
 
 
 // ---> INCOLLA LA MAPPA QUI <---
@@ -90,21 +90,29 @@ export default function Home({ isDarkMode }) {
   const prodottiPaginati = prodottiFiltrati.slice(indicePrimoProdotto, indiceUltimoProdotto);
   const totalePagine = Math.ceil(prodottiFiltrati.length / prodottiPerPagina);
 
-  return (
+ return (
     <div style={{ fontFamily: 'Inter, sans-serif', backgroundColor: bgPrincipale, paddingBottom: '100px', minHeight: '100vh', color: textPrincipale }}>
       
-      {/* Seleziona l'Header se lo usi */}
-       <Header 
+      {/* Altri popup (se li hai attivati) */}
+      <ToastPromo />
+      
+      {/* 1. QUI INSERISCI LO SLIDER */}
+      <HeroSlider />
+      
+      {/* 2. SUBITO SOTTO INSERISCI L'HEADER */}
+      <Header 
         repartiMap={repartiMap}
         repartoAttivo={repartoAttivo}
-        setRepartoAttivo={setRepartoAttivo}
+        setRepartoAttivo={cambiaReparto}
         filtroCategoria={filtroCategoria}
         setFiltroCategoria={setFiltroCategoria}
         isDarkMode={isDarkMode}
-      /> 
+      />
 
+      {/* 3. IL RESTO DELLA PAGINA (Filtri e Griglia Prodotti) */}
       <div style={{ padding: '20px 0' }}>
-        
+         {/* ... i tuoi filtri e il .map() dei prodotti ... */}
+      
         <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginBottom: '30px', padding: '0 4%' }}>
           <input 
              type="text" 
@@ -218,7 +226,34 @@ export default function Home({ isDarkMode }) {
     </div>
   );
 }
+// --- HERO SLIDER ---
+function HeroSlider() {
+  const [current, setCurrent] = useState(0);
+  const slides = [
+    { id: 1, image: '/banner.jpg', title: 'Attrezzatura da Pesca Pro 🎣', subtitle: 'Ecoscandagli, mulinelli ed esche testate per te.' },
+    { id: 2, image: '/banner2.jpg', title: 'Acquascaping Perfetto 🐠', subtitle: 'Illuminazione LED e filtri a prezzi imbattibili.' }
+  ];
 
+  useEffect(() => {
+    const timer = setInterval(() => setCurrent((prev) => (prev === slides.length - 1 ? 0 : prev + 1)), 5000);
+    return () => clearInterval(timer);
+  }, [slides.length]);
+
+  return (
+    <div style={{ position: 'relative', width: '100%', height: '400px', overflow: 'hidden', backgroundColor: '#111827' }}>
+      {slides.map((slide, index) => (
+        <div key={slide.id} style={{
+          position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundImage: `linear-gradient(rgba(0,0,0, 0.4), rgba(0,0,0, 0.7)), url(${slide.image})`,
+          backgroundSize: 'cover', backgroundPosition: 'center', opacity: current === index ? 1 : 0, transition: 'opacity 1s ease-in-out',
+          display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', color: 'white', padding: '0 20px'
+        }}>
+          <h1 style={{ fontSize: '42px', fontWeight: '900', margin: '0 0 10px 0' }}>{slide.title}</h1>
+          <p style={{ fontSize: '18px', maxWidth: '600px', fontWeight: '400' }}>{slide.subtitle}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
 function PromoBanner() {
   const [isVisible, setIsVisible] = useState(() => {
     // Controlla se l'utente ha già chiuso questo banner in precedenza
@@ -354,33 +389,7 @@ function FakeSalesToast({ prodotti }) {
     </div>
   );
 }
-function HeroSlider() {
-  const [current, setCurrent] = useState(0);
-  const slides = [
-    { id: 1, image: '/banner.jpg', title: 'Attrezzatura da Pesca Pro 🎣', subtitle: 'Ecoscandagli, mulinelli ed esche testate per te.' },
-    { id: 2, image: '/banner2.jpg', title: 'Acquascaping Perfetto 🐠', subtitle: 'Illuminazione LED e filtri a prezzi imbattibili.' }
-  ];
 
-  useEffect(() => {
-    const timer = setInterval(() => setCurrent((prev) => (prev === slides.length - 1 ? 0 : prev + 1)), 5000);
-    return () => clearInterval(timer);
-  }, [slides.length]);
-
-  return (
-    <div style={{ position: 'relative', width: '100%', height: '400px', overflow: 'hidden', backgroundColor: '#111827' }}>
-      {slides.map((slide, index) => (
-        <div key={slide.id} style={{
-          position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundImage: `linear-gradient(rgba(0,0,0, 0.4), rgba(0,0,0, 0.7)), url(${slide.image})`,
-          backgroundSize: 'cover', backgroundPosition: 'center', opacity: current === index ? 1 : 0, transition: 'opacity 1s ease-in-out',
-          display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', color: 'white', padding: '0 20px'
-        }}>
-          <h1 style={{ fontSize: '42px', fontWeight: '900', margin: '0 0 10px 0' }}>{slide.title}</h1>
-          <p style={{ fontSize: '18px', maxWidth: '600px', fontWeight: '400' }}>{slide.subtitle}</p>
-        </div>
-      ))}
-    </div>
-  )
-}
 
 // --- 3. EXIT-INTENT POPUP (RECUPERO UTENTI) ---
 function ExitIntentPopup({ isDarkMode }) {
