@@ -1,0 +1,21 @@
+/* Resetta lo stile di default del link */
+.card-link-wrapper {
+  text-decoration: none;
+  color: inherit;
+  display: block; /* Fondamentale per far sì che il link occupi tutto lo spazio della card */
+}
+
+.product-card {
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: white;
+}
+
+/* Effetto hover fluido per far capire all'utente che è cliccabile */
+.card-link-wrapper:hover .product-card,
+.card-link-wrapper:focus .product-card {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}

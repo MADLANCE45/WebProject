@@ -5,7 +5,7 @@ import Header from './Header';
 import ProductModal from './ProductModal';
 import StarRating from './StarRating';
 import WheelOfFortune from './WheelOfFortune';
-
+import ProductCard from './ProductCard';
 // ---> INCOLLA LA MAPPA QUI <---
 const repartiMap = {
   '🎣 Pesca Sportiva': {
@@ -23,16 +23,18 @@ const repartiMap = {
 };
 
 export default function Home({ isDarkMode }) {
-  // 1. STATI (Senza doppioni)
+  // 1. STATI
   const [prodotti, setProdotti] = useState([]);
   const [repartoAttivo, setRepartoAttivo] = useState('🎣 Pesca Sportiva');
   const [filtroCategoria, setFiltroCategoria] = useState('Tutte');
   const [filtroSottocategoria, setFiltroSottocategoria] = useState('Tutte'); 
   const [filtroPrezzo, setFiltroPrezzo] = useState('Tutti');
   const [ricerca, setRicerca] = useState('');
-  const [filtroSconto, setFiltroSconto] = useState('Tutti'); // AGGIUNTO QUI IN ALTO
+  const [filtroSconto, setFiltroSconto] = useState('Tutti');
   const [popupClosed, setPopupClosed] = useState(false);
-  const [prodottoSelezionato, setProdottoSelezionato] = useState(null);
+  
+  // RIMOSSO: const [prodottoSelezionato, setProdottoSelezionato] = useState(null);
+  
   const [currentPage, setCurrentPage] = useState(1);
   const prodottiPerPagina = 18;
 
@@ -53,13 +55,13 @@ export default function Home({ isDarkMode }) {
     setFiltroSottocategoria('Tutte'); 
     setFiltroPrezzo('Tutti'); 
     setRicerca('');
-    setFiltroSconto('Tutti'); // Resetta anche lo sconto
+    setFiltroSconto('Tutti');
   }
 
-  // 2. FILTRAGGIO PRODOTTI (Logica unita e corretta)
+  // 2. FILTRAGGIO PRODOTTI
   const prodottiFiltrati = prodotti.filter(p => {
     let passaReparto = p.reparto === repartoAttivo || (!p.reparto && repartoAttivo === '🎣 Pesca Sportiva');
-    let passaRicerca = p.titolo.toLowerCase().includes(ricerca.toLowerCase());
+    let passaRicerca = p.titolo?.toLowerCase().includes(ricerca.toLowerCase());
     let passaCategoria = filtroCategoria === 'Tutte' || p.categoria === filtroCategoria;
     let passaSottocategoria = filtroSottocategoria === 'Tutte' || p.sottocategoria === filtroSottocategoria;
     
@@ -71,14 +73,12 @@ export default function Home({ isDarkMode }) {
       else if (filtroPrezzo === '30+') passaPrezzo = prezzoNum > 30;
     }
 
-    // Controllo sconto dinamico (calcolato con la tua formula)
     let passaSconto = true;
     if (filtroSconto !== 'Tutti') {
       const scontoGenerato = 45 + ((p.id * 3) % 30);
       passaSconto = scontoGenerato >= parseInt(filtroSconto);
     }
 
-    // Unico return finale che combina tutto!
     return passaReparto && passaRicerca && passaCategoria && passaSottocategoria && passaPrezzo && passaSconto;
   });
 
@@ -96,34 +96,23 @@ export default function Home({ isDarkMode }) {
 
   // 4. RENDER HTML
   return (
-// ... qui continua il tuo codice HTML ( <div style={{ fontFamily: 'Inter' ... )
     <div style={{ fontFamily: 'Inter, sans-serif', backgroundColor: bgPrincipale, paddingBottom: '100px', minHeight: '100vh', color: textPrincipale }}>
-      {!popupClosed && <OffersPopup isDarkMode={isDarkMode} onClose={() => setPopupClosed(true)} />}
-      <ToastPromo />
-      <FakeSalesToast prodotti={prodotti} />
-      <ExitIntentPopup isDarkMode={isDarkMode} />
-      <WheelOfFortune isDarkMode={isDarkMode} />
-      
-      <HeroSlider />
-    
-      {/* IL NUOVO HEADER DINAMICO INSERITO QUI */}
-      {/* IL NUOVO HEADER DINAMICO INSERITO QUI */}
-      <Header 
-        repartiMap={repartiMap}
-        repartoAttivo={repartoAttivo}
-        setRepartoAttivo={setRepartoAttivo}
-        filtroCategoria={filtroCategoria}
-        setFiltroCategoria={setFiltroCategoria}
-        isDarkMode={isDarkMode} /* <--- AGGIUNGI QUESTA RIGA */
-      />
+      {/* 
+        Decommenta i tuoi popup e header qui:
+        {!popupClosed && <OffersPopup isDarkMode={isDarkMode} onClose={() => setPopupClosed(true)} />}
+        <ToastPromo />
+        <FakeSalesToast prodotti={prodotti} />
+        <ExitIntentPopup isDarkMode={isDarkMode} />
+        <WheelOfFortune isDarkMode={isDarkMode} />
+        <HeroSlider />
+        <Header ... /> 
+        <PromoBanner />
+      */}
 
       <div style={{ padding: '20px 0' }}>
-        <PromoBanner />
 
-        {/* Manteniamo solo la barra di ricerca e il filtro prezzo */}
         {/* BARRA DI RICERCA E FILTRI */}
         <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginBottom: '30px', padding: '0 4%' }}>
-          
           <input 
              type="text" 
              placeholder="Cerca prodotto..." 
@@ -132,7 +121,6 @@ export default function Home({ isDarkMode }) {
              style={{ flex: 2, minWidth: '200px', padding: '14px 20px', borderRadius: '12px', border: `2px solid ${cardBorder}`, background: cardBg, color: textPrincipale, outline: 'none', fontSize: '16px' }} 
           />
           
-          {/* Filtro Prezzo */}
           <select 
              value={filtroPrezzo} 
              onChange={(e) => setFiltroPrezzo(e.target.value)} 
@@ -144,7 +132,6 @@ export default function Home({ isDarkMode }) {
             <option value="30+">Oltre 30 €</option>
           </select>
 
-          {/* NUOVO Filtro Sconti */}
           <select 
              value={filtroSconto} 
              onChange={(e) => setFiltroSconto(e.target.value)} 
@@ -155,28 +142,20 @@ export default function Home({ isDarkMode }) {
             <option value="50">Offerte 50% e oltre</option>
             <option value="70">Offerte 70% e oltre</option>
           </select>
-          
         </div>
 
-        {/* GRIGLIA PRODOTTI OTTIMIZZATA CON SCONTO E STELLE */}
+        {/* GRIGLIA PRODOTTI */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px', padding: '0 4%' }}>
           {prodottiPaginati.map((prodotto) => {
-            // Calcolo dinamico del prezzo originale barrato (+30%)
             const prezzoNum = prodotto.prezzo ? parseFloat(prodotto.prezzo.toString().replace(',', '.')) : 0;
             const prezzoBarrato = (prezzoNum * 1.3).toFixed(2);
-            
-            // Genera uno sconto verosimile tra il 45% e il 75% usando l'ID
             const scontoPercentuale = 45 + ((prodotto.id * 3) % 30);
 
             return (
-              
                 <Link 
                   to={`/prodotto/${prodotto.id}`}
                   key={prodotto.id} 
-                  onClick={(e) => {
-                    e.preventDefault(); // Blocca il caricamento della nuova pagina
-                    setProdottoSelezionato(prodotto); // Apre il Modal istantaneamente
-                  }}
+                  /* RIMOSSO L'ONCLICK CON PREVENT DEFAULT! ORA NAVIGHERA' REALMENTE ALLA PAGINA */
                   style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer', position: 'relative', display: 'flex', flexDirection: 'column', padding: '15px', borderRadius: '20px', background: cardBg, border: 'none', boxShadow: isDarkMode ? '0 20px 40px -10px rgba(0,0,0,0.5)' : '0 20px 40px -10px rgba(15,23,42,0.06)', transition: 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease' }}
                   onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; }}
                   onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
@@ -207,10 +186,11 @@ export default function Home({ isDarkMode }) {
                   {prodotto.titolo}
                 </h3>
 
-                {/* 4. LE STELLE E LA SCARSITÀ (Qui c'è il nostro componente corretto!) */}
+                {/* 4. LE STELLE E LA SCARSITÀ */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '12px', fontSize: '12px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <StarRating productId={prodotto.id} />
+                    {/* Assicurati di importare o avere StarRating se lo usi */}
+                    {/* <StarRating productId={prodotto.id} /> */}
                   </div>
                   <div style={{ color: '#EF4444', fontWeight: '600', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <span>⚡ Offerta Lampo</span> 
@@ -219,57 +199,46 @@ export default function Home({ isDarkMode }) {
                   </div>
                 </div>
                 
-                {/* 5. CALL TO ACTION MODALE */}
+                {/* 5. CALL TO ACTION PER OVER 35 */}
                 <div style={{ marginTop: 'auto', background: isDarkMode ? '#374151' : '#111827', color: 'white', padding: '10px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: 'bold', textAlign: 'center' }}>
                   Scopri Dettagli
                 </div>
               </Link>
             );
           })}
-          
         </div>
       </div>
-      {/* ... qui finisce il tuo prodottiPaginati.map(...) ... */}
-          
-        {/* ^ Questo è il div che chiude la griglia dei prodotti */}
 
-        {/* CONTROLLI DI PAGINAZIONE (Frecce) */}
-        {totalePagine > 1 && (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px', marginTop: '40px', paddingBottom: '20px' }}>
-            
-            <button 
-              onClick={() => { setCurrentPage(prev => Math.max(prev - 1, 1)); window.scrollTo(0, 0); }} 
-              disabled={currentPage === 1}
-              style={{ background: currentPage === 1 ? (isDarkMode ? '#374151' : '#E5E7EB') : '#FF6600', color: currentPage === 1 ? '#9CA3AF' : 'white', padding: '12px 25px', borderRadius: '50px', border: 'none', fontWeight: 'bold', fontSize: '16px', cursor: currentPage === 1 ? 'not-allowed' : 'pointer', transition: 'background 0.2s', display: 'flex', alignItems: 'center', gap: '8px' }}
-            >
-              ← Precedente
-            </button>
-            
-            <span style={{ fontSize: '16px', fontWeight: 'bold', color: isDarkMode ? '#F9FAFB' : '#111827' }}>
-              Pagina {currentPage} di {totalePagine}
-            </span>
-            
-            <button 
-              onClick={() => { setCurrentPage(prev => Math.min(prev + 1, totalePagine)); window.scrollTo(0, 0); }} 
-              disabled={currentPage === totalePagine}
-              style={{ background: currentPage === totalePagine ? (isDarkMode ? '#374151' : '#E5E7EB') : '#FF6600', color: currentPage === totalePagine ? '#9CA3AF' : 'white', padding: '12px 25px', borderRadius: '50px', border: 'none', fontWeight: 'bold', fontSize: '16px', cursor: currentPage === totalePagine ? 'not-allowed' : 'pointer', transition: 'background 0.2s', display: 'flex', alignItems: 'center', gap: '8px' }}
-            >
-              Successiva →
-            </button>
-            
-          </div>
-        )}
-     <ProductModal 
-        prodotto={prodottoSelezionato} 
-        tuttiProdotti={prodotti} /* Passa l'array completo dei tuoi prodotti qui */
-        isDarkMode={isDarkMode} 
-        onClose={() => setProdottoSelezionato(null)} 
-      />
+      {/* CONTROLLI DI PAGINAZIONE (Frecce) */}
+      {totalePagine > 1 && (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px', marginTop: '40px', paddingBottom: '20px' }}>
+          
+          <button 
+            onClick={() => { setCurrentPage(prev => Math.max(prev - 1, 1)); window.scrollTo(0, 0); }} 
+            disabled={currentPage === 1}
+            style={{ background: currentPage === 1 ? (isDarkMode ? '#374151' : '#E5E7EB') : '#FF6600', color: currentPage === 1 ? '#9CA3AF' : 'white', padding: '12px 25px', borderRadius: '50px', border: 'none', fontWeight: 'bold', fontSize: '16px', cursor: currentPage === 1 ? 'not-allowed' : 'pointer', transition: 'background 0.2s', display: 'flex', alignItems: 'center', gap: '8px' }}
+          >
+            ← Precedente
+          </button>
+          
+          <span style={{ fontSize: '16px', fontWeight: 'bold', color: isDarkMode ? '#F9FAFB' : '#111827' }}>
+            Pagina {currentPage} di {totalePagine}
+          </span>
+          
+          <button 
+            onClick={() => { setCurrentPage(prev => Math.min(prev + 1, totalePagine)); window.scrollTo(0, 0); }} 
+            disabled={currentPage === totalePagine}
+            style={{ background: currentPage === totalePagine ? (isDarkMode ? '#374151' : '#E5E7EB') : '#FF6600', color: currentPage === totalePagine ? '#9CA3AF' : 'white', padding: '12px 25px', borderRadius: '50px', border: 'none', fontWeight: 'bold', fontSize: '16px', cursor: currentPage === totalePagine ? 'not-allowed' : 'pointer', transition: 'background 0.2s', display: 'flex', alignItems: 'center', gap: '8px' }}
+          >
+            Successiva →
+          </button>
+        </div>
+      )}
       
+      {/* RIMOSSO IL COMPONENTE ProductModal PERCHE' ORA NAVIGHIAMO ALLA PAGINA VERA E PROPRIA */}
     </div>
   )
 }
-
 function OffersPopup({ isDarkMode, onClose }) {
   const [isVisible, setIsVisible] = useState(false);
   useEffect(() => {
