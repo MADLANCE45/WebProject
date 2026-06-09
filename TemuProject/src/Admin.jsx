@@ -36,6 +36,10 @@ export default function Admin() {
   const [categoria, setCategoria] = useState('Attrezzatura da Pesca')
   const [sottocategoria, setSottocategoria] = useState('Canne da pesca')
   const [loadingDb, setLoadingDb] = useState(false)
+  const [filtroRepartoAdmin, setFiltroRepartoAdmin] = useState('Tutti')
+  const [filtroCategoriaAdmin, setFiltroCategoriaAdmin] = useState('Tutte')
+
+  // Controllo Autenticazione all'avvio
 
   // Controllo Autenticazione all'avvio
   useEffect(() => {
@@ -53,7 +57,12 @@ export default function Admin() {
       fetchProdotti()
     }
   }, [session])
-
+// --- FILTRAGGIO PRODOTTI NELLA LISTA ---
+  const prodottiFiltratiAdmin = prodotti.filter(p => {
+    const passaReparto = filtroRepartoAdmin === 'Tutti' || p.reparto === filtroRepartoAdmin;
+    const passaCategoria = filtroCategoriaAdmin === 'Tutte' || p.categoria === filtroCategoriaAdmin;
+    return passaReparto && passaCategoria;
+  });
   // --- FUNZIONI AUTENTICAZIONE ---
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -225,24 +234,60 @@ export default function Admin() {
 
         {/* LISTA PRODOTTI INVENTARIO */}
         <div style={{ flex: '2 1 500px', background: 'white', padding: '30px', borderRadius: '16px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)', border: '1px solid #E5E7EB' }}>
-          <h2 style={{ margin: '0 0 20px 0', fontSize: '20px', color: '#111827' }}>Prodotti Online ({prodotti.length})</h2>
           
+          {/* Header con Titolo e Filtri */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
+            <h2 style={{ margin: 0, fontSize: '20px', color: '#111827' }}>
+              Prodotti Online ({prodottiFiltratiAdmin.length})
+            </h2>
+            
+            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              <select 
+                value={filtroRepartoAdmin} 
+                onChange={(e) => { setFiltroRepartoAdmin(e.target.value); setFiltroCategoriaAdmin('Tutte'); }} 
+                style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #D1D5DB', fontSize: '13px', cursor: 'pointer', outline: 'none' }}
+              >
+                <option value="Tutti">🌍 Tutti i Reparti</option>
+                {Object.keys(repartiMap).map(rep => <option key={rep} value={rep}>{rep}</option>)}
+              </select>
+
+              {filtroRepartoAdmin !== 'Tutti' && (
+                <select 
+                  value={filtroCategoriaAdmin} 
+                  onChange={(e) => setFiltroCategoriaAdmin(e.target.value)} 
+                  style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #D1D5DB', fontSize: '13px', cursor: 'pointer', outline: 'none' }}
+                >
+                  <option value="Tutte">📂 Tutte le Categorie</option>
+                  {Object.keys(repartiMap[filtroRepartoAdmin]).map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                </select>
+              )}
+            </div>
+          </div>
+          
+          {/* Lista Scrollabile dei Prodotti */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', maxHeight: '700px', overflowY: 'auto', paddingRight: '10px' }}>
-            {prodotti.length === 0 ? (
-              <p style={{ color: '#6B7280', fontStyle: 'italic' }}>Nessun prodotto caricato.</p>
+            {prodottiFiltratiAdmin.length === 0 ? (
+              <p style={{ color: '#6B7280', fontStyle: 'italic', textAlign: 'center', padding: '20px' }}>Nessun prodotto trovato per questa categoria.</p>
             ) : (
-              prodotti.map((p) => (
-                <div key={p.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '15px', border: '1px solid #E5E7EB', borderRadius: '8px', background: '#F9FAFB' }}>
+              prodottiFiltratiAdmin.map((p) => (
+                <div key={p.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '15px', border: '1px solid #E5E7EB', borderRadius: '10px', background: '#F9FAFB', transition: 'box-shadow 0.2s' }} onMouseEnter={(e)=>e.currentTarget.style.boxShadow='0 4px 10px rgba(0,0,0,0.05)'} onMouseLeave={(e)=>e.currentTarget.style.boxShadow='none'}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                    <div style={{ width: '50px', height: '50px', background: 'white', borderRadius: '6px', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid #E5E7EB' }}>
+                    <div style={{ width: '60px', height: '60px', background: 'white', borderRadius: '8px', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid #E5E7EB', flexShrink: 0 }}>
                       {p.immagine_url ? <img src={p.immagine_url} style={{ width: '100%', height: '100%', objectFit: 'contain' }} alt="img" /> : <span style={{ fontSize: '10px', color: '#9CA3AF' }}>Img</span>}
                     </div>
                     <div>
-                      <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', color: '#111827', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{p.titolo}</h4>
-                      <p style={{ margin: 0, fontSize: '12px', color: '#6B7280' }}>€{p.prezzo} • {p.sottocategoria}</p>
+                      <h4 style={{ margin: '0 0 6px 0', fontSize: '15px', color: '#111827', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{p.titolo}</h4>
+                      
+                      {/* Qui ora mostriamo l'albero completo della categoria per farti capire subito dov'è */}
+                      <p style={{ margin: '0 0 4px 0', fontSize: '11px', color: '#6B7280', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                        {p.reparto} &gt; {p.categoria}
+                      </p>
+                      <p style={{ margin: 0, fontSize: '13px', color: '#059669', fontWeight: 'bold' }}>
+                        € {p.prezzo} <span style={{ color: '#9CA3AF', fontWeight: 'normal', fontSize: '12px' }}>• {p.sottocategoria}</span>
+                      </p>
                     </div>
                   </div>
-                  <button onClick={() => eliminaProdotto(p.id)} style={{ background: '#FEE2E2', color: '#EF4444', border: 'none', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '12px', transition: 'background 0.2s' }} onMouseEnter={(e) => e.target.style.background = '#FECACA'} onMouseLeave={(e) => e.target.style.background = '#FEE2E2'}>
+                  <button onClick={() => eliminaProdotto(p.id)} style={{ background: '#FEE2E2', color: '#EF4444', border: 'none', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '12px', transition: 'background 0.2s', flexShrink: 0 }} onMouseEnter={(e) => e.target.style.background = '#FECACA'} onMouseLeave={(e) => e.target.style.background = '#FEE2E2'}>
                     Elimina
                   </button>
                 </div>
