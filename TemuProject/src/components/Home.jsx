@@ -90,17 +90,15 @@ export default function Home({ isDarkMode }) {
   const prodottiPaginati = prodottiFiltrati.slice(indicePrimoProdotto, indiceUltimoProdotto);
   const totalePagine = Math.ceil(prodottiFiltrati.length / prodottiPerPagina);
 
- return (
+return (
     <div style={{ fontFamily: 'Inter, sans-serif', backgroundColor: bgPrincipale, paddingBottom: '100px', minHeight: '100vh', color: textPrincipale }}>
       
-      {/* Altri popup (se li hai attivati) */}
-      <ToastPromo />
-      
-      {/* 1. QUI INSERISCI LO SLIDER */}
+      {/* ECCO LA TUA RUOTA DELLA FORTUNA! */}
+      <WheelOfFortune isDarkMode={isDarkMode} />
+
       <HeroSlider />
       
-      {/* 2. SUBITO SOTTO INSERISCI L'HEADER */}
-      <Header 
+      <Header
         repartiMap={repartiMap}
         repartoAttivo={repartoAttivo}
         setRepartoAttivo={cambiaReparto}

@@ -63,28 +63,67 @@
 /* --- VERSIONE SMARTPHONE (Sotto i 768px) --- */
 @media screen and (max-width: 768px) {
   .header-container {
-    justify-content: center; /* Centra il logo su mobile */
+    justify-content: center;
     padding: 15px 10px 10px 10px;
   }
 
   .desktop-nav {
-    display: none; /* Nasconde i bottoni grandi su mobile */
+    display: none;
   }
 
-  /* Mostra una barra di filtri orizzontale comoda per i pollici */
+  /* --- NUOVO CONTENITORE CATEGORIE SCORREVOLE --- */
   .mobile-nav {
     display: flex;
-    justify-content: space-around;
-    padding: 10px;
+    justify-content: flex-start; /* Allinea a sinistra per permettere lo scorrimento */
+    padding: 15px 0 15px 15px; /* Tolto il padding a destra per far uscire il bottone dallo schermo */
     background-color: #f8f9fa;
     border-top: 1px solid #eeeeee;
+    gap: 12px; /* Spazio per far "respirare" i bottoni */
+    
+    /* Magia dello scorrimento orizzontale */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Rende lo scorrimento "scivoloso" e fluido su iPhone/Android */
+    scroll-snap-type: x mandatory; /* Effetto calamita: i bottoni si fermano in posizione esatta */
+    
+    /* Nasconde la antiestetica barra di scorrimento grigia */
+    scrollbar-width: none; /* Firefox */
   }
 
+  /* Nasconde la barra su Chrome e Safari */
+  .mobile-nav::-webkit-scrollbar {
+    display: none; 
+  }
+
+  /* --- BOTTONI "TAGLIATI" E A PROVA DI POLLICE --- */
   .mobile-nav .nav-btn {
+    /* IL SEGRETO DELL'EFFETTO TAGLIATO:
+       Ogni bottone occupa il 75% dello schermo. 
+       Questo forza il secondo bottone a occupare il restante 25%, risultando visibilmente "tagliato". */
+    flex: 0 0 75%; 
+    max-width: 260px;
+    
+    scroll-snap-align: center; /* Quando l'utente lascia il dito, il bottone si centra sullo schermo */
+    
     font-size: 16px;
-    padding: 10px 15px;
-    margin-left: 0;
-    margin: 0 5px;
-    flex-grow: 1; /* I bottoni occupano tutto lo spazio in larghezza */
+    padding: 14px 15px; /* Più alto (Tap Target più grande) per agevolare il clic */
+    margin: 0;
+    
+    /* Miglioramenti estetici per la leggibilità */
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.06); /* Ombra leggera per farli sembrare bottoni fisici 3D */
+    white-space: nowrap; /* Impedisce al testo di andare a capo male */
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Creiamo una leggera sfumatura bianca sulla destra per enfatizzare che si può scorrere */
+  .mobile-nav::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    width: 40px;
+    height: 60px;
+    background: linear-gradient(to right, rgba(248, 249, 250, 0), rgba(248, 249, 250, 1));
+    pointer-events: none; /* Rende la sfumatura "invisibile" al tocco per non bloccare i clic */
   }
 }
