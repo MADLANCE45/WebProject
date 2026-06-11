@@ -71,7 +71,14 @@ export default function Home({ isDarkMode }) {
   const prodottiFiltrati = prodotti.filter(p => {
     let passaReparto = p.reparto === repartoAttivo || (!p.reparto && repartoAttivo === '🎣 Pesca Sportiva');
     let passaRicerca = p.titolo ? p.titolo.toLowerCase().includes(ricerca.toLowerCase()) : false;
-    let passaCategoria = filtroCategoria === 'Tutte' || p.categoria === filtroCategoria;
+    
+    // LA MAGIA È QUI: Controlliamo se la parola selezionata corrisponde 
+    // alla Categoria (es. "Attrezzatura") OPPURE alla Sottocategoria (es. "Mulinelli")
+    let passaCategoria = 
+      filtroCategoria === 'Tutte' || 
+      p.categoria === filtroCategoria || 
+      p.sottocategoria === filtroCategoria;
+    
     let passaSottocategoria = filtroSottocategoria === 'Tutte' || p.sottocategoria === filtroSottocategoria;
     
     let passaPrezzo = true;
