@@ -21,6 +21,11 @@ const repartiMap = {
     'Tecnica e Manutenzione': ['Filtri e Pompe', 'Illuminazione LED', 'Riscaldatori', 'Sistemi CO2'],
     'Allestimento (Hardscape)': ['Rocce e Legni', 'Sabbia e Ghiaia', 'Decorazioni in resina'],
     'Accessori Vari': ['Retini', 'Calamite puliscivetro', 'Mangiatoie automatiche']
+  },
+  '🏕️ Campeggio e Bivacco': {
+    'Tende e Riposo': ['Tende da campeggio', 'Sacchi a pelo', 'Sedie e Lettini'],
+    'Cucina da Campo': ['Fornelli a gas', 'Thermos e Borracce', 'Pentolame compatto'],
+    'Utensili e Accessori': ['Torce e Lampade', 'Coltelli multiuso', 'Zaini', 'Repellenti zanzare']
   }
 };
 
@@ -255,7 +260,8 @@ function HeroSlider() {
   const [current, setCurrent] = useState(0);
   const slides = [
     { id: 1, image: '/banner.jpg', title: 'Attrezzatura da Pesca Pro 🎣', subtitle: 'Ecoscandagli, mulinelli ed esche testate per te.' },
-    { id: 2, image: '/banner2.jpg', title: 'Acquascaping Perfetto 🐠', subtitle: 'Illuminazione LED e filtri a prezzi imbattibili.' }
+    { id: 2, image: '/banner2.jpg', title: 'Acquascaping Perfetto 🐠', subtitle: 'Illuminazione LED e filtri a prezzi imbattibili.' },
+    { id: 3, image: '/banner10.jpg', title: 'Avventura Outdoor 🏕️', subtitle: 'Tende, riposo e cucina da campo per il tuo bivacco.' }
   ];
 
   useEffect(() => {
@@ -278,6 +284,8 @@ function HeroSlider() {
     </div>
   );
 }
+
+
 function PromoBanner() {
   const [isVisible, setIsVisible] = useState(() => {
     // Controlla se l'utente ha già chiuso questo banner in precedenza

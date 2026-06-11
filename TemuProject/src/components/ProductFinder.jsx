@@ -10,6 +10,7 @@ export default function ProductFinder({ isDarkMode, cambiaReparto, setFiltroCate
   const [options, setOptions] = useState([
     { label: '🎣 Pesca', value: 'pesca' },
     { label: '🐠 Acquario', value: 'acquario' },
+    { label: '🏕️ Campeggio', value: 'campeggio' }, // <-- NUOVA RIGA
     { label: '🎧 Assistenza', value: 'assistenza' }
   ]);
   
@@ -46,6 +47,26 @@ export default function ProductFinder({ isDarkMode, cambiaReparto, setFiltroCate
           { label: '⚙️ Filtri e Pompe', value: 'tecnica' }
         ]);
       } 
+        else if (val === 'campeggio') {
+        setMessages(prev => [...prev, { sender: 'bot', text: 'Ottima scelta! Ti serve qualcosa per dormire, per mangiare o degli accessori utili?' }]);
+        setOptions([
+          { label: '⛺ Riposo', value: 'riposo' },
+          { label: '🍳 Cucina', value: 'cucina' },
+          { label: '🔦 Accessori', value: 'accessori' }
+        ]);
+      }
+      else if (val === 'riposo') {
+        setMessages(prev => [...prev, { sender: 'bot', text: 'Ecco le migliori tende e brandine selezionate per te! 🚀' }]);
+        eseguiRicerca('🏕️ Campeggio e Bivacco', 'Tende e Riposo', '');
+      }
+      else if (val === 'cucina') {
+        setMessages(prev => [...prev, { sender: 'bot', text: 'Ecco fornelletti e accessori da campo! 🚀' }]);
+        eseguiRicerca('🏕️ Campeggio e Bivacco', 'Cucina da Campo', '');
+      }
+      else if (val === 'accessori') {
+        setMessages(prev => [...prev, { sender: 'bot', text: 'Ecco torce, coltellini e zaini perfetti per l\'avventura! 🚀' }]);
+        eseguiRicerca('🏕️ Campeggio e Bivacco', 'Utensili e Accessori', '');
+      }
       // --- INIZIO NUOVA SEZIONE ASSISTENZA ---
       else if (val === 'assistenza') {
         setMessages(prev => [...prev, { sender: 'bot', text: 'Come posso aiutarti? Seleziona un\'opzione qui sotto:' }]);
@@ -66,6 +87,7 @@ export default function ProductFinder({ isDarkMode, cambiaReparto, setFiltroCate
       else if (val === 'home') {
          resetChat();
       }
+
       // --- FINE SEZIONE ASSISTENZA ---
 
       else if (val === 'mare' || val === 'dolce') {

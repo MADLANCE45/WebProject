@@ -17,6 +17,7 @@ export default function Header({
   const getBgImage = (repName) => {
     if (repName.includes('Pesca')) return '/banner4.jpg';
     if (repName.includes('Acquario')) return '/banner2.jpg';
+    if (repName.includes('Campeggio')) return '/banner10.jpg'; 
     return ''; 
   };
 

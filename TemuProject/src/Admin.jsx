@@ -14,6 +14,14 @@ const repartiMap = {
     'Tecnica e Manutenzione': ['Filtri e Pompe', 'Illuminazione LED', 'Riscaldatori', 'Sistemi CO2'],
     'Allestimento (Hardscape)': ['Rocce e Legni', 'Sabbia e Ghiaia', 'Decorazioni in resina'],
     'Accessori Vari': ['Retini', 'Calamite puliscivetro', 'Mangiatoie automatiche']
+  },
+    
+    // AGGIUNGI QUESTO NUOVO BLOCCO QUI SOTTO:
+    '🏕️ Campeggio e Bivacco': {
+      'Tende e Riposo': ['Tende da campeggio', 'Sacchi a pelo', 'Sedie e Lettini'],
+      'Cucina da Campo': ['Fornelli a gas', 'Thermos e Borracce', 'Pentolame compatto'],
+      'Utensili e Accessori': ['Torce e Lampade', 'Coltelli multiuso', 'Zaini', 'Repellenti zanzare']
+    
   }
 };
 
