@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import './App.css';
 
-// IMPORT DELLE PAGINE PRINCIPALI
+// IMPORT DELLE PAGINE PRINCIPALI E COMPONENTI
 import Home from './components/Home';
 import ProductPage from './components/ProductPage';
 import Admin from './Admin'; 
+import Footer from './components/Footer';
+import CookieBanner from './components/CookieBanner';
 
 // --- COMPONENTI MARKETING E GLOBAL ---
 
@@ -39,18 +41,6 @@ function TopBar() {
   )
 }
 
-function CookieBanner() {
-  const [visibile, setVisibile] = useState(false);
-  useEffect(() => { if (!localStorage.getItem('cookie_accettati')) setVisibile(true); }, []);
-  if (!visibile) return null;
-  return (
-    <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: '#111827', color: '#fff', padding: '15px 4%', zIndex: 9999, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
-      <p style={{ margin: 0, fontSize: '13px', flex: 1 }}>Utilizziamo i link affiliati Temu. Acquistando supporti il canale YouTube senza rincari.</p>
-      <button onClick={() => { localStorage.setItem('cookie_accettati', 'true'); setVisibile(false); }} style={{ background: '#FF6600', color: 'white', border: 'none', padding: '10px 25px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>OK</button>
-    </div>
-  )
-}
-
 // --- COMPONENTE ROOT (APP) ---
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -59,7 +49,6 @@ function App() {
     <Router>
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: isDarkMode ? '#111827' : '#F9FAFB' }}>
         <TopBar />
-        <CookieBanner />
         
         {/* HEADER EFFETTO VETRO (APPLE STYLE) */}
         <nav style={{ 
@@ -107,10 +96,9 @@ function App() {
           </Routes>
         </div>
         
-        <footer style={{ background: '#111827', color: '#9CA3AF', padding: '40px 4%', textAlign: 'center', fontSize: '14px' }}>
-          <p style={{ margin: '0 0 10px 0', color: 'white', fontWeight: 'bold' }}>Sostieni il canale Recensioni ITA acquistando tramite i nostri link affiliati!</p>
-          &copy; {new Date().getFullYear()} Recensioni ITA. Tutti i diritti riservati.
-        </footer>
+        <Footer isDarkMode={isDarkMode} />
+        
+        <CookieBanner isDarkMode={isDarkMode} />
       </div>
     </Router>
   )

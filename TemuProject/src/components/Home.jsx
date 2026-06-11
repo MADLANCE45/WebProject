@@ -6,7 +6,7 @@ import ProductModal from './ProductModal';
 import StarRating from './StarRating';
 import ProductCard from './ProductCard';
 import WheelOfFortune from './WheelOfFortune';
-
+import ProductFinder from './ProductFinder';
 
 // ---> INCOLLA LA MAPPA QUI <---
 const repartiMap = {
@@ -101,10 +101,19 @@ return (
     <div style={{ fontFamily: 'Inter, sans-serif', backgroundColor: bgPrincipale, paddingBottom: '100px', minHeight: '100vh', color: textPrincipale }}>
       
       {/* 1. POPUP E INTERFACCIE SULLO SCHERMO (Overlay fissi) */}
+      {/* 1. POPUP E INTERFACCIE SULLO SCHERMO (Overlay fissi) */}
       <WheelOfFortune isDarkMode={isDarkMode} />
       <ToastPromo />
       <ExitIntentPopup isDarkMode={isDarkMode} />
-      <FakeSalesToast prodotti={prodotti} isDarkMode={isDarkMode} /> {/* Passiamo l'array dei prodotti reali caricati da Supabase */}
+      <FakeSalesToast prodotti={prodotti} isDarkMode={isDarkMode} />
+      
+      {/* IL NOSTRO NUOVO ASSISTENTE BOT */}
+      <ProductFinder 
+        isDarkMode={isDarkMode}
+        cambiaReparto={cambiaReparto}
+        setFiltroCategoria={setFiltroCategoria}
+        setRicerca={setRicerca}
+      />
       
       {/* 2. SLIDER DEI BANNER PRINCIPALI */}
       <HeroSlider />
