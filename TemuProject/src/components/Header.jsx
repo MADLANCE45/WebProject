@@ -68,13 +68,12 @@ export default function Header({
                 value={isAttivo ? filtroCategoria : ""}
                 onChange={(e) => setFiltroCategoria(e.target.value)}
                 style={{
-                  appearance: 'none', // Rimuove la freccia standard del browser
-                  paddingRight: '35px', // Spazio per la nostra freccia custom
-                  cursor: 'pointer',
+                  appearance: 'none',
+                  paddingRight: '35px', // Spazio riservato solo per la freccia
                   backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='${arrowColor}' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
                   backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'right 12px center',
-                  backgroundSize: '16px',
+                  backgroundPosition: 'right 14px center',
+                  backgroundSize: '14px',
                   outline: 'none'
                 }}
               >

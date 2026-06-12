@@ -39,7 +39,7 @@ export default function Home({ isDarkMode }) {
   const [filtroSconto, setFiltroSconto] = useState('Tutti'); 
   const [popupClosed, setPopupClosed] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const prodottiPerPagina = 20;
+  const prodottiPerPagina = 18;
 
   // 1. Il tuo useEffect che carica e mescola i prodotti
   useEffect(() => {
