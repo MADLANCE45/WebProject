@@ -26,13 +26,13 @@ export default function Header({
 
   const gestisciSelezione = (scelta) => {
     setFiltroCategoria(scelta);
-    setMenuAperto(null); // Chiude il menu dopo aver cliccato
+    setMenuAperto(null); 
   };
 
   return (
     <div className={`nav-container ${isDarkMode ? 'dark-theme-active' : ''}`}>
       
-      {/* Sfondo invisibile per chiudere il menu cliccando fuori */}
+      {/* Sfondo invisibile per chiudere il menu PC cliccando fuori */}
       {menuAperto && (
         <div 
           style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 199 }} 
@@ -54,68 +54,91 @@ export default function Header({
         ))}
       </div>
 
-      {/* RIGA DELLE CATEGORIE (Pillole con tendine custom) */}
+      {/* RIGA DELLE CATEGORIE */}
       <div className="categorie-clean-container">
         
-        {/* Pulsante fisso "Tutte" */}
         <button
           className={`categoria-tab ${filtroCategoria === 'Tutte' ? 'attivo' : ''}`}
           onClick={() => gestisciSelezione('Tutte')}
+          style={{ flexShrink: 0 }}
         >
           Tutte le Categorie
         </button>
         
-        {/* Generazione Bottoni e Menu */}
+        {/* Generazione Bottoni Misti */}
         {Object.keys(repartiMap[repartoAttivo]).map((macroCat) => {
           const subCategorie = repartiMap[repartoAttivo][macroCat];
           const isAttivo = filtroCategoria === macroCat || subCategorie.includes(filtroCategoria);
           const isMenuAperto = menuAperto === macroCat;
 
-          // Colore della freccia in base allo stato
+          // Colori della freccia
           const arrowColor = (isDarkMode || isAttivo) ? '#FFFFFF' : '#4B5563';
+          const arrowColorEncoded = (isDarkMode || isAttivo) ? '%23FFFFFF' : '%234B5563';
 
           return (
-            <div key={macroCat} className="custom-dropdown-container">
+            <div key={macroCat} className="dropdown-container-responsive">
               
-              {/* Il bottone visibile a forma di pillola */}
-              <button
-                className={`categoria-tab ${isAttivo ? 'attivo' : ''}`}
-                onClick={() => setMenuAperto(isMenuAperto ? null : macroCat)}
-              >
-                {/* Mostra il nome della sottocategoria scelta, se no mostra la MacroCategoria */}
-                <span>{isAttivo && filtroCategoria !== macroCat ? filtroCategoria : macroCat}</span>
-                
-                {/* Freccetta pulita stile Amazon */}
-                <svg 
-                  className="freccia-tendina" 
-                  style={{ transform: isMenuAperto ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                  xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={arrowColor} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+              {/* === MENU PC (Fluttuante e Moderno) === */}
+              <div className="desktop-only-dropdown">
+                <button
+                  className={`categoria-tab ${isAttivo ? 'attivo' : ''}`}
+                  onClick={() => setMenuAperto(isMenuAperto ? null : macroCat)}
                 >
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </button>
-
-              {/* La tendina elegante che appare sotto al bottone */}
-              {isMenuAperto && (
-                <div className="custom-dropdown-menu">
-                  <button 
-                    className={`custom-dropdown-item top-item ${filtroCategoria === macroCat ? 'selezionato' : ''}`}
-                    onClick={() => gestisciSelezione(macroCat)}
-                  >
-                    Mostra tutto
-                  </button>
+                  <span>{isAttivo && filtroCategoria !== macroCat ? filtroCategoria : macroCat}</span>
                   
-                  {subCategorie.map((sub) => (
+                  <svg 
+                    className="freccia-tendina" 
+                    style={{ transform: isMenuAperto ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                    xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={arrowColor} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                  >
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </button>
+
+                {isMenuAperto && (
+                  <div className="custom-dropdown-menu">
                     <button 
-                      key={sub}
-                      className={`custom-dropdown-item ${filtroCategoria === sub ? 'selezionato' : ''}`}
-                      onClick={() => gestisciSelezione(sub)}
+                      className={`custom-dropdown-item top-item ${filtroCategoria === macroCat ? 'selezionato' : ''}`}
+                      onClick={() => gestisciSelezione(macroCat)}
                     >
-                      {sub}
+                      Mostra tutto
                     </button>
-                  ))}
-                </div>
-              )}
+                    {subCategorie.map((sub) => (
+                      <button 
+                        key={sub}
+                        className={`custom-dropdown-item ${filtroCategoria === sub ? 'selezionato' : ''}`}
+                        onClick={() => gestisciSelezione(sub)}
+                      >
+                        {sub}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* === MENU MOBILE (Tendina Infallibile del Sistema Operativo) === */}
+              <select
+                className={`categoria-tab mobile-only-select ${isAttivo ? 'attivo' : ''}`}
+                value={isAttivo ? filtroCategoria : ""}
+                onChange={(e) => setFiltroCategoria(e.target.value)}
+                style={{
+                  appearance: 'none',
+                  paddingRight: '35px',
+                  cursor: 'pointer',
+                  backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='${arrowColorEncoded}' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'right 12px center',
+                  backgroundSize: '16px',
+                  outline: 'none'
+                }}
+              >
+                <option value="" disabled hidden>{macroCat}</option>
+                <option value={macroCat} style={{ fontWeight: 'bold' }}>Mostra tutto</option>
+                {subCategorie.map((sub) => (
+                  <option key={sub} value={sub}>{sub}</option>
+                ))}
+              </select>
+
             </div>
           );
         })}

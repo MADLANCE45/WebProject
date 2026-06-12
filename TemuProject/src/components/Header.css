@@ -65,13 +65,13 @@
 }
 
 /* =========================================
-   CATEGORIE E TENDINE (Design "Pillola" Moderno)
+   CATEGORIE E TENDINE
    ========================================= */
 .categorie-clean-container {
   display: flex;
   gap: 12px;
-  flex-wrap: nowrap; /* FONDAMENTALE: niente a capo, abilita lo scorrimento */
-  overflow-x: auto; /* Abilita lo scorrimento orizzontale */
+  flex-wrap: nowrap; 
+  overflow-x: auto; 
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   padding-bottom: 8px;
@@ -81,9 +81,14 @@
   display: none;
 }
 
-.custom-dropdown-container {
+.dropdown-container-responsive {
   position: relative;
   flex-shrink: 0;
+}
+
+/* Di base, nascondiamo la tendina Mobile su PC */
+.mobile-only-select {
+  display: none !important;
 }
 
 .categoria-tab {
@@ -117,7 +122,7 @@
   transition: transform 0.3s ease;
 }
 
-/* --- LA SCHEDA FLUTTUANTE --- */
+/* --- LA SCHEDA FLUTTUANTE (PC) --- */
 .custom-dropdown-menu {
   position: absolute;
   top: calc(100% + 8px); 
@@ -169,7 +174,7 @@
   background: #F3F4F6;
 }
 
-/* --- DARK MODE PER LA TENDINA --- */
+/* --- DARK MODE --- */
 .nav-container.dark-theme-active .custom-dropdown-menu {
   background: #1F2937;
   border-color: #374151;
@@ -196,14 +201,13 @@
   background: #374151;
 }
 
-/* Animazione di entrata */
 @keyframes fadeInDown {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 /* =========================================
-   OTTIMIZZAZIONE MOBILE (Fondamentale!)
+   IL TRUCCO MAGICO PER MOBILE
    ========================================= */
 @media (max-width: 768px) {
   .nav-container {
@@ -223,7 +227,7 @@
   }
 
   .reparto-banner {
-    flex: 0 0 85%; /* Mantiene i banner grandi su telefono */
+    flex: 0 0 85%; 
     height: 110px; 
   }
 
@@ -237,6 +241,14 @@
 
   .categoria-tab {
     font-size: 14px; 
-    padding: 10px 18px; /* Leggermente più compatti su telefono */
+    padding: 10px 18px; 
+  }
+
+  /* SPEGNIAMO IL MENU PC E ACCENDIAMO IL MENU NATIVO! */
+  .desktop-only-dropdown {
+    display: none !important;
+  }
+  .mobile-only-select {
+    display: block !important; 
   }
 }
