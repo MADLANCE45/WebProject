@@ -3,9 +3,9 @@
   to { transform: translateY(0); opacity: 1; }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* CONTENITORE PRINCIPALE STICKY */
@@ -65,31 +65,24 @@
 }
 
 /* =========================================
-   CATEGORIE E TENDINE
+   CATEGORIE (SU PC VANNO A CAPO PER NON TAGLIARE I MENU)
    ========================================= */
 .categorie-clean-container {
   display: flex;
   gap: 12px;
-  flex-wrap: nowrap; 
-  overflow-x: auto; 
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+  flex-wrap: wrap; /* Fondamentale su PC! */
+  justify-content: center;
   padding-bottom: 8px;
 }
 
-.categorie-clean-container::-webkit-scrollbar {
-  display: none;
-}
-
-.dropdown-container-responsive {
+.dropdown-wrapper {
   position: relative;
   flex-shrink: 0;
 }
 
-/* Di base, nascondiamo la tendina Mobile su PC */
-.mobile-only-select {
-  display: none !important;
-}
+/* Gestione dei Moduli */
+.desktop-menu { display: block; }
+.mobile-menu { display: none; }
 
 .categoria-tab {
   display: flex;
@@ -122,7 +115,7 @@
   transition: transform 0.3s ease;
 }
 
-/* --- LA SCHEDA FLUTTUANTE (PC) --- */
+/* --- LA SCHEDA FLUTTUANTE (SOLO PC) --- */
 .custom-dropdown-menu {
   position: absolute;
   top: calc(100% + 8px); 
@@ -180,34 +173,25 @@
   border-color: #374151;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
-
 .nav-container.dark-theme-active .custom-dropdown-item {
   color: #D1D5DB;
   border-color: #374151;
 }
-
 .nav-container.dark-theme-active .custom-dropdown-item.top-item {
   color: #FF6600;
   background: #111827;
 }
-
 .nav-container.dark-theme-active .custom-dropdown-item:hover {
   background: #374151;
   color: #ffffff;
 }
-
 .nav-container.dark-theme-active .custom-dropdown-item.selezionato {
   color: #ffffff;
   background: #374151;
 }
 
-@keyframes fadeInDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 /* =========================================
-   IL TRUCCO MAGICO PER MOBILE
+   MOBILE (SCORRIMENTO ORIZZONTALE ATTIVO)
    ========================================= */
 @media (max-width: 768px) {
   .nav-container {
@@ -235,20 +219,26 @@
     font-size: 18px; 
   }
   
+  /* Spegne il menu fluttuante, accende il menu sicuro del telefono */
+  .desktop-menu { display: none !important; }
+  .mobile-menu { display: block !important; }
+
+  /* Rimette i filtri in una sola riga scorrevole */
   .categorie-clean-container {
-    padding-right: 15px; 
+    flex-wrap: nowrap; 
+    justify-content: flex-start;
+    overflow-x: auto; 
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-right: 15px;
+  }
+
+  .categorie-clean-container::-webkit-scrollbar {
+    display: none;
   }
 
   .categoria-tab {
     font-size: 14px; 
     padding: 10px 18px; 
-  }
-
-  /* SPEGNIAMO IL MENU PC E ACCENDIAMO IL MENU NATIVO! */
-  .desktop-only-dropdown {
-    display: none !important;
-  }
-  .mobile-only-select {
-    display: block !important; 
   }
 }

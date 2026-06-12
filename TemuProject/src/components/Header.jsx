@@ -32,7 +32,7 @@ export default function Header({
   return (
     <div className={`nav-container ${isDarkMode ? 'dark-theme-active' : ''}`}>
       
-      {/* Sfondo invisibile per chiudere il menu PC cliccando fuori */}
+      {/* Sfondo invisibile: si attiva SOLO su PC per chiudere la tendina cliccando fuori */}
       {menuAperto && (
         <div 
           style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 199 }} 
@@ -62,7 +62,7 @@ export default function Header({
           onClick={() => gestisciSelezione('Tutte')}
           style={{ flexShrink: 0 }}
         >
-          Tutte le Categorie
+          🌟 Tutte le Categorie
         </button>
         
         {/* Generazione Bottoni Misti */}
@@ -71,21 +71,19 @@ export default function Header({
           const isAttivo = filtroCategoria === macroCat || subCategorie.includes(filtroCategoria);
           const isMenuAperto = menuAperto === macroCat;
 
-          // Colori della freccia
           const arrowColor = (isDarkMode || isAttivo) ? '#FFFFFF' : '#4B5563';
           const arrowColorEncoded = (isDarkMode || isAttivo) ? '%23FFFFFF' : '%234B5563';
 
           return (
-            <div key={macroCat} className="dropdown-container-responsive">
+            <div key={macroCat} className="dropdown-wrapper">
               
-              {/* === MENU PC (Fluttuante e Moderno) === */}
-              <div className="desktop-only-dropdown">
+              {/* === 🖥️ VERSIONE PC (Menu fluttuante che non viene più tagliato) === */}
+              <div className="desktop-menu">
                 <button
                   className={`categoria-tab ${isAttivo ? 'attivo' : ''}`}
                   onClick={() => setMenuAperto(isMenuAperto ? null : macroCat)}
                 >
                   <span>{isAttivo && filtroCategoria !== macroCat ? filtroCategoria : macroCat}</span>
-                  
                   <svg 
                     className="freccia-tendina" 
                     style={{ transform: isMenuAperto ? 'rotate(180deg)' : 'rotate(0deg)' }}
@@ -101,7 +99,7 @@ export default function Header({
                       className={`custom-dropdown-item top-item ${filtroCategoria === macroCat ? 'selezionato' : ''}`}
                       onClick={() => gestisciSelezione(macroCat)}
                     >
-                      Mostra tutto
+                      📦 Mostra tutto
                     </button>
                     {subCategorie.map((sub) => (
                       <button 
@@ -116,28 +114,30 @@ export default function Header({
                 )}
               </div>
 
-              {/* === MENU MOBILE (Tendina Infallibile del Sistema Operativo) === */}
-              <select
-                className={`categoria-tab mobile-only-select ${isAttivo ? 'attivo' : ''}`}
-                value={isAttivo ? filtroCategoria : ""}
-                onChange={(e) => setFiltroCategoria(e.target.value)}
-                style={{
-                  appearance: 'none',
-                  paddingRight: '35px',
-                  cursor: 'pointer',
-                  backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='${arrowColorEncoded}' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'right 12px center',
-                  backgroundSize: '16px',
-                  outline: 'none'
-                }}
-              >
-                <option value="" disabled hidden>{macroCat}</option>
-                <option value={macroCat} style={{ fontWeight: 'bold' }}>Mostra tutto</option>
-                {subCategorie.map((sub) => (
-                  <option key={sub} value={sub}>{sub}</option>
-                ))}
-              </select>
+              {/* === 📱 VERSIONE MOBILE (Tendina Infallibile a scorrimento orizzontale) === */}
+              <div className="mobile-menu">
+                <select
+                  className={`categoria-tab ${isAttivo ? 'attivo' : ''}`}
+                  value={isAttivo ? filtroCategoria : ""}
+                  onChange={(e) => setFiltroCategoria(e.target.value)}
+                  style={{
+                    appearance: 'none',
+                    paddingRight: '35px',
+                    cursor: 'pointer',
+                    backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='${arrowColorEncoded}' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'right 12px center',
+                    backgroundSize: '16px',
+                    outline: 'none'
+                  }}
+                >
+                  <option value="" disabled hidden>{macroCat}</option>
+                  <option value={macroCat} style={{ fontWeight: 'bold' }}>📦 Mostra tutto</option>
+                  {subCategorie.map((sub) => (
+                    <option key={sub} value={sub}>{sub}</option>
+                  ))}
+                </select>
+              </div>
 
             </div>
           );
