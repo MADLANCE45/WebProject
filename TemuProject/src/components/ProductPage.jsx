@@ -106,9 +106,25 @@ const bgPrincipale = isDarkMode ? '#111827' : '#F9FAFB'; // Sfondo generale
         <span style={{ fontSize: '16px', color: '#9CA3AF', textDecoration: 'line-through' }}>{prezzoBarrato}€</span>
       </div>
 
-      <a href={prodotto.link_affiliazione} className="temu-buy-btn" target="_blank" rel="noopener noreferrer" style={{ display: 'block', background: 'linear-gradient(135deg, #FF7B00 0%, #FF4400 100%)', color: 'white', padding: '18px', textDecoration: 'none', borderRadius: '14px', fontSize: '22px', fontWeight: '900', textAlign: 'center', boxShadow: '0 10px 25px -5px rgba(255, 102, 0, 0.5)', marginBottom: '10px', transition: 'transform 0.2s ease, box-shadow 0.2s ease' }} onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
-        🔥 Vai all'Offerta su Temu
-      </a>
+      <a 
+            href={prodotto.link_affiliazione} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            style={{ 
+              display: 'block',
+              textAlign: 'center',
+              backgroundColor: prodotto.piattaforma === 'AliExpress' ? '#E62E04' : '#FF6600', 
+              color: 'white', 
+              padding: '12px', 
+              borderRadius: '8px', 
+              textDecoration: 'none', 
+              fontWeight: 'bold',
+              transition: 'background-color 0.2s',
+              marginTop: '15px'
+            }}
+          >
+            {prodotto.piattaforma === 'AliExpress' ? '🔴 Vai su AliExpress' : '🟠 Vai su Temu'}
+          </a>
       <p style={{ fontSize: '11px', color: '#9CA3AF', lineHeight: '1.2', textAlign: 'center', marginBottom: isMobile ? '0' : '30px' }}>
         * In qualità di Affiliato, ricevo una commissione per gli acquisti idonei.
       </p>
