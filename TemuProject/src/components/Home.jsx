@@ -147,6 +147,40 @@ return (
       <div style={{ padding: '20px 0' }}>
       
         {/* Griglia dei Prodotti */}
+        {/* Barra di ricerca e Filtri per prezzo/sconto */}
+        <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginBottom: '30px', padding: '0 4%' }}>
+          <input 
+             type="text" 
+             placeholder="Cerca prodotto..." 
+             value={ricerca} 
+             onChange={(e) => setRicerca(e.target.value)} 
+             style={{ flex: 2, minWidth: '200px', padding: '14px 20px', borderRadius: '12px', border: `2px solid ${cardBorder}`, background: cardBg, color: textPrincipale, outline: 'none', fontSize: '16px' }} 
+          />
+          
+          <select 
+             value={filtroPrezzo} 
+             onChange={(e) => setFiltroPrezzo(e.target.value)} 
+             style={{ flex: 1, minWidth: '150px', padding: '14px 20px', borderRadius: '12px', border: `2px solid ${cardBorder}`, background: cardBg, color: textPrincipale, outline: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '16px' }}
+          >
+            <option value="Tutti">Tutti i prezzi</option>
+            <option value="0-10">Sotto i 10 €</option>
+            <option value="10-30">Tra 10 € e 30 €</option>
+            <option value="30+">Oltre 30 €</option>
+          </select>
+
+          <select 
+             value={filtroSconto} 
+             onChange={(e) => setFiltroSconto(e.target.value)} 
+             style={{ flex: 1, minWidth: '150px', padding: '14px 20px', borderRadius: '12px', border: `2px solid ${cardBorder}`, background: cardBg, color: textPrincipale, outline: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '16px' }}
+          >
+            <option value="Tutti">Tutti gli sconti</option>
+            <option value="30">Offerte 30% e oltre</option>
+            <option value="50">Offerte 50% e oltre</option>
+            <option value="70">Offerte 70% e oltre</option>
+          </select>
+        </div>
+
+        {/* Griglia dei Prodotti (Con grafica AliExpress/Temu) */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px', padding: '0 4%' }}>
           {prodottiPaginati.map((prodotto) => {
             
@@ -154,7 +188,7 @@ return (
             const prezzoBarrato = (prezzoNum * 1.3).toFixed(2);
             const scontoPercentuale = 45 + ((prodotto.id * 3) % 30);
             
-            // LA MAGIA: Decidiamo il colore in base alla piattaforma!
+            // LA MAGIA: Colore dinamico in base alla piattaforma
             const coloreBrand = prodotto.piattaforma === 'AliExpress' ? '#E62E04' : '#FF6600';
 
             return (
@@ -162,24 +196,14 @@ return (
                   to={`/prodotto/${prodotto.id}`}
                   key={prodotto.id} 
                   style={{ 
-                    textDecoration: 'none', 
-                    color: 'inherit', 
-                    cursor: 'pointer', 
-                    position: 'relative', 
-                    display: 'flex', 
-                    flexDirection: 'column', 
-                    padding: '15px', 
-                    borderRadius: '20px', 
+                    textDecoration: 'none', color: 'inherit', cursor: 'pointer', position: 'relative', 
+                    display: 'flex', flexDirection: 'column', padding: '15px', borderRadius: '20px', 
                     background: cardBg, 
-                    
-                    // NUOVO STILE DINAMICO: Cornice e Ombra!
-                    border: `1px solid ${coloreBrand}30`, // Bordo laterale leggerissimo
-                    borderTop: `4px solid ${coloreBrand}`, // "Nastro" superiore netto
+                    border: `1px solid ${coloreBrand}30`, 
+                    borderTop: `4px solid ${coloreBrand}`, 
                     boxShadow: isDarkMode ? `0 10px 30px ${coloreBrand}15` : `0 10px 30px ${coloreBrand}15`, 
-                    
                     transition: 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease' 
                   }}
-                  // Effetto Hover dinamico
                   onMouseEnter={(e) => { 
                     e.currentTarget.style.transform = 'translateY(-5px)'; 
                     e.currentTarget.style.boxShadow = `0 15px 35px ${coloreBrand}35`; 
@@ -189,7 +213,7 @@ return (
                     e.currentTarget.style.boxShadow = `0 10px 30px ${coloreBrand}15`; 
                   }}
                 >
-                {/* BADGE DINAMICO ALIEXPRESS O TEMU */}
+                {/* BADGE DINAMICO */}
                 <span style={{ 
                   position: 'absolute', top: '12px', left: '12px', 
                   background: coloreBrand, 
