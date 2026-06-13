@@ -168,28 +168,50 @@
 }
 
 /* --- DARK MODE --- */
-.nav-container.dark-theme-active .custom-dropdown-menu {
-  background: #1F2937;
-  border-color: #374151;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-.nav-container.dark-theme-active .custom-dropdown-item {
-  color: #D1D5DB;
-  border-color: #374151;
-}
-.nav-container.dark-theme-active .custom-dropdown-item.top-item {
-  color: #FF6600;
-  background: #111827;
-}
-.nav-container.dark-theme-active .custom-dropdown-item:hover {
-  background: #374151;
-  color: #ffffff;
-}
-.nav-container.dark-theme-active .custom-dropdown-item.selezionato {
-  color: #ffffff;
-  background: #374151;
+/* =========================================
+   TEMA SCURO (DARK MODE COMPLETO)
+   ========================================= */
+
+/* 1. Sfondo del contenitore principale (l'Header in alto) */
+.nav-container.dark-theme-active {
+  background-color: rgb(17, 24, 39) !important; 
+  border-bottom: 4px solid rgb(255, 102, 0) !important;
 }
 
+/* 2. Colore delle Pillole (Bottoni delle Categorie) */
+.nav-container.dark-theme-active .categoria-tab {
+  background-color: rgb(31, 41, 55) !important; 
+  border-color: rgb(55, 65, 81) !important;
+  color: rgb(243, 244, 246) !important; 
+}
+
+.nav-container.dark-theme-active .categoria-tab:hover {
+  background-color: rgb(55, 65, 81) !important;
+}
+
+/* 3. Colore della Pillola Attiva/Selezionata */
+.nav-container.dark-theme-active .categoria-tab.attivo {
+  background-color: rgb(255, 102, 0) !important;
+  border-color: rgb(255, 102, 0) !important;
+  color: #ffffff !important; 
+}
+
+/* 4. Colore della Tendina Fluttuante (Menu PC) */
+.nav-container.dark-theme-active .smart-menu-box { 
+  background: #1F2937; border-color: #374151; 
+}
+.nav-container.dark-theme-active .smart-menu-item { 
+  color: #D1D5DB; border-color: #374151; 
+}
+.nav-container.dark-theme-active .smart-menu-item.top-item { 
+  color: #FF6600; background: #111827; 
+}
+.nav-container.dark-theme-active .smart-menu-item:hover { 
+  background: #374151; color: #ffffff; 
+}
+.nav-container.dark-theme-active .smart-menu-item.selezionato { 
+  color: #ffffff; background: #374151; 
+}
 /* =========================================
    MOBILE (SCORRIMENTO ORIZZONTALE ATTIVO)
    ========================================= */
