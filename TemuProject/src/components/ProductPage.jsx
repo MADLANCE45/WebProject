@@ -148,30 +148,55 @@ const bgPrincipale = isDarkMode ? '#111827' : '#F9FAFB'; // Sfondo generale
       </div>
 
       <a 
-            href={prodotto.link_affiliazione} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            style={{ 
-              display: 'block',
-              textAlign: 'center',
-              backgroundColor: prodotto.piattaforma === 'AliExpress' ? '#E62E04' : '#FF6600', 
-              color: 'white', 
-              padding: '12px', 
-              borderRadius: '8px', 
-              textDecoration: 'none', 
-              fontWeight: 'bold',
-              transition: 'background-color 0.2s',
-              marginTop: '15px'
-            }}
-          >
-            {prodotto.piattaforma === 'AliExpress' ? '🔴 Vai su AliExpress' : '🟠 Vai su Temu'}
-          </a>
-      <p style={{ fontSize: '11px', color: '#9CA3AF', lineHeight: '1.2', textAlign: 'center', marginBottom: isMobile ? '0' : '30px' }}>
+        href={prodotto.link_affiliazione} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        style={{ 
+          display: 'block',
+          textAlign: 'center',
+          backgroundColor: prodotto.piattaforma === 'AliExpress' ? '#E62E04' : '#FF6600', 
+          color: 'white', 
+          padding: '12px', 
+          borderRadius: '8px', 
+          textDecoration: 'none', 
+          fontWeight: 'bold',
+          transition: 'background-color 0.2s',
+          marginTop: '15px'
+        }}
+      >
+        {prodotto.piattaforma === 'AliExpress' ? '🔴 Vai su AliExpress' : '🟠 Vai su Temu'}
+      </a>
+        
+      <p style={{ fontSize: '11px', color: '#9CA3AF', lineHeight: '1.2', textAlign: 'center', marginTop: '10px', marginBottom: isMobile ? '0' : '15px' }}>
         * In qualità di Affiliato, ricevo una commissione per gli acquisti idonei.
       </p>
+
+      {/* --- BOX CARATTERISTICHE (SOLO DESKTOP) --- */}
+      {!isMobile && prodotto.descrizione_estesa && (
+        <div style={{ marginTop: '20px', padding: '20px', borderRadius: '12px', background: isDarkMode ? '#1F2937' : '#F9FAFB', border: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}` }}>
+          <h4 style={{ margin: '0 0 15px 0', fontSize: '15px', color: isDarkMode ? '#F9FAFB' : '#111827', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span>📌</span> Caratteristiche Principali
+          </h4>
+          <div 
+             style={{ fontSize: '13px', lineHeight: '1.8', color: isDarkMode ? '#D1D5DB' : '#4B5563' }}
+             dangerouslySetInnerHTML={{ __html: prodotto.descrizione_estesa }} 
+          />
+        </div>
+      )}
     </>
   );
-
+// --- BOX CARATTERISTICHE SALVATO IN UNA VARIABILE ---
+  const BoxCaratteristiche = prodotto.descrizione_estesa ? (
+    <div style={{ marginTop: '20px', padding: '20px', borderRadius: '12px', background: isDarkMode ? '#1F2937' : '#F9FAFB', border: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}` }}>
+      <h4 style={{ margin: '0 0 15px 0', fontSize: '15px', color: isDarkMode ? '#F9FAFB' : '#111827', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <span>📌</span> Caratteristiche Principali
+      </h4>
+      <div 
+         style={{ fontSize: '13px', lineHeight: '1.8', color: isDarkMode ? '#D1D5DB' : '#4B5563' }}
+         dangerouslySetInnerHTML={{ __html: prodotto.descrizione_estesa }} 
+      />
+    </div>
+  ) : null;
   const BloccoRecensioni = (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%' }}>
       
@@ -188,8 +213,8 @@ const bgPrincipale = isDarkMode ? '#111827' : '#F9FAFB'; // Sfondo generale
         </div>
       </div>
 
-      {/* 2. BOX: CARATTERISTICHE (DA DATABASE) - ORA È SOPRA! */}
-      {prodotto.descrizione_estesa && (
+      {/* 2. BOX: CARATTERISTICHE (SOLO MOBILE) */}
+      {isMobile && prodotto.descrizione_estesa && (
         <div style={{ padding: '20px', borderRadius: '12px', background: isDarkMode ? '#1F2937' : '#F9FAFB', border: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}` }}>
           <h4 style={{ margin: '0 0 15px 0', fontSize: '15px', color: isDarkMode ? '#F9FAFB' : '#111827', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span>📌</span> Caratteristiche Principali
@@ -201,7 +226,7 @@ const bgPrincipale = isDarkMode ? '#111827' : '#F9FAFB'; // Sfondo generale
         </div>
       )}
 
-      {/* 3. BOX: IL VERDETTO DELL'ESPERTO - ORA È SOTTO! */}
+      {/* 3. BOX: IL VERDETTO DELL'ESPERTO */}
       <div style={{
         backgroundColor: isDarkMode ? '#1F2937' : '#F3F4F6',
         borderLeft: '4px solid #FF6600',
