@@ -74,7 +74,25 @@ export default function Footer({ isDarkMode }) {
             
           </div>
         </div>
-
+      {/* 4. COLONNA NOTE LEGALI */}
+        <div>
+          <h3 style={{ color: titleColor, fontSize: '18px', fontWeight: '700', margin: '0 0 20px 0' }}>
+            Note Legali
+          </h3>
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '15px', lineHeight: '2.5' }}>
+            <li>
+              <a href="/privacy-policy" style={{ textDecoration: 'none', color: textColor }}>Privacy Policy</a>
+            </li>
+            <li>
+              <a href="/cookie-policy" style={{ textDecoration: 'none', color: textColor }}>Cookie Policy</a>
+            </li>
+            <li>
+              <a href="/termini-e-condizioni" style={{ textDecoration: 'none', color: textColor }}>Termini e Condizioni</a>
+            </li>
+            {/* TASTO OBBLIGATORIO PER RIAPRIRE IL BANNER IUBENDA */}
+            
+          </ul>
+        </div>
       </div>
 
       {/* DIVISORE E DISCLAIMER LEGALE */}

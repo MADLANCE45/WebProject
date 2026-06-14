@@ -8,7 +8,7 @@ import ProductPage from './components/ProductPage';
 import Admin from './Admin'; 
 import Footer from './components/Footer';
 import CookieBanner from './components/CookieBanner';
-
+import { PrivacyPolicy, CookiePolicy, TerminiCondizioni } from './components/PagineLegali';
 // --- COMPONENTI MARKETING E GLOBAL ---
 
 function CountdownTimer() {
@@ -93,6 +93,9 @@ function App() {
             <Route path="/" element={<Home isDarkMode={isDarkMode} />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/prodotto/:id" element={<ProductPage isDarkMode={isDarkMode} />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy isDarkMode={isDarkMode} />} />
+<Route path="/cookie-policy" element={<CookiePolicy isDarkMode={isDarkMode} />} />
+<Route path="/termini-e-condizioni" element={<TerminiCondizioni isDarkMode={isDarkMode} />} />
           </Routes>
         </div>
         

@@ -74,6 +74,7 @@ const bgPrincipale = isDarkMode ? '#111827' : '#F9FAFB'; // Sfondo generale
   const rec1 = recensioniList[idNum % recensioniList.length];
 
   const BloccoTitolo = (
+    
     <>
       <span style={{ fontSize: '12px', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '10px', display: 'inline-block' }}>{prodotto.reparto} &gt; {prodotto.categoria}</span>
       <h1 style={{ 
@@ -86,7 +87,46 @@ const bgPrincipale = isDarkMode ? '#111827' : '#F9FAFB'; // Sfondo generale
 </h1>
     </>
   );
+  // --- AGGIUNGI QUESTA FUNZIONE QUI ---
+  // --- FUNZIONE: VERDETTO DINAMICO MULTIPLO E LEGALE ---
+  const generaVerdetto = (prodotto) => {
+    const idNum = prodotto.id || 1;
+    const reparto = prodotto.reparto || '';
 
+    // Libreria di opinioni per la Pesca
+    const verdettiPesca = [
+      "Un'ottima aggiunta alla tua attrezzatura. Lo abbiamo selezionato perché offre resistenza in pesca e praticità a un prezzo decisamente accessibile.",
+      "Dopo aver valutato diverse opzioni, questo articolo spicca per il suo incredibile rapporto qualità-prezzo. Ideale per chi vuole affidabilità sull'acqua senza svuotare il portafoglio.",
+      "Materiali sorprendentemente solidi per questa fascia di prezzo. È diventato uno dei nostri 'best buy' consigliati per affrontare le sessioni di pesca in totale tranquillità.",
+      "Una piacevole scoperta. Si difende benissimo anche contro prodotti che costano il doppio. Assolutamente approvato per la tua cassetta degli attrezzi."
+    ];
+
+    // Libreria di opinioni per l'Acquariofilia
+    const verdettiAcquario = [
+      "Ideale per il tuo allestimento. Garantisce ottime prestazioni per l'ecosistema della tua vasca, permettendoti di mantenere i costi di gestione contenuti.",
+      "Un'ottima soluzione per acquariofili attenti al budget. Efficienza, sicurezza per i pesci e praticità d'uso sono i suoi punti forti.",
+      "L'abbiamo inserito tra i nostri preferiti perché aiuta a mantenere l'acquario in salute in modo semplice ed economico. Un acquisto intelligente a lungo termine."
+    ];
+
+    // Libreria di opinioni per il Campeggio
+    const verdettiCampeggio = [
+      "Perfetto per le tue avventure outdoor. Un compromesso eccellente per chi ama il bivacco e cerca attrezzatura compatta senza spendere cifre esorbitanti.",
+      "Leggero, pratico e resistente. Un accessorio che aggiunge tanto comfort e che non dovrebbe mai mancare nello zaino o in tenda.",
+      "Design intelligente e costo imbattibile. Ha superato le nostre aspettative per quanto riguarda l'utilità in condizioni all'aperto."
+    ];
+
+    // Selezione matematica (l'ID del prodotto decide quale frase pescare, così rimane sempre fissa per quel prodotto)
+    if (reparto.includes('Pesca')) return verdettiPesca[idNum % verdettiPesca.length];
+    if (reparto.includes('Acquario')) return verdettiAcquario[idNum % verdettiAcquario.length];
+    if (reparto.includes('Campeggio')) return verdettiCampeggio[idNum % verdettiCampeggio.length];
+    
+    // Frase generica di sicurezza
+    return `Un'ottima scelta per la categoria ${prodotto.categoria || 'selezionata'}. Abbiamo valutato questo prodotto come una delle migliori alternative economiche attualmente disponibili online.`;
+  };
+
+  const verdettoTesto = generaVerdetto(prodotto);
+
+ 
   const BloccoImmagine = (
     <div style={{ height: isMobile ? '300px' : '400px', width: '100%', position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', background: isDarkMode ? '#111827' : '#F3F4F6', borderRadius: '12px', overflow: 'hidden', border: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}` }}>
       <span style={{ position: 'absolute', top: '15px', left: '15px', background: '#FF6600', color: 'white', fontSize: '11px', fontWeight: 'bold', padding: '5px 10px', borderRadius: '6px', zIndex: 2, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Top Scelta</span>
@@ -145,16 +185,26 @@ const bgPrincipale = isDarkMode ? '#111827' : '#F9FAFB'; // Sfondo generale
         </div>
       </div>
 
-      <div>
-        <h4 style={{ fontSize: '14px', marginBottom: '12px', color: text, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Recensioni Recenti</h4>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <div style={{ background: isDarkMode ? '#1F2937' : '#FFFFFF', padding: '15px', borderRadius: '10px', border: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}` }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <span style={{ color: '#FBBF24', fontSize: '14px' }}>★★★★★</span><span style={{ fontWeight: 'bold', fontSize: '13px' }}>{rec1.nome}</span>
-            </div>
-            <p style={{ fontSize: '13px', margin: 0, color: isDarkMode ? '#D1D5DB' : '#4B5563', fontStyle: 'italic' }}>"{rec1.testo}"</p>
-          </div>
+      {/* BOX: IL VERDETTO DELL'ESPERTO (ORA DINAMICO!) */}
+      <div style={{
+        backgroundColor: isDarkMode ? '#1F2937' : '#F3F4F6',
+        borderLeft: '4px solid #FF6600',
+        padding: '20px',
+        borderRadius: '0 12px 12px 0',
+        marginTop: '20px'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+          <span style={{ fontSize: '24px' }}>💡</span>
+          <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '800', color: isDarkMode ? '#F9FAFB' : '#111827' }}>
+            Il Verdetto di Recensioni ITA
+          </h3>
         </div>
+        
+        {/* QUI ABBIAMO MESSO LA VARIABILE AL POSTO DEL TESTO FISSO */}
+        <p style={{ margin: 0, fontSize: '14px', lineHeight: '1.6', color: isDarkMode ? '#D1D5DB' : '#4B5563' }}>
+          {verdettoTesto}
+        </p>
+        
       </div>
     </div>
   );
