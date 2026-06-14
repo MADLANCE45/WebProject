@@ -28,7 +28,7 @@ export default function Admin() {
 
   const repartiMap = {
     '🎣 Pesca Sportiva': {
-      'Attrezzatura da Pesca': ['Canne da pesca', 'Mulinelli', 'Esche artificiali', 'Fili e Trecciati', 'Ami e Minuteria'],
+      'Attrezzatura da Pesca': ['Canne da pesca', 'Mulinelli', 'Esche e Ami', 'Fili e Accessori', 'Ami e Minuteria'],
       'Elettronica': ['Ecoscandagli', 'Droni subacquei', 'Bilance elettroniche'],
       'Abbigliamento': ['Stivali e Waders', 'Giacche impermeabili', 'Guanti e Cappelli']
     },

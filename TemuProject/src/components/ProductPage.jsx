@@ -17,6 +17,7 @@ export default function ProductPage({ isDarkMode }) {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+    
   }, []);
 
   useEffect(() => {
@@ -173,6 +174,8 @@ const bgPrincipale = isDarkMode ? '#111827' : '#F9FAFB'; // Sfondo generale
 
   const BloccoRecensioni = (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%' }}>
+      
+      {/* 1. STELLE E CONDIVISIONE */}
       <div style={{ background: isDarkMode ? '#374151' : '#F9FAFB', padding: '20px', borderRadius: '12px', border: `1px solid ${isDarkMode ? '#4B5563' : '#E5E7EB'}`, display: 'flex', flexDirection: 'column', gap: '15px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><StarRating productId={prodotto.id} /></div>
@@ -185,13 +188,25 @@ const bgPrincipale = isDarkMode ? '#111827' : '#F9FAFB'; // Sfondo generale
         </div>
       </div>
 
-      {/* BOX: IL VERDETTO DELL'ESPERTO (ORA DINAMICO!) */}
+      {/* 2. BOX: CARATTERISTICHE (DA DATABASE) - ORA È SOPRA! */}
+      {prodotto.descrizione_estesa && (
+        <div style={{ padding: '20px', borderRadius: '12px', background: isDarkMode ? '#1F2937' : '#F9FAFB', border: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}` }}>
+          <h4 style={{ margin: '0 0 15px 0', fontSize: '15px', color: isDarkMode ? '#F9FAFB' : '#111827', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span>📌</span> Caratteristiche Principali
+          </h4>
+          <div 
+             style={{ fontSize: '13px', lineHeight: '1.8', color: isDarkMode ? '#D1D5DB' : '#4B5563' }}
+             dangerouslySetInnerHTML={{ __html: prodotto.descrizione_estesa }} 
+          />
+        </div>
+      )}
+
+      {/* 3. BOX: IL VERDETTO DELL'ESPERTO - ORA È SOTTO! */}
       <div style={{
         backgroundColor: isDarkMode ? '#1F2937' : '#F3F4F6',
         borderLeft: '4px solid #FF6600',
         padding: '20px',
-        borderRadius: '0 12px 12px 0',
-        marginTop: '20px'
+        borderRadius: '0 12px 12px 0'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
           <span style={{ fontSize: '24px' }}>💡</span>
@@ -199,13 +214,11 @@ const bgPrincipale = isDarkMode ? '#111827' : '#F9FAFB'; // Sfondo generale
             Il Verdetto di Recensioni ITA
           </h3>
         </div>
-        
-        {/* QUI ABBIAMO MESSO LA VARIABILE AL POSTO DEL TESTO FISSO */}
         <p style={{ margin: 0, fontSize: '14px', lineHeight: '1.6', color: isDarkMode ? '#D1D5DB' : '#4B5563' }}>
           {verdettoTesto}
         </p>
-        
       </div>
+
     </div>
   );
 
