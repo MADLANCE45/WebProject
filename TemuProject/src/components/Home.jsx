@@ -128,7 +128,8 @@ return (
       />
       
       {/* 2. SLIDER DEI BANNER PRINCIPALI */}
-      <HeroSlider />
+      {/* 2. HERO SECTION PREMIUM */}
+      <HeroSection />
       
       {/* 3. MENU DELLE CATEGORIE (HEADER) */}
       <Header 
@@ -140,45 +141,79 @@ return (
         isDarkMode={isDarkMode}
       />
 
-      {/* 4. BANNER PROMOZIONALE REGALO NUOVO UTENTE (Orizzontale tra Header e Prodotti) */}
-      <PromoBanner />
+      {/* (Ho tolto il PromoBanner per pulire il design) */}
 
-      {/* 5. IL RESTO DELLA PAGINA (Filtri e Griglia Prodotti) */}
+      {/* 5. IL RESTO DELLA PAGINA */}
       <div style={{ padding: '20px 0' }}>
       
-        {/* Griglia dei Prodotti */}
-        {/* Barra di ricerca e Filtri per prezzo/sconto */}
-        <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginBottom: '30px', padding: '0 4%' }}>
-          <input 
-             type="text" 
-             placeholder="Cerca prodotto..." 
-             value={ricerca} 
-             onChange={(e) => setRicerca(e.target.value)} 
-             style={{ flex: 2, minWidth: '200px', padding: '14px 20px', borderRadius: '12px', border: `2px solid ${cardBorder}`, background: cardBg, color: textPrincipale, outline: 'none', fontSize: '16px' }} 
-          />
+        {/* --- NUOVA BARRA DI RICERCA E FILTRI PREMIUM --- */}
+        <div id="sezione-ricerca" style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginBottom: '40px', padding: '0 4%' }}>
           
+          {/* Input Ricerca Moderno */}
+          <div style={{ flex: 2, minWidth: '250px', position: 'relative' }}>
+            <span style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '18px', color: '#9CA3AF' }}>🔍</span>
+            <input 
+              type="text" 
+              placeholder="Cerca un prodotto..." 
+              value={ricerca} 
+              onChange={(e) => setRicerca(e.target.value)} 
+              style={{ 
+                width: '100%', 
+                padding: '16px 20px 16px 45px', // Spazio aggiuntivo a sinistra per la lente
+                borderRadius: '8px', 
+                border: isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB', 
+                background: isDarkMode ? '#1F2937' : '#FFFFFF', 
+                color: textPrincipale, 
+                outline: 'none', 
+                fontSize: '15px',
+                boxShadow: '0 4px 6px rgba(0,0,0,0.02)',
+                transition: 'border-color 0.2s',
+                boxSizing: 'border-box'
+              }}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#FF6600'}
+              onBlur={(e) => e.currentTarget.style.borderColor = isDarkMode ? '#374151' : '#E5E7EB'}
+            />
+          </div>
+
+          {/* Filtro Prezzo */}
           <select 
-             value={filtroPrezzo} 
-             onChange={(e) => setFiltroPrezzo(e.target.value)} 
-             style={{ flex: 1, minWidth: '150px', padding: '14px 20px', borderRadius: '12px', border: `2px solid ${cardBorder}`, background: cardBg, color: textPrincipale, outline: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '16px' }}
+            value={filtroPrezzo} 
+            onChange={(e) => setFiltroPrezzo(e.target.value)} 
+            style={{ 
+              flex: 1, minWidth: '160px', padding: '16px 20px', borderRadius: '8px', 
+              border: isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB', 
+              background: isDarkMode ? '#1F2937' : '#FFFFFF', 
+              color: textPrincipale, outline: 'none', cursor: 'pointer', fontSize: '15px',
+              boxShadow: '0 4px 6px rgba(0,0,0,0.02)'
+            }}
           >
-            <option value="Tutti">Tutti i prezzi</option>
+            <option value="Tutti">Qualsiasi Prezzo</option>
             <option value="0-10">Sotto i 10 €</option>
             <option value="10-30">Tra 10 € e 30 €</option>
             <option value="30+">Oltre 30 €</option>
           </select>
 
+          {/* Filtro Sconto */}
           <select 
-             value={filtroSconto} 
-             onChange={(e) => setFiltroSconto(e.target.value)} 
-             style={{ flex: 1, minWidth: '150px', padding: '14px 20px', borderRadius: '12px', border: `2px solid ${cardBorder}`, background: cardBg, color: textPrincipale, outline: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '16px' }}
+            value={filtroSconto} 
+            onChange={(e) => setFiltroSconto(e.target.value)} 
+            style={{ 
+              flex: 1, minWidth: '160px', padding: '16px 20px', borderRadius: '8px', 
+              border: isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB', 
+              background: isDarkMode ? '#1F2937' : '#FFFFFF', 
+              color: textPrincipale, outline: 'none', cursor: 'pointer', fontSize: '15px',
+              boxShadow: '0 4px 6px rgba(0,0,0,0.02)'
+            }}
           >
             <option value="Tutti">Tutti gli sconti</option>
-            <option value="30">Offerte 30% e oltre</option>
-            <option value="50">Offerte 50% e oltre</option>
-            <option value="70">Offerte 70% e oltre</option>
+            <option value="30">Sconto 30%+</option>
+            <option value="50">Sconto 50%+</option>
+            <option value="70">Sconto 70%+</option>
           </select>
         </div>
+        {/* --- FINE BARRA RICERCA --- */}
+
+        {/* Griglia dei Prodotti... (LASCIA INVARIATO DA QUI IN GIÙ) */}
 
         {/* Griglia dei Prodotti (Con grafica AliExpress/Temu) */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px', padding: '0 4%' }}>
@@ -288,31 +323,75 @@ return (
   );
 }
 // --- HERO SLIDER ---
-function HeroSlider() {
-  const [current, setCurrent] = useState(0);
-  const slides = [
-    { id: 1, image: '/banner.jpg', title: 'Attrezzatura da Pesca Pro 🎣', subtitle: 'Ecoscandagli, mulinelli ed esche testate per te.' },
-    { id: 2, image: '/banner2.jpg', title: 'Acquascaping Perfetto 🐠', subtitle: 'Illuminazione LED e filtri a prezzi imbattibili.' },
-    { id: 3, image: '/banner10.jpg', title: 'Avventura Outdoor 🏕️', subtitle: 'Tende, riposo e cucina da campo per il tuo bivacco.' }
-  ];
-
-  useEffect(() => {
-    const timer = setInterval(() => setCurrent((prev) => (prev === slides.length - 1 ? 0 : prev + 1)), 5000);
-    return () => clearInterval(timer);
-  }, [slides.length]);
+// --- NUOVA HERO SECTION PREMIUM ---
+function HeroSection() {
+  const isMobile = window.innerWidth <= 768;
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '400px', overflow: 'hidden', backgroundColor: '#111827' }}>
-      {slides.map((slide, index) => (
-        <div key={slide.id} style={{
-          position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundImage: `linear-gradient(rgba(0,0,0, 0.4), rgba(0,0,0, 0.7)), url(${slide.image})`,
-          backgroundSize: 'cover', backgroundPosition: 'center', opacity: current === index ? 1 : 0, transition: 'opacity 1s ease-in-out',
-          display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', color: 'white', padding: '0 20px'
+    <div style={{
+      position: 'relative',
+      width: '100%',
+      height: isMobile ? '60vh' : '70vh', 
+      minHeight: '400px',
+      backgroundImage: 'url(/banner.jpg)', // Assicurati di avere banner.jpg in public/
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: 'white',
+      textAlign: 'center',
+      marginBottom: '40px'
+    }}>
+      {/* OVERLAY SCURO */}
+      <div style={{
+        position: 'absolute',
+        top: 0, left: 0, right: 0, bottom: 0,
+        backgroundColor: 'rgba(0,0,0,0.45)'
+      }}></div>
+      
+      {/* CONTENUTO CENTRALE */}
+      <div style={{ position: 'relative', zIndex: 1, padding: '20px', maxWidth: '800px' }}>
+        <h1 style={{ 
+          fontSize: isMobile ? '36px' : '58px', 
+          fontWeight: '900', 
+          margin: '0 0 20px 0', 
+          letterSpacing: '-1px',
+          textShadow: '0 2px 10px rgba(0,0,0,0.5)',
+          lineHeight: '1.1'
         }}>
-          <h1 style={{ fontSize: '42px', fontWeight: '900', margin: '0 0 10px 0' }}>{slide.title}</h1>
-          <p style={{ fontSize: '18px', maxWidth: '600px', fontWeight: '400' }}>{slide.subtitle}</p>
-        </div>
-      ))}
+          La Natura Chiama.<br/>Fatti Trovare Pronto.
+        </h1>
+        <p style={{ 
+          fontSize: isMobile ? '16px' : '20px', 
+          margin: '0 auto 35px auto', 
+          lineHeight: '1.5',
+          textShadow: '0 1px 5px rgba(0,0,0,0.5)',
+          opacity: 0.9
+        }}>
+          Scopri l'attrezzatura premium per il campeggio, la pesca e l'outdoor selezionata dai nostri esperti.
+        </p>
+        
+        {/* BOTTONE CHE SCORRE ALLA RICERCA */}
+        <button 
+          onClick={() => document.getElementById('sezione-ricerca')?.scrollIntoView({ behavior: 'smooth' })}
+          style={{
+            backgroundColor: '#FF6600',
+            color: 'white',
+            border: 'none',
+            padding: '18px 36px',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            transition: 'background-color 0.2s',
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#E65C00'}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#FF6600'}
+        >
+          Esplora la Collezione
+        </button>
+      </div>
     </div>
   );
 }

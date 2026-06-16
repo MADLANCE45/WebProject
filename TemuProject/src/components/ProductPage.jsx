@@ -136,54 +136,63 @@ const bgPrincipale = isDarkMode ? '#111827' : '#F9FAFB'; // Sfondo generale
   );
 
   const BloccoAcquisto = (
-    <>
-      <div style={{ background: isDarkMode ? '#374151' : '#FEF2F2', borderLeft: '4px solid #EF4444', padding: '12px 15px', borderRadius: '6px', marginBottom: '25px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <span style={{ fontSize: '22px' }}>⏳</span>
-        <span style={{ fontSize: '13.5px', color: isDarkMode ? '#FCA5A5' : '#B91C1C', fontWeight: 'bold', lineHeight: '1.4' }}>Affrettati! Le offerte lampo e la disponibilità<br/>possono terminare in qualsiasi momento.</span>
-      </div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
       
-      <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-        <span style={{ fontWeight: '900', fontSize: '46px', color: '#FF6600', letterSpacing: '-1px' }}>€ {prodotto.prezzo}</span>
-        <span style={{ fontSize: '16px', color: '#9CA3AF', textDecoration: 'line-through' }}>{prezzoBarrato}€</span>
+      {/* 1. PREZZO MINIMAL: Font più pulito, niente arancione fluo */}
+      <div style={{ display: 'flex', alignItems: 'flex-end', gap: '12px', borderBottom: isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB', paddingBottom: '20px', marginBottom: '10px' }}>
+        <span style={{ fontWeight: '800', fontSize: '38px', color: isDarkMode ? '#F9FAFB' : '#111827', letterSpacing: '-1px', lineHeight: '1' }}>
+          € {prodotto.prezzo}
+        </span>
+        {prezzoBarrato && (
+          <span style={{ fontSize: '18px', color: '#9CA3AF', textDecoration: 'line-through', marginBottom: '4px' }}>
+            {prezzoBarrato}€
+          </span>
+        )}
       </div>
 
+      {/* 2. BOTTONE E-COMMERCE: Sfondo scuro, squadrato, professionale */}
       <a 
         href={prodotto.link_affiliazione} 
         target="_blank" 
         rel="noopener noreferrer" 
         style={{ 
-          display: 'block',
-          textAlign: 'center',
-          backgroundColor: prodotto.piattaforma === 'AliExpress' ? '#E62E04' : '#FF6600', 
-          color: 'white', 
-          padding: '12px', 
-          borderRadius: '8px', 
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: isDarkMode ? '#F9FAFB' : '#111827', 
+          color: isDarkMode ? '#111827' : '#FFFFFF', 
+          padding: '16px 24px', 
+          borderRadius: '4px', // Bordo quasi squadrato (molto in voga nei siti premium)
           textDecoration: 'none', 
-          fontWeight: 'bold',
-          transition: 'background-color 0.2s',
-          marginTop: '15px'
+          fontWeight: '600',
+          fontSize: '16px',
+          transition: 'opacity 0.2s',
+          marginTop: '10px'
         }}
+        onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
+        onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
       >
-        {prodotto.piattaforma === 'AliExpress' ? '🔴 Vai su AliExpress' : '🟠 Vai su Temu'}
+        {prodotto.piattaforma === 'AliExpress' ? 'Acquista su AliExpress' : 'Acquista su Temu'} ↗
       </a>
         
-      <p style={{ fontSize: '11px', color: '#9CA3AF', lineHeight: '1.2', textAlign: 'center', marginTop: '10px', marginBottom: isMobile ? '0' : '15px' }}>
-        * In qualità di Affiliato, ricevo una commissione per gli acquisti idonei.
+      {/* 3. DISCLAIMER: Discreto e integrato */}
+      <p style={{ fontSize: '12px', color: '#9CA3AF', textAlign: 'center', marginTop: '8px', marginBottom: isMobile ? '0' : '15px' }}>
+        *Riceviamo una commissione sugli acquisti idonei.
       </p>
 
-      {/* --- BOX CARATTERISTICHE (SOLO DESKTOP) --- */}
+      {/* 4. CARATTERISTICHE (SOLO DESKTOP): Tolto il riquadro grigio, design integrato nella pagina */}
       {!isMobile && prodotto.descrizione_estesa && (
-        <div style={{ marginTop: '20px', padding: '20px', borderRadius: '12px', background: isDarkMode ? '#1F2937' : '#F9FAFB', border: `1px solid ${isDarkMode ? '#374151' : '#E5E7EB'}` }}>
-          <h4 style={{ margin: '0 0 15px 0', fontSize: '15px', color: isDarkMode ? '#F9FAFB' : '#111827', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span>📌</span> Caratteristiche Principali
+        <div style={{ marginTop: '30px' }}>
+          <h4 style={{ margin: '0 0 15px 0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1.5px', color: isDarkMode ? '#9CA3AF' : '#6B7280' }}>
+            Specifiche Prodotto
           </h4>
           <div 
-             style={{ fontSize: '13px', lineHeight: '1.8', color: isDarkMode ? '#D1D5DB' : '#4B5563' }}
+             style={{ fontSize: '14px', lineHeight: '1.8', color: isDarkMode ? '#D1D5DB' : '#4B5563' }}
              dangerouslySetInnerHTML={{ __html: prodotto.descrizione_estesa }} 
           />
         </div>
       )}
-    </>
+    </div>
   );
 // --- BOX CARATTERISTICHE SALVATO IN UNA VARIABILE ---
   const BoxCaratteristiche = prodotto.descrizione_estesa ? (
