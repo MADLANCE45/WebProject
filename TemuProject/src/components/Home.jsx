@@ -28,7 +28,6 @@ const repartiMap = {
     'Utensili e Accessori': ['Torce e Lampade', 'Coltelli multiuso', 'Zaini', 'Repellenti zanzare']
   }
 };
-
 export default function Home({ isDarkMode }) {
   const [prodotti, setProdotti] = useState([]);
   const [repartoAttivo, setRepartoAttivo] = useState('🎣 Pesca Sportiva');

@@ -27,23 +27,24 @@ export default function Admin() {
   const [editingId, setEditingId] = useState(null); 
 
   const repartiMap = {
-    '🎣 Pesca Sportiva': {
-      'Attrezzatura da Pesca': ['Canne da pesca', 'Mulinelli', 'Esche e Ami', 'Fili e Accessori', 'Ami e Minuteria'],
-      'Elettronica': ['Ecoscandagli', 'Droni subacquei', 'Bilance elettroniche'],
-      'Abbigliamento': ['Stivali e Waders', 'Giacche impermeabili', 'Guanti e Cappelli']
-    },
-    '🐠 Acquariofilia': {
-      'Vasche e Mobili': ['Acquari completi', 'Mobili per acquari', 'Vasche in vetro'],
-      'Tecnica e Manutenzione': ['Filtri esterni', 'Filtri interni', 'Pompe di movimento', 'Riscaldatori', 'Impianti CO2'],
-      'Illuminazione': ['Plafoniere LED', 'Tubi fluorescenti', 'Timer e Controller'],
-      'Allestimento (Hardscape)': ['Legni e Radici', 'Rocce e Pietre', 'Sabbia e Ghiaino', 'Substrato fertile']
-    },
-    '🏕️ Campeggio e Bivacco': {
-      'Tende e Riposo': ['Tende da campeggio', 'Sacchi a pelo', 'Sedie e Lettini'],
-      'Cucina da Campo': ['Fornelli a gas', 'Thermos e Borracce', 'Pentolame compatto'],
-      'Utensili e Accessori': ['Torce e Lampade', 'Coltelli multiuso', 'Zaini', 'Repellenti zanzare']
-    }
-  };
+  '🎣 Pesca Sportiva': {
+    'Attrezzatura da Pesca': ['Canne da pesca', 'Mulinelli', 'Esche e Ami', 'Fili e Accessori'],
+    'Abbigliamento Tecnico': ['Occhiali polarizzati', 'Cappelli e Visiere', 'Guanti', 'Calzature'],
+    'Accessori e Logistica': ['Borse termiche', 'Zaini impermeabili', 'Scatole porta-attrezzi'],
+    'Elettronica e Utilità': ['Ecoscandagli e Sonar', 'Bilance digitali', 'Torce frontali e Lampade', 'Action Cam e Supporti', 'Powerbank solari']
+  },
+  '🐠 Acquariofilia': {
+    'Vasche e Mobili': ['Acquari in vetro', 'Vaschette in plastica', 'Mobili di supporto', 'Reti da allevamento'],
+    'Tecnica e Manutenzione': ['Filtri e Pompe', 'Illuminazione LED', 'Riscaldatori', 'Sistemi CO2'],
+    'Allestimento (Hardscape)': ['Rocce e Legni', 'Sabbia e Ghiaia', 'Decorazioni in resina'],
+    'Accessori Vari': ['Retini', 'Calamite puliscivetro', 'Mangiatoie automatiche']
+  },
+  '🏕️ Campeggio e Bivacco': {
+    'Tende e Riposo': ['Tende da campeggio', 'Sacchi a pelo', 'Sedie e Lettini'],
+    'Cucina da Campo': ['Fornelli a gas', 'Thermos e Borracce', 'Pentolame compatto'],
+    'Utensili e Accessori': ['Torce e Lampade', 'Coltelli multiuso', 'Zaini', 'Repellenti zanzare']
+  }
+};
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
