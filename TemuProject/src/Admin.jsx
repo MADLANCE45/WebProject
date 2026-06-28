@@ -1,6 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient'; 
+const generaDescrizioneAutomatica = (titolo, categoria) => {
+  if (!titolo) return '';
+  const t = titolo.toLowerCase();
+  const c = categoria ? categoria.toLowerCase() : '';
+  let html = '<ul>';
 
+  if (t.includes('carbonio')) html += '<li><strong>Fibra di Carbonio:</strong> Materiale selezionato per garantire massima leggerezza e un\'eccellente risposta alle sollecitazioni.</li>';
+  if (t.includes('impermeabile') || t.includes('waterproof') || t.includes('eva') || t.includes('nylon')) html += '<li><strong>Resistenza e Protezione:</strong> Materiali trattati per un\'ottima protezione in ambienti umidi e contro l\'usura.</li>';
+  if (t.includes('pieghevole') || t.includes('compatto') || t.includes('telescopica') || t.includes('portatile')) html += '<li><strong>Design Salvaspazio:</strong> Struttura ottimizzata per ridurre l\'ingombro e facilitare il trasporto nelle tue uscite.</li>';
+  if (t.includes('lcd') || t.includes('display') || t.includes('sonar') || t.includes('elettronico') || t.includes('digitale')) html += '<li><strong>Monitoraggio Digitale:</strong> Strumentazione elettronica studiata per fornire letture chiare e immediate.</li>';
+  if (t.includes('notturna') || t.includes('notte') || t.includes('led') || t.includes('luminoso') || t.includes('luce')) html += '<li><strong>Supporto Notturno:</strong> Perfetto per mantenere la visibilità e l\'efficacia anche in condizioni di scarsa illuminazione.</li>';
+  if (t.includes('borsa') || t.includes('zaino') || t.includes('multifunzionale') || t.includes('scatola') || t.includes('secchio') || t.includes('astuccio')) html += '<li><strong>Organizzazione Pratica:</strong> Scomparti progettati per mantenere la tua attrezzatura ordinata e a portata di mano.</li>';
+  if (t.includes('esca') || t.includes('galleggianti') || t.includes('lure') || t.includes('worm') || t.includes('jig') || t.includes('minnow')) html += '<li><strong>Azione Attrattiva:</strong> Profilo e dinamica in acqua studiati per simulare movimenti naturali e catturare l\'attenzione.</li>';
+  if (t.includes('mulinello') || t.includes('spinning') || t.includes('hook') || t.includes('amo') || t.includes('ami') || t.includes('filo')) html += '<li><strong>Componentistica Robusta:</strong> Meccaniche e materiali testati per garantire solidità durante l\'azione.</li>';
+  if (t.includes('acquario') || t.includes('trasparente') || t.includes('vasca') || t.includes('vetro')) html += '<li><strong>Estetica Panoramica:</strong> Design curato e moderno che valorizza qualsiasi ambiente domestico.</li>';
+  if (c.includes('abbigliamento') || t.includes('pantaloni') || t.includes('wading') || t.includes('cappello') || t.includes('guanti')) html += '<li><strong>Comfort in Azione:</strong> Vestibilità e tessuti pensati per garantire traspirabilità e libertà di movimento.</li>';
+  if (t.includes('tenda') || t.includes('campeggio') || t.includes('sacco a pelo')) html += '<li><strong>Rifugio Affidabile:</strong> Ottimo isolamento e facilità di montaggio per le tue notti all\'aperto.</li>';
+
+  html += '<li><strong>Ottimo Rapporto Qualità/Prezzo:</strong> Una scelta accessibile senza dover rinunciare all\'affidabilità.</li>';
+  html += '<li><strong>Praticità Intuitiva:</strong> Facile da preparare e gestire, ideale sia per esperti che per neofiti.</li>';
+  html += '</ul>';
+
+  return html;
+};
 export default function Admin() {
   const [session, setSession] = useState(null);
   const [email, setEmail] = useState('');
@@ -96,6 +119,10 @@ export default function Admin() {
     setLoadingDb(true);
     
     const prezzoFormattato = prezzo.replace(',', '.');
+    
+    // --- 1. GENERA LA DESCRIZIONE IN AUTOMATICO ---
+    const descrizioneEstesaGenerate = generaDescrizioneAutomatica(titolo, categoria);
+
     const datiProdotto = {
       titolo, 
       prezzo: parseFloat(prezzoFormattato), 
@@ -104,7 +131,8 @@ export default function Admin() {
       reparto,
       categoria,
       sottocategoria,
-      piattaforma // AGGIUNTO AL SALVATAGGIO
+      piattaforma,
+      descrizione_estesa: descrizioneEstesaGenerate // --- 2. AGGIUNTO AL SALVATAGGIO ---
     };
 
     if (editingId) {
