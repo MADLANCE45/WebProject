@@ -38,16 +38,41 @@ export default function Home({ isDarkMode }) {
   const [filtroSconto, setFiltroSconto] = useState('Tutti'); 
   const [popupClosed, setPopupClosed] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
   const prodottiPerPagina = 18;
 
   // 1. Il tuo useEffect che carica e mescola i prodotti
+  // 1. Il tuo useEffect che carica e mescola i prodotti (Casualità Giornaliera)
+  // 1. Il tuo useEffect che carica e mescola i prodotti (Casualità Giornaliera)
   useEffect(() => {
     async function getProdotti() {
-      const { data } = await supabase.from('products').select('*');
+      setLoading(true); // <-- INIZIA IL CARICAMENTO
+      
+      const { data, error } = await supabase.from('products').select('*');
+      
+      if (error) {
+        console.error("Errore nel caricamento:", error);
+        setLoading(false);
+        return;
+      }
+
       if (data) {
-        // Ordinati dal più recente al più vecchio (fissi, senza rimescolamento casuale)
-        const prodottiOrdinati = data.sort((a, b) => b.id - a.id);
-        setProdotti(prodottiOrdinati);
+        const oggi = new Date().toDateString();
+        let seed = oggi.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+
+        const randomGiornaliero = () => {
+          let x = Math.sin(seed++) * 10000;
+          return x - Math.floor(x);
+        };
+
+        let prodottiMescolati = [...data];
+        for (let i = prodottiMescolati.length - 1; i > 0; i--) {
+          const j = Math.floor(randomGiornaliero() * (i + 1));
+          [prodottiMescolati[i], prodottiMescolati[j]] = [prodottiMescolati[j], prodottiMescolati[i]];
+        }
+
+        setProdotti(prodottiMescolati);
+        setLoading(false); // <-- FINE DEL CARICAMENTO
       }
     }
     getProdotti();
@@ -215,81 +240,94 @@ return (
         {/* Griglia dei Prodotti... (LASCIA INVARIATO DA QUI IN GIÙ) */}
 
         {/* Griglia dei Prodotti (Con grafica AliExpress/Temu) */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px', padding: '0 4%' }}>
-          {prodottiPaginati.map((prodotto) => {
-            
-            const prezzoNum = prodotto.prezzo ? parseFloat(prodotto.prezzo.toString().replace(',', '.')) : 0;
-            const prezzoBarrato = (prezzoNum * 1.3).toFixed(2);
-            const scontoPercentuale = 45 + ((prodotto.id * 3) % 30);
-            
-            // LA MAGIA: Colore dinamico in base alla piattaforma
-            const coloreBrand = prodotto.piattaforma === 'AliExpress' ? '#E62E04' : '#FF6600';
+        {loading ? (
+          // --- EFFETTO DI CARICAMENTO (Spinner) ---
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '100px 0' }}>
+            <div style={{ width: '40px', height: '40px', border: '4px solid #E5E7EB', borderTop: '4px solid #FF6600', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
+            <style>{"@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }"}</style>
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px', padding: '0 4%' }}>
+            {prodottiPaginati.map((prodotto) => {
+              
+              const prezzoNum = prodotto.prezzo ? parseFloat(prodotto.prezzo.toString().replace(',', '.')) : 0;
+              const prezzoBarrato = (prezzoNum * 1.3).toFixed(2);
+              const scontoPercentuale = 45 + ((prodotto.id * 3) % 30);
+              const coloreBrand = prodotto.piattaforma === 'AliExpress' ? '#E62E04' : '#FF6600';
 
-            return (
-                <Link 
-                  to={`/prodotto/${prodotto.id}`}
-                  key={prodotto.id} 
-                  style={{ 
-                    textDecoration: 'none', color: 'inherit', cursor: 'pointer', position: 'relative', 
-                    display: 'flex', flexDirection: 'column', padding: '15px', borderRadius: '20px', 
-                    background: cardBg, 
-                    border: `1px solid ${coloreBrand}30`, 
-                    borderTop: `4px solid ${coloreBrand}`, 
-                    boxShadow: isDarkMode ? `0 10px 30px ${coloreBrand}15` : `0 10px 30px ${coloreBrand}15`, 
-                    transition: 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease' 
-                  }}
-                  onMouseEnter={(e) => { 
-                    e.currentTarget.style.transform = 'translateY(-5px)'; 
-                    e.currentTarget.style.boxShadow = `0 15px 35px ${coloreBrand}35`; 
-                  }}
-                  onMouseLeave={(e) => { 
-                    e.currentTarget.style.transform = 'translateY(0)'; 
-                    e.currentTarget.style.boxShadow = `0 10px 30px ${coloreBrand}15`; 
-                  }}
-                >
-                {/* BADGE DINAMICO */}
-                <span style={{ 
-                  position: 'absolute', top: '12px', left: '12px', 
-                  background: coloreBrand, 
-                  color: 'white', fontSize: '9px', fontWeight: 'bold', padding: '3px 6px', 
-                  borderRadius: '4px', zIndex: 2, textTransform: 'uppercase', letterSpacing: '0.5px' 
-                }}>
-                  {prodotto.piattaforma === 'AliExpress' ? 'AliExpress Choice' : 'Temu Pick'}
-                </span>
+              return (
+                  <Link 
+                    to={`/prodotto/${prodotto.id}`}
+                    key={prodotto.id} 
+                    style={{ 
+                      textDecoration: 'none', color: 'inherit', cursor: 'pointer', position: 'relative', 
+                      display: 'flex', flexDirection: 'column', padding: '15px', borderRadius: '20px', 
+                      background: cardBg, 
+                      border: `1px solid ${coloreBrand}30`, 
+                      borderTop: `4px solid ${coloreBrand}`, 
+                      boxShadow: isDarkMode ? `0 10px 30px ${coloreBrand}15` : `0 10px 30px ${coloreBrand}15`, 
+                      transition: 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease' 
+                    }}
+                    onMouseEnter={(e) => { 
+                      e.currentTarget.style.transform = 'translateY(-5px)'; 
+                      e.currentTarget.style.boxShadow = `0 15px 35px ${coloreBrand}35`; 
+                    }}
+                    onMouseLeave={(e) => { 
+                      e.currentTarget.style.transform = 'translateY(0)'; 
+                      e.currentTarget.style.boxShadow = `0 10px 30px ${coloreBrand}15`; 
+                    }}
+                  >
+                  {/* BADGE DINAMICO */}
+                  <span style={{ 
+                    position: 'absolute', top: '12px', left: '12px', 
+                    background: coloreBrand, 
+                    color: 'white', fontSize: '9px', fontWeight: 'bold', padding: '3px 6px', 
+                    borderRadius: '4px', zIndex: 2, textTransform: 'uppercase', letterSpacing: '0.5px' 
+                  }}>
+                    {prodotto.piattaforma === 'AliExpress' ? 'AliExpress Choice' : 'Temu Pick'}
+                  </span>
 
-                <div style={{ position: 'relative', height: '180px', width: '100%', marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: isDarkMode ? '#111827' : '#F9FAFB', borderRadius: '10px', overflow: 'hidden' }}>
-                  <div style={{ position: 'absolute', top: '8px', right: '8px', background: '#EF4444', color: 'white', padding: '4px 8px', borderRadius: '20px', fontSize: '13px', fontWeight: '900', boxShadow: '0 2px 5px rgba(0,0,0,0.2)', zIndex: 5 }}>
-                    -{scontoPercentuale}%
+                  <div style={{ position: 'relative', height: '180px', width: '100%', marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: isDarkMode ? '#111827' : '#F9FAFB', borderRadius: '10px', overflow: 'hidden' }}>
+                    <div style={{ position: 'absolute', top: '8px', right: '8px', background: '#EF4444', color: 'white', padding: '4px 8px', borderRadius: '20px', fontSize: '13px', fontWeight: '900', boxShadow: '0 2px 5px rgba(0,0,0,0.2)', zIndex: 5 }}>
+                      -{scontoPercentuale}%
+                    </div>
+                    {prodotto.immagine_url ? (
+                      <img 
+                        src={prodotto.immagine_url} 
+                        loading="lazy" /* <-- LAZY LOADING AGGIUNTO QUI */
+                        alt={prodotto.titolo} 
+                        onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/200x200/e5e7eb/6b7280?text=Immagine+Non+Disponibile'; }} 
+                        style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
+                      />
+                    ) : <span style={{ color: '#9CA3AF' }}>No Img</span>}
                   </div>
-                  {prodotto.immagine_url ? (
-                    <img src={prodotto.immagine_url} alt={prodotto.titolo} onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/200x200/e5e7eb/6b7280?text=Immagine+Non+Disponibile'; }} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                  ) : <span style={{ color: '#9CA3AF' }}>No Img</span>}
-                </div>
-                
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '6px', flexWrap: 'wrap' }}>
-                  <span style={{ fontWeight: '900', fontSize: '24px', color: coloreBrand }}>€ {prodotto.prezzo}</span>
-                  <span style={{ fontSize: '13px', color: '#6B7280', textDecoration: 'line-through' }}>{prezzoBarrato}€</span>
-                </div>
-
-                <h3 title={prodotto.titolo} style={{ fontSize: '14px', margin: '0 0 8px 0', color: textPrincipale, lineHeight: '1.3', fontWeight: '700', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', minHeight: '36px' }}>
-                  {prodotto.titolo}
-                </h3>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '12px', fontSize: '12px' }}>
-                  <div style={{ color: '#EF4444', fontWeight: '600', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span>⚡ Offerta Lampo</span> 
-                    <span style={{ color: '#D1D5DB' }}>|</span> 
-                    <span style={{ color: '#059669' }}>+500 venduti</span>
+                  
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '6px', flexWrap: 'wrap' }}>
+                    <span style={{ fontWeight: '900', fontSize: '24px', color: coloreBrand }}>€ {prodotto.prezzo}</span>
+                    <span style={{ fontSize: '13px', color: '#6B7280', textDecoration: 'line-through' }}>{prezzoBarrato}€</span>
                   </div>
-                </div>
-                
-                <div style={{ marginTop: 'auto', background: isDarkMode ? '#374151' : '#111827', color: 'white', padding: '10px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: 'bold', textAlign: 'center' }}>
-                  Scopri Dettagli
-                </div>
-              </Link>
-            );
-          })}
-        </div>
+
+                  <h3 title={prodotto.titolo} style={{ fontSize: '14px', margin: '0 0 8px 0', color: textPrincipale, lineHeight: '1.3', fontWeight: '700', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', minHeight: '36px' }}>
+                    {prodotto.titolo}
+                  </h3>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '12px', fontSize: '12px' }}>
+                    <div style={{ color: '#EF4444', fontWeight: '600', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span>⚡ Offerta Lampo</span> 
+                      <span style={{ color: '#D1D5DB' }}>|</span> 
+                      <span style={{ color: '#059669' }}>+500 venduti</span>
+                    </div>
+                  </div>
+                  
+                  <div style={{ marginTop: 'auto', background: isDarkMode ? '#374151' : '#111827', color: 'white', padding: '10px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: 'bold', textAlign: 'center' }}>
+                    Scopri Dettagli
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+        
       </div>
           
       {/* Impaginazione dei Prodotti */}
