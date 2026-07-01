@@ -35,7 +35,8 @@ export default function Home({ isDarkMode }) {
   const [filtroSottocategoria, setFiltroSottocategoria] = useState('Tutte'); 
   const [filtroPrezzo, setFiltroPrezzo] = useState('Tutti');
   const [ricerca, setRicerca] = useState('');
-  const [filtroSconto, setFiltroSconto] = useState('Tutti'); 
+  const [filtroSconto, setFiltroSconto] = useState('Tutti');
+  const [filtroNoDogana, setFiltroNoDogana] = useState(false); 
   const [popupClosed, setPopupClosed] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -119,7 +120,10 @@ export default function Home({ isDarkMode }) {
       passaSconto = scontoGenerato >= parseInt(filtroSconto);
     }
 
-    return passaReparto && passaRicerca && passaCategoria && passaSottocategoria && passaPrezzo && passaSconto;
+    // --- INCOLLA QUESTO PEZZO QUI ---
+    let passaDogana = filtroNoDogana ? p.no_dogana === true : true;
+
+    return passaReparto && passaRicerca && passaCategoria && passaSottocategoria && passaPrezzo && passaSconto && passaDogana;
   });
 
   const bgPrincipale = isDarkMode ? '#111827' : '#F9FAFB';
@@ -234,6 +238,31 @@ return (
             <option value="50">Sconto 50%+</option>
             <option value="70">Sconto 70%+</option>
           </select>
+
+          {/* NUOVO: Tasto Switch Spedizione EU / Zero Dogana */}
+          <button 
+            onClick={() => setFiltroNoDogana(!filtroNoDogana)}
+            style={{ 
+              flex: '1 1 160px',
+              minWidth: '160px',
+              padding: '16px 20px', 
+              borderRadius: '8px', 
+              border: filtroNoDogana ? '2px solid #059669' : (isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB'), 
+              background: filtroNoDogana ? 'rgba(5, 150, 105, 0.15)' : (isDarkMode ? '#1F2937' : '#FFFFFF'), 
+              color: filtroNoDogana ? '#10B981' : textPrincipale, 
+              fontWeight: 'bold',
+              cursor: 'pointer', 
+              fontSize: '15px',
+              boxShadow: '0 4px 6px rgba(0,0,0,0.02)',
+              transition: 'all 0.2s ease',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px'
+            }}
+          >
+            <span>🇪🇺</span> {filtroNoDogana ? 'Solo Magazzino EU' : 'Tutti (Anche extra-UE)'}
+          </button>
         </div>
         {/* --- FINE BARRA RICERCA --- */}
 

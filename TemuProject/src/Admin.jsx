@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient'; 
+
 const generaDescrizioneAutomatica = (titolo, categoria) => {
   if (!titolo) return '';
   const t = titolo.toLowerCase();
@@ -48,7 +49,7 @@ export default function Admin() {
   const [filtroCategoriaAdmin, setFiltroCategoriaAdmin] = useState('Tutte');
 
   const [editingId, setEditingId] = useState(null); 
-
+const [noDogana, setNoDogana] = useState(false);
   const repartiMap = {
   '🎣 Pesca Sportiva': {
     'Attrezzatura da Pesca': ['Canne da pesca', 'Mulinelli', 'Esche e Ami', 'Fili e Accessori'],
@@ -101,7 +102,8 @@ export default function Admin() {
     setReparto(prodotto.reparto || '');
     setCategoria(prodotto.categoria || '');
     setSottocategoria(prodotto.sottocategoria || ''); 
-    setPiattaforma(prodotto.piattaforma || 'Temu'); // Prende la piattaforma o mette Temu di default
+    setPiattaforma(prodotto.piattaforma || 'Temu'); 
+    setNoDogana(prodotto.no_dogana || false);// Prende la piattaforma o mette Temu di default
     window.scrollTo({ top: 0, behavior: 'smooth' }); 
   };
 
@@ -112,6 +114,7 @@ export default function Admin() {
     setLinkAffiliazione('');
     setImmagineUrl('');
     setPiattaforma('Temu');
+    setNoDogana(false);
   };
 
   const salvaProdotto = async (e) => {
@@ -132,7 +135,8 @@ export default function Admin() {
       categoria,
       sottocategoria,
       piattaforma,
-      descrizione_estesa: descrizioneEstesaGenerate // --- 2. AGGIUNTO AL SALVATAGGIO ---
+      descrizione_estesa: descrizioneEstesaGenerate,
+      no_dogana: noDogana // <-- AGGIUNTO: Invia il dato al database
     };
 
     if (editingId) {
@@ -220,6 +224,21 @@ export default function Admin() {
                 <option value="Temu">🟠 Temu</option>
                 <option value="AliExpress">🔴 AliExpress</option>
               </select>
+
+              {/* NUOVA CASELLA NO DOGANA */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '15px' }}>
+                <input 
+                  type="checkbox" 
+                  id="doganaCheck"
+                  checked={noDogana} 
+                  onChange={(e) => setNoDogana(e.target.checked)} 
+                  style={{ width: '18px', height: '18px', cursor: 'pointer' }} 
+                />
+                <label htmlFor="doganaCheck" style={{ fontSize: '14px', fontWeight: '700', cursor: 'pointer', color: '#059669' }}>
+                  🇪🇺 Spedizione EU (Zero Dogana)
+                </label>
+              </div>
+
             </div>
           </div>
 
