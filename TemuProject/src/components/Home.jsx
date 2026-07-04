@@ -28,13 +28,13 @@ const repartiMap = {
     'Utensili e Accessori': ['Torce e Lampade', 'Coltelli multiuso', 'Zaini', 'Repellenti zanzare']
   }
 };
-export default function Home({ isDarkMode }) {
+export default function Home({ isDarkMode, ricerca, setRicerca }) {
   const [prodotti, setProdotti] = useState([]);
   const [repartoAttivo, setRepartoAttivo] = useState('🎣 Pesca Sportiva');
   const [filtroCategoria, setFiltroCategoria] = useState('Tutte');
   const [filtroSottocategoria, setFiltroSottocategoria] = useState('Tutte'); 
   const [filtroPrezzo, setFiltroPrezzo] = useState('Tutti');
-  const [ricerca, setRicerca] = useState('');
+  
   const [filtroSconto, setFiltroSconto] = useState('Tutti');
   const [filtroNoDogana, setFiltroNoDogana] = useState(false); 
   const [popupClosed, setPopupClosed] = useState(false);
