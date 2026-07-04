@@ -6,7 +6,7 @@ import ProductModal from './ProductModal';
 import StarRating from './StarRating';
 import ProductCard from './ProductCard';
 import WheelOfFortune from './WheelOfFortune';
-import ProductFinder from './ProductFinder';
+
 
 // ---> INCOLLA LA MAPPA QUI <---
 const repartiMap = {
@@ -43,8 +43,7 @@ export default function Home({ isDarkMode }) {
   const prodottiPerPagina = 18;
 
   // 1. Il tuo useEffect che carica e mescola i prodotti
-  // 1. Il tuo useEffect che carica e mescola i prodotti (Casualità Giornaliera)
-  // 1. Il tuo useEffect che carica e mescola i prodotti (Casualità Giornaliera)
+  
   useEffect(() => {
     async function getProdotti() {
       setLoading(true); // <-- INIZIA IL CARICAMENTO
@@ -81,9 +80,25 @@ export default function Home({ isDarkMode }) {
 
   // 2. IL NUOVO useEffect DA INCOLLARE QUI SOTTO:
   // Resetta sempre alla pagina 1 quando l'utente cambia un qualsiasi filtro
+ // 2. IL NUOVO useEffect DA INCOLLARE QUI SOTTO:
+  // Resetta sempre alla pagina 1 quando l'utente cambia un qualsiasi filtro
   useEffect(() => {
     setCurrentPage(1);
   }, [repartoAttivo, filtroCategoria, filtroSottocategoria, filtroPrezzo, filtroSconto, ricerca]);
+
+  // --- NUOVA MAGIA: SCROLL AUTOMATICO DURANTE LA RICERCA ---
+  useEffect(() => {
+    // Se l'utente digita almeno 3 lettere, la pagina scivola giù verso i prodotti
+    if (ricerca && ricerca.length >= 3) {
+      const catalogo = document.getElementById('sezione-ricerca');
+      if (catalogo) {
+        setTimeout(() => {
+          catalogo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 500);
+      }
+    }
+  }, [ricerca]);
+
   const cambiaReparto = (nuovoReparto) => {
     setRepartoAttivo(nuovoReparto); 
     setFiltroCategoria('Tutte'); 
@@ -94,17 +109,34 @@ export default function Home({ isDarkMode }) {
   }
 
   const prodottiFiltrati = prodotti.filter(p => {
-    let passaReparto = p.reparto === repartoAttivo || (!p.reparto && repartoAttivo === '🎣 Pesca Sportiva');
-    let passaRicerca = p.titolo ? p.titolo.toLowerCase().includes(ricerca.toLowerCase()) : false;
+    const haRicerca = ricerca.trim().length > 0;
+
+    // TECNICA SMART KEYWORDS (STESSA DEL CHATBOT)
+    let passaRicerca = true;
+    if (haRicerca) {
+      // Scomponiamo la frase in singole parole staccate, tenendo solo quelle importanti (>2 lettere)
+      const keywords = ricerca.toLowerCase().split(' ').filter(w => w.length > 2);
+      
+      if (keywords.length > 0) {
+        const testoProdotto = `${p.titolo} ${p.reparto} ${p.categoria} ${p.sottocategoria} ${p.descrizione_estesa}`.toLowerCase();
+        // Il prodotto passa se contiene ALMENO UNA delle parole digitate dall'utente
+        passaRicerca = keywords.some(kw => testoProdotto.includes(kw));
+      } else {
+        // Se scrive parole cortissime (es. "da"), usa un controllo classico di sicurezza
+        passaRicerca = p.titolo ? p.titolo.toLowerCase().includes(ricerca.toLowerCase()) : false;
+      }
+    }
+
+    // Se l'utente compie una ricerca, disattiviamo momentaneamente il blocco del reparto per cercare ovunque
+    let passaReparto = haRicerca 
+      ? passaRicerca 
+      : (p.reparto === repartoAttivo || (!p.reparto && repartoAttivo === '🎣 Pesca Sportiva'));
     
-    // LA MAGIA È QUI: Controlliamo se la parola selezionata corrisponde 
-    // alla Categoria (es. "Attrezzatura") OPPURE alla Sottocategoria (es. "Mulinelli")
-    let passaCategoria = 
-      filtroCategoria === 'Tutte' || 
-      p.categoria === filtroCategoria || 
-      p.sottocategoria === filtroCategoria;
+    let passaCategoria = haRicerca 
+      ? true 
+      : (filtroCategoria === 'Tutte' || p.categoria === filtroCategoria || p.sottocategoria === filtroCategoria);
     
-    let passaSottocategoria = filtroSottocategoria === 'Tutte' || p.sottocategoria === filtroSottocategoria;
+    let passaSottocategoria = haRicerca ? true : (filtroSottocategoria === 'Tutte' || p.sottocategoria === filtroSottocategoria);
     
     let passaPrezzo = true;
     if (p.prezzo) {
@@ -120,12 +152,10 @@ export default function Home({ isDarkMode }) {
       passaSconto = scontoGenerato >= parseInt(filtroSconto);
     }
 
-    // --- INCOLLA QUESTO PEZZO QUI ---
     let passaDogana = filtroNoDogana ? p.no_dogana === true : true;
 
     return passaReparto && passaRicerca && passaCategoria && passaSottocategoria && passaPrezzo && passaSconto && passaDogana;
   });
-
   const bgPrincipale = isDarkMode ? '#111827' : '#F9FAFB';
   const textPrincipale = isDarkMode ? '#F3F4F6' : '#111827';
   const cardBg = isDarkMode ? '#1F2937' : '#FFFFFF';
@@ -142,18 +172,11 @@ return (
       
       {/* 1. POPUP E INTERFACCIE SULLO SCHERMO (Overlay fissi) */}
       {/* 1. POPUP E INTERFACCIE SULLO SCHERMO (Overlay fissi) */}
+      {/* 1. POPUP E INTERFACCIE SULLO SCHERMO (Overlay fissi) */}
       <WheelOfFortune isDarkMode={isDarkMode} />
       <ToastPromo />
       <ExitIntentPopup isDarkMode={isDarkMode} />
       <FakeSalesToast prodotti={prodotti} isDarkMode={isDarkMode} />
-      
-      {/* IL NOSTRO NUOVO ASSISTENTE BOT */}
-      <ProductFinder 
-        isDarkMode={isDarkMode}
-        cambiaReparto={cambiaReparto}
-        setFiltroCategoria={setFiltroCategoria}
-        setRicerca={setRicerca}
-      />
       
       {/* 2. SLIDER DEI BANNER PRINCIPALI */}
       {/* 2. HERO SECTION PREMIUM */}
