@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient'; 
 import Header from './Header';
 import ProductModal from './ProductModal';
@@ -29,7 +29,11 @@ const repartiMap = {
   }
 };
 export default function Home({ isDarkMode, ricerca, setRicerca }) {
+  
+  
+  // ... resto dei tuoi useState (ricerca, prodotti, ecc.)
   const [prodotti, setProdotti] = useState([]);
+  const navigate = useNavigate();
   const [repartoAttivo, setRepartoAttivo] = useState('🎣 Pesca Sportiva');
   const [filtroCategoria, setFiltroCategoria] = useState('Tutte');
   const [filtroSottocategoria, setFiltroSottocategoria] = useState('Tutte'); 
@@ -41,7 +45,24 @@ export default function Home({ isDarkMode, ricerca, setRicerca }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const prodottiPerPagina = 18;
+  
+  // --- INIZIO LOGICA GIORNALE ---
+  // Prendiamo i primi 4 prodotti del catalogo per metterli in prima pagina (puoi cambiare la logica in futuro per scegliere i best-seller)
+  // --- INIZIO LOGICA VOLANTINO / GIORNALE ---
+  // Prendiamo i primi 9 prodotti (il sistema li mescola già in automatico ogni giorno!)
+  // Ordina i prodotti dal più costoso al più economico per dare un senso logico al volantino
+  const prodottiVolantino = [...prodotti]
+    .sort((a, b) => parseFloat(b.prezzo) - parseFloat(a.prezzo)) 
+    .slice(0, 9);
+  const prodottoCopertina = prodottiVolantino[0];
+  const prodottiSpalla = prodottiVolantino.slice(1, 7); // 4 prodotti a lato
+  const prodottiStriscia = prodottiVolantino.slice(5, 9); // 4 prodotti in basso
 
+  const handleNewsClick = (idProdotto) => {
+    navigate(`/prodotto/${idProdotto}`);
+  };
+  // --- FINE LOGICA VOLANTINO / GIORNALE ---
+  // --- FINE LOGICA GIORNALE ---
   // 1. Il tuo useEffect che carica e mescola i prodotti
   
   useEffect(() => {
@@ -108,14 +129,16 @@ export default function Home({ isDarkMode, ricerca, setRicerca }) {
     setFiltroSconto('Tutti'); 
   }
 
+  const testoRicerca = (ricerca || "").toString().trim().toLowerCase();
+
   const prodottiFiltrati = prodotti.filter(p => {
-    const haRicerca = ricerca.trim().length > 0;
+    const haRicerca = testoRicerca.length > 0;
 
     // TECNICA SMART KEYWORDS (STESSA DEL CHATBOT)
     let passaRicerca = true;
     if (haRicerca) {
-      // Scomponiamo la frase in singole parole staccate, tenendo solo quelle importanti (>2 lettere)
-      const keywords = ricerca.toLowerCase().split(' ').filter(w => w.length > 2);
+      // Usiamo "testoRicerca" che è sicuro, non crasherà mai
+      const keywords = testoRicerca.split(' ').filter(w => w.length > 2);
       
       if (keywords.length > 0) {
         const testoProdotto = `${p.titolo} ${p.reparto} ${p.categoria} ${p.sottocategoria} ${p.descrizione_estesa}`.toLowerCase();
@@ -123,7 +146,7 @@ export default function Home({ isDarkMode, ricerca, setRicerca }) {
         passaRicerca = keywords.some(kw => testoProdotto.includes(kw));
       } else {
         // Se scrive parole cortissime (es. "da"), usa un controllo classico di sicurezza
-        passaRicerca = p.titolo ? p.titolo.toLowerCase().includes(ricerca.toLowerCase()) : false;
+        passaRicerca = p.titolo ? p.titolo.toLowerCase().includes(testoRicerca) : false;
       }
     }
 
@@ -166,7 +189,9 @@ export default function Home({ isDarkMode, ricerca, setRicerca }) {
   
   const prodottiPaginati = prodottiFiltrati.slice(indicePrimoProdotto, indiceUltimoProdotto);
   const totalePagine = Math.ceil(prodottiFiltrati.length / prodottiPerPagina);
+// Aggiungi questa riga prima del filter
 
+  //   <div> ...
 return (
     <div style={{ fontFamily: 'Inter, sans-serif', backgroundColor: bgPrincipale, paddingBottom: '100px', minHeight: '100vh', color: textPrincipale }}>
       
@@ -180,7 +205,151 @@ return (
       
       {/* 2. SLIDER DEI BANNER PRINCIPALI */}
       {/* 2. HERO SECTION PREMIUM */}
-      <HeroSection />
+      {/* --- BANNER STILE GIORNALE DINAMICO --- */}
+      {/* --- VOLANTINO STILE MEDIAWORLD / GIORNALE --- */}
+      {/* --- VOLANTINO STILE MEDIAWORLD / GIORNALE --- */}
+      <div style={{ 
+        maxWidth: '1400px', /* <-- Allargato da 1200 a 1400 per riempire lo schermo */
+        width: '96%', /* <-- Occupa quasi tutto lo spazio su monitor grandi */
+        margin: '20px auto 40px auto', 
+        padding: '25px', 
+        // ... (lascia il resto dei colori e bordi uguale a prima)
+        background: isDarkMode ? '#111827' : '#FDFBF7', 
+        border: isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB',
+        borderRadius: '12px',
+        boxShadow: isDarkMode ? '0 10px 40px rgba(0,0,0,0.5)' : '0 10px 40px rgba(0,0,0,0.08)'
+      }}>
+        
+        {/* TESTATA VOLANTINO */}
+        <div style={{ textAlign: 'center', borderBottom: isDarkMode ? '4px solid #374151' : '4px solid #111827', paddingBottom: '15px', marginBottom: '25px' }}>
+          <div style={{ background: '#FF6600', color: 'white', display: 'inline-block', padding: '4px 15px', borderRadius: '50px', fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '10px' }}>
+            Speciale Offerte
+          </div>
+          <h1 style={{ 
+            fontFamily: "'Georgia', serif", 
+            fontSize: 'clamp(2rem, 5vw, 4rem)', 
+            fontWeight: '900', 
+            margin: '0', 
+            textTransform: 'uppercase', 
+            letterSpacing: '-2px',
+            color: isDarkMode ? '#F9FAFB' : '#111827',
+            lineHeight: '1'
+          }}>
+            IL VOLANTINO OUTDOOR
+          </h1>
+          <div style={{ marginTop: '10px', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '2px', color: isDarkMode ? '#9CA3AF' : '#6B7280', fontWeight: 'bold' }}>
+            Valido per la giornata di oggi: {new Date().toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' })}
+          </div>
+        </div>
+
+        {/* CONTENUTO VOLANTINO */}
+        {prodottoCopertina && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+            
+            {/* SEZIONE SUPERIORE (1 Grande a SX + Griglia 4 a DX) */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+              
+              {/* SUPER OFFERTA IN PRIMA PAGINA (Sinistra) */}
+              <div 
+  onClick={() => handleNewsClick(prodottoCopertina.id)} /* <--- MODIFICATO QUI */
+  style={{ 
+    flex: '1 1 450px', cursor: 'pointer', position: 'relative',
+    background: isDarkMode ? '#1F2937' : 'white',
+    border: `2px solid #FF6600`, borderRadius: '8px', padding: '20px',
+    boxShadow: '0 8px 20px rgba(255, 102, 0, 0.15)', transition: 'transform 0.2s' 
+  }}
+  onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.01)'}
+  onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+>
+                <div style={{ position: 'absolute', top: '-15px', left: '-15px', background: '#EF4444', color: 'white', padding: '10px 15px', borderRadius: '4px', fontWeight: '900', fontSize: '18px', transform: 'rotate(-5deg)', boxShadow: '0 4px 10px rgba(0,0,0,0.2)', zIndex: 2 }}>
+                  SOTTOCOSTO!
+                </div>
+                
+                <div style={{ width: '100%', height: '300px', backgroundColor: isDarkMode ? '#111827' : '#F9FAFB', borderRadius: '4px', marginBottom: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <img src={prodottoCopertina.immagine_url || "https://placehold.co/600x400?text=Novità"} alt={prodottoCopertina.titolo} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                </div>
+                <h2 style={{ fontFamily: "'Georgia', serif", fontSize: '2rem', margin: '0 0 10px 0', lineHeight: '1.1', color: isDarkMode ? '#F9FAFB' : '#111827' }}>
+                  {prodottoCopertina.titolo}
+                </h2>
+                <div style={{ display: 'flex', alignItems: 'flex-end', gap: '10px', marginTop: '15px' }}>
+                  <span style={{ fontSize: '3rem', fontWeight: '900', color: '#FF6600', lineHeight: '0.8' }}>
+                    {prodottoCopertina.prezzo ? `${prodottoCopertina.prezzo}€` : "TOP"}
+                  </span>
+                  <span style={{ fontSize: '1.2rem', textDecoration: 'line-through', color: '#9CA3AF', fontWeight: 'bold' }}>
+                    {prodottoCopertina.prezzo ? `${(parseFloat(prodottoCopertina.prezzo.toString().replace(',','.')) * 1.4).toFixed(2)}€` : ""}
+                  </span>
+                </div>
+              </div>
+
+              {/* GRIGLIA "DA NON PERDERE" (Destra - 4 Prodotti) */}
+              <div style={{ flex: '1 1 450px', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '15px' }}>
+                {prodottiSpalla.map((p, index) => (
+                  <div 
+                    key={index} onClick={() => handleNewsClick(p.id)}
+                    style={{ 
+                      background: isDarkMode ? '#1F2937' : 'white', border: isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB',
+                      borderRadius: '8px', padding: '15px', cursor: 'pointer', display: 'flex', flexDirection: 'column',
+                      transition: 'box-shadow 0.2s, border-color 0.2s'
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)'; e.currentTarget.style.borderColor = '#FF6600'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.borderColor = isDarkMode ? '#374151' : '#E5E7EB'; }}
+                  >
+                    <div style={{ height: '140px', backgroundColor: isDarkMode ? '#111827' : '#F9FAFB', borderRadius: '4px', marginBottom: '10px', padding: '10px' }}>
+                      <img src={p.immagine_url || "https://placehold.co/150"} alt={p.titolo} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                    </div>
+                    <h3 style={{ fontSize: '13px', margin: '0 0 10px 0', color: isDarkMode ? '#F9FAFB' : '#111827', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                      {p.titolo}
+                    </h3>
+                    <div style={{ marginTop: 'auto' }}>
+                      <span style={{ fontSize: '20px', fontWeight: '900', color: '#FF6600' }}>
+                        {p.prezzo ? `${p.prezzo}€` : "Offerta"}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+            </div>
+
+            {/* SEZIONE INFERIORE: STRISCIA OFFERTE LAMPO */}
+            <div style={{ borderTop: isDarkMode ? '2px dashed #374151' : '2px dashed #D1D5DB', paddingTop: '25px', position: 'relative' }}>
+              <span style={{ position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)', background: isDarkMode ? '#111827' : '#FDFBF7', padding: '0 15px', fontSize: '18px', fontWeight: '900', color: isDarkMode ? '#F9FAFB' : '#111827', textTransform: 'uppercase' }}>
+                Altre Offerte Lampo
+              </span>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '20px', marginTop: '15px' }}>
+                {prodottiStriscia.map((p, index) => (
+                  <div 
+                    key={index} onClick={() => handleNewsClick(p.id)}
+                    style={{ 
+                      display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer',
+                      background: isDarkMode ? '#1F2937' : 'white', padding: '10px', borderRadius: '8px',
+                      border: isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB', transition: 'background 0.2s'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = isDarkMode ? '#374151' : '#F3F4F6'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = isDarkMode ? '#1F2937' : 'white'}
+                  >
+                    <div style={{ width: '80px', height: '80px', flexShrink: 0, backgroundColor: isDarkMode ? '#111827' : '#F9FAFB', borderRadius: '4px', padding: '5px' }}>
+                      <img src={p.immagine_url || "https://placehold.co/100"} alt={p.titolo} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                    </div>
+                    <div style={{ overflow: 'hidden' }}>
+                      <h4 style={{ margin: '0 0 5px 0', fontSize: '12px', color: isDarkMode ? '#F9FAFB' : '#111827', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                        {p.titolo}
+                      </h4>
+                      <span style={{ fontSize: '16px', fontWeight: '900', color: '#EF4444' }}>
+                        {p.prezzo ? `${p.prezzo}€` : "Guarda"}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        )}
+      </div>
+      {/* --- FINE VOLANTINO STILE MEDIAWORLD --- */}
+      {/* --- FINE BANNER STILE GIORNALE --- */}
       
       {/* 3. MENU DELLE CATEGORIE (HEADER) */}
       <Header 
@@ -299,7 +468,7 @@ return (
             <style>{"@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }"}</style>
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px', padding: '0 4%' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '15px', padding: '0 4%' }}>
             {prodottiPaginati.map((prodotto) => {
               
               const prezzoNum = prodotto.prezzo ? parseFloat(prodotto.prezzo.toString().replace(',', '.')) : 0;
@@ -359,9 +528,25 @@ return (
                     <span style={{ fontSize: '13px', color: '#6B7280', textDecoration: 'line-through' }}>{prezzoBarrato}€</span>
                   </div>
 
-                  <h3 title={prodotto.titolo} style={{ fontSize: '14px', margin: '0 0 8px 0', color: textPrincipale, lineHeight: '1.3', fontWeight: '700', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', minHeight: '36px' }}>
-                    {prodotto.titolo}
-                  </h3>
+                  {/* Trova questo tag h3 e sostituiscilo con questa versione migliorata */}
+<h3 
+  title={prodotto.titolo} 
+  style={{ 
+    fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', /* Font nativo modernissimo */
+    fontSize: '13px', /* Più compatto e raffinato */
+    fontWeight: '500', /* Elegante, non troppo spesso */
+    color: isDarkMode ? '#F3F4F6' : '#374151', /* Grigio scuro premium invece del nero sparato */
+    margin: '0 0 8px 0', 
+    lineHeight: '1.4', 
+    display: '-webkit-box', 
+    WebkitLineClamp: 2, 
+    WebkitBoxOrient: 'vertical', 
+    overflow: 'hidden', 
+    height: '36px', /* Allinea tutte le card in modo simmetrico */
+    letterSpacing: '-0.3px' /* Stringe leggermente i caratteri per un look più "smart" */
+  }}>
+  {prodotto.titolo}
+</h3>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '12px', fontSize: '12px' }}>
                     <div style={{ color: '#EF4444', fontWeight: '600', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -413,77 +598,6 @@ return (
 }
 // --- HERO SLIDER ---
 // --- NUOVA HERO SECTION PREMIUM ---
-function HeroSection() {
-  const isMobile = window.innerWidth <= 768;
-
-  return (
-    <div style={{
-      position: 'relative',
-      width: '100%',
-      height: isMobile ? '60vh' : '70vh', 
-      minHeight: '400px',
-      backgroundImage: 'url(/banner.jpg)', // Assicurati di avere banner.jpg in public/
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: 'white',
-      textAlign: 'center',
-      marginBottom: '40px'
-    }}>
-      {/* OVERLAY SCURO */}
-      <div style={{
-        position: 'absolute',
-        top: 0, left: 0, right: 0, bottom: 0,
-        backgroundColor: 'rgba(0,0,0,0.45)'
-      }}></div>
-      
-      {/* CONTENUTO CENTRALE */}
-      <div style={{ position: 'relative', zIndex: 1, padding: '20px', maxWidth: '800px' }}>
-        <h1 style={{ 
-          fontSize: isMobile ? '36px' : '58px', 
-          fontWeight: '900', 
-          margin: '0 0 20px 0', 
-          letterSpacing: '-1px',
-          textShadow: '0 2px 10px rgba(0,0,0,0.5)',
-          lineHeight: '1.1'
-        }}>
-          La Natura Chiama.<br/>Fatti Trovare Pronto.
-        </h1>
-        <p style={{ 
-          fontSize: isMobile ? '16px' : '20px', 
-          margin: '0 auto 35px auto', 
-          lineHeight: '1.5',
-          textShadow: '0 1px 5px rgba(0,0,0,0.5)',
-          opacity: 0.9
-        }}>
-          Scopri l'attrezzatura premium per il campeggio, la pesca e l'outdoor selezionata dai nostri esperti.
-        </p>
-        
-        {/* BOTTONE CHE SCORRE ALLA RICERCA */}
-        <button 
-          onClick={() => document.getElementById('sezione-ricerca')?.scrollIntoView({ behavior: 'smooth' })}
-          style={{
-            backgroundColor: '#FF6600',
-            color: 'white',
-            border: 'none',
-            padding: '18px 36px',
-            fontSize: '16px',
-            fontWeight: 'bold',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            transition: 'background-color 0.2s',
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#E65C00'}
-          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#FF6600'}
-        >
-          Esplora la Collezione
-        </button>
-      </div>
-    </div>
-  );
-}
 
 
 function PromoBanner() {
