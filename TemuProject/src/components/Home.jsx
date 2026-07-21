@@ -35,6 +35,16 @@ export default function Home({ isDarkMode, ricerca, setRicerca }) {
   const [prodotti, setProdotti] = useState([]);
   const navigate = useNavigate();
   const [repartoAttivo, setRepartoAttivo] = useState('🎣 Pesca Sportiva');
+  const volantini = ['🎣 Pesca Sportiva', '🐠 Acquariofilia', '🏕️ Campeggio e Bivacco'];
+  const [indiceVolantino, setIndiceVolantino] = useState(0);
+
+  // Timer: Cambia il giornale in automatico ogni 10 secondi
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIndiceVolantino((prev) => (prev + 1) % volantini.length);
+    }, 10000);
+    return () => clearInterval(timer);
+  }, []);
   const [filtroCategoria, setFiltroCategoria] = useState('Tutte');
   const [filtroSottocategoria, setFiltroSottocategoria] = useState('Tutte'); 
   const [filtroPrezzo, setFiltroPrezzo] = useState('Tutti');
@@ -212,137 +222,141 @@ return (
 
       <div style={{ padding: '20px 0' }}>
       
-        {/* 2. SUBITO SOTTO: BARRA DI RICERCA E FILTRI */}
-        <div id="sezione-ricerca" style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginBottom: '30px', padding: '0 4%' }}>
+        {/* 2. BARRA DI RICERCA E FILTRI (Smart Scroll per Mobile) */}
+        <div id="sezione-ricerca" style={{ 
+          display: 'flex', 
+          gap: '10px', 
+          marginBottom: '25px', 
+          padding: '0 4%',
+          overflowX: 'auto', // Abilita lo swipe orizzontale
+          scrollbarWidth: 'none', // Nasconde la barra su Firefox
+          msOverflowStyle: 'none', // Nasconde la barra su IE/Edge
+          WebkitOverflowScrolling: 'touch'
+        }}>
+          {/* Nasconde la scrollbar su Chrome/Safari tramite stile in linea simulato */}
+          <style>{`#sezione-ricerca::-webkit-scrollbar { display: none; }`}</style>
           
-          <div style={{ flex: 2, minWidth: '250px', position: 'relative' }}>
-            <span style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '18px', color: '#9CA3AF' }}>🔍</span>
+          <div style={{ flex: '0 0 auto', width: '260px', position: 'relative' }}>
+            <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '15px', color: '#9CA3AF' }}>🔍</span>
             <input 
               type="text" 
               placeholder="Cerca un prodotto..." 
               value={ricerca} 
               onChange={(e) => setRicerca(e.target.value)} 
-              style={{ width: '100%', padding: '16px 20px 16px 45px', borderRadius: '8px', border: isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB', background: isDarkMode ? '#1F2937' : '#FFFFFF', color: textPrincipale, outline: 'none', fontSize: '15px', boxSizing: 'border-box' }}
+              style={{ width: '100%', padding: '10px 15px 10px 38px', borderRadius: '50px', border: isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB', background: isDarkMode ? '#1F2937' : '#FFFFFF', color: textPrincipale, outline: 'none', fontSize: '14px', boxSizing: 'border-box' }}
             />
           </div>
 
-          <select value={filtroPrezzo} onChange={(e) => setFiltroPrezzo(e.target.value)} style={{ flex: 1, minWidth: '160px', padding: '16px 20px', borderRadius: '8px', border: isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB', background: isDarkMode ? '#1F2937' : '#FFFFFF', color: textPrincipale, outline: 'none', fontSize: '15px' }}>
-            <option value="Tutti">Qualsiasi Prezzo</option>
+          <select value={filtroPrezzo} onChange={(e) => setFiltroPrezzo(e.target.value)} style={{ flex: '0 0 auto', padding: '10px 16px', borderRadius: '50px', border: isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB', background: isDarkMode ? '#1F2937' : '#FFFFFF', color: textPrincipale, outline: 'none', fontSize: '14px', cursor: 'pointer' }}>
+            <option value="Tutti">Prezzo: Tutti</option>
             <option value="0-10">Sotto i 10 €</option>
-            <option value="10-30">Tra 10 € e 30 €</option>
+            <option value="10-30">10 € - 30 €</option>
             <option value="30+">Oltre 30 €</option>
           </select>
 
-          <select value={filtroSconto} onChange={(e) => setFiltroSconto(e.target.value)} style={{ flex: 1, minWidth: '160px', padding: '16px 20px', borderRadius: '8px', border: isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB', background: isDarkMode ? '#1F2937' : '#FFFFFF', color: textPrincipale, outline: 'none', fontSize: '15px' }}>
-            <option value="Tutti">Tutti gli sconti</option>
-            <option value="30">Sconto 30%+</option>
-            <option value="50">Sconto 50%+</option>
+          <select value={filtroSconto} onChange={(e) => setFiltroSconto(e.target.value)} style={{ flex: '0 0 auto', padding: '10px 16px', borderRadius: '50px', border: isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB', background: isDarkMode ? '#1F2937' : '#FFFFFF', color: textPrincipale, outline: 'none', fontSize: '14px', cursor: 'pointer' }}>
+            <option value="Tutti">Sconto: Tutti</option>
+            <option value="30">Più del 30%</option>
+            <option value="50">Più del 50%</option>
           </select>
 
-          <button onClick={() => setFiltroNoDogana(!filtroNoDogana)} style={{ flex: '1 1 160px', minWidth: '160px', padding: '16px 20px', borderRadius: '8px', border: filtroNoDogana ? '2px solid #059669' : (isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB'), background: filtroNoDogana ? 'rgba(5, 150, 105, 0.15)' : (isDarkMode ? '#1F2937' : '#FFFFFF'), color: filtroNoDogana ? '#10B981' : textPrincipale, fontWeight: 'bold', fontSize: '15px' }}>
-            <span>🇪🇺</span> {filtroNoDogana ? 'Solo Mag. EU' : 'Tutti (Anche extra-UE)'}
+          <button onClick={() => setFiltroNoDogana(!filtroNoDogana)} style={{ flex: '0 0 auto', padding: '10px 16px', borderRadius: '50px', border: filtroNoDogana ? '1px solid #059669' : (isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB'), background: filtroNoDogana ? 'rgba(5, 150, 105, 0.15)' : (isDarkMode ? '#1F2937' : '#FFFFFF'), color: filtroNoDogana ? '#10B981' : textPrincipale, fontWeight: '600', fontSize: '14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span>🇪🇺</span> {filtroNoDogana ? 'Magazzino EU' : 'Anche Extra-UE'}
           </button>
         </div>
 
 
-        {/* 3. IL VOLANTINO COMPATTO CON SCORRIMENTO ORIZZONTALE (SWIPE) */}
-        <div style={{ maxWidth: '1400px', width: '96%', margin: '0 auto 40px auto', padding: '20px', background: isDarkMode ? '#111827' : '#FDFBF7', border: isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB', borderRadius: '12px', boxShadow: isDarkMode ? '0 10px 40px rgba(0,0,0,0.5)' : '0 10px 40px rgba(0,0,0,0.05)' }}>
+        {/* 3. IL GIORNALE DELLE OFFERTE (OTTIMIZZATO MOBILE) */}
+        <div style={{ position: 'relative', maxWidth: '1400px', width: '96%', margin: '0 auto 30px auto' }}>
           
-          <div style={{ textAlign: 'center', borderBottom: isDarkMode ? '2px solid #374151' : '2px solid #111827', paddingBottom: '15px', marginBottom: '20px' }}>
-            <div style={{ background: '#FF6600', color: 'white', display: 'inline-block', padding: '4px 15px', borderRadius: '50px', fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '10px' }}>Speciale Offerte {repartoAttivo}</div>
-            <h1 style={{ fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', fontWeight: '900', margin: '0', textTransform: 'uppercase', letterSpacing: '-1px', color: isDarkMode ? '#F9FAFB' : '#111827', lineHeight: '1.1' }}>
-              Le Migliori Scelte
-            </h1>
+          <button onClick={() => setIndiceVolantino(prev => prev === 0 ? volantini.length - 1 : prev - 1)} style={{ position: 'absolute', left: '-10px', top: '50%', transform: 'translateY(-50%)', zIndex: 10, background: '#FF6600', color: 'white', border: 'none', borderRadius: '50%', width: '38px', height: '38px', cursor: 'pointer', boxShadow: '0 4px 15px rgba(0,0,0,0.3)', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>❮</button>
+          <button onClick={() => setIndiceVolantino(prev => (prev + 1) % volantini.length)} style={{ position: 'absolute', right: '-10px', top: '50%', transform: 'translateY(-50%)', zIndex: 10, background: '#FF6600', color: 'white', border: 'none', borderRadius: '50%', width: '38px', height: '38px', cursor: 'pointer', boxShadow: '0 4px 15px rgba(0,0,0,0.3)', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>❯</button>
+
+          {/* Il container usa clamp() per ridurre il padding sui telefoni */}
+          <div style={{ background: isDarkMode ? '#111827' : '#FDFBF7', border: isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB', borderRadius: '12px', padding: 'clamp(12px, 3vw, 20px)', boxShadow: isDarkMode ? '0 8px 30px rgba(0,0,0,0.4)' : '0 8px 30px rgba(0,0,0,0.04)' }}>
+            
+            {(() => {
+              const repartoCorrente = volantini[indiceVolantino];
+              const prodottiDelGiorno = prodotti.filter(p => p.reparto === repartoCorrente).slice(0, 10);
+              if (prodottiDelGiorno.length === 0) return <div style={{textAlign: 'center', padding: '30px', fontSize: '14px'}}>Caricamento offerte...</div>;
+
+              const prodottiOrdinati = [...prodottiDelGiorno].sort((a, b) => parseFloat(b.prezzo || 0) - parseFloat(a.prezzo || 0));
+              const prodottoCopertina = prodottiOrdinati[0];
+              const prodottiSpalla = prodottiOrdinati.slice(1, 5);
+              const prodottiStriscia = prodottiOrdinati.slice(5, 10);
+
+              return (
+                <>
+                  <div style={{ textAlign: 'center', borderBottom: isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB', paddingBottom: '10px', marginBottom: '15px' }}>
+                    <div style={{ background: '#FF6600', color: 'white', display: 'inline-block', padding: '3px 12px', borderRadius: '50px', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '5px' }}>
+                      Il Giornale del Giorno
+                    </div>
+                    <h1 style={{ fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: 'clamp(1.2rem, 4vw, 2rem)', fontWeight: '900', margin: '0', textTransform: 'uppercase', letterSpacing: '-0.5px', color: isDarkMode ? '#F9FAFB' : '#111827', lineHeight: '1.1' }}>
+                      {repartoCorrente}
+                    </h1>
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '15px' }}>
+                      
+                      {/* PRODOTTO COPERTINA: Altezza ridotta tramite clamp */}
+                      <div onClick={() => handleNewsClick(prodottoCopertina.id)} style={{ flex: '1 1 280px', cursor: 'pointer', position: 'relative', background: isDarkMode ? '#1F2937' : 'white', border: `2px solid #FF6600`, borderRadius: '8px', padding: '12px', boxShadow: '0 6px 15px rgba(255, 102, 0, 0.1)' }}>
+                        <div style={{ position: 'absolute', top: '-8px', left: '-8px', background: '#EF4444', color: 'white', padding: '4px 8px', borderRadius: '4px', fontWeight: '900', fontSize: '11px', transform: 'rotate(-3deg)', zIndex: 2 }}>SOTTOCOSTO!</div>
+                        <div style={{ width: '100%', height: 'clamp(140px, 30vw, 200px)', backgroundColor: isDarkMode ? '#111827' : '#F9FAFB', borderRadius: '4px', marginBottom: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                          <img src={prodottoCopertina.immagine_url || "https://placehold.co/400x300"} alt={prodottoCopertina.titolo} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                        </div>
+                        <h2 style={{ fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: 'clamp(1rem, 2.5vw, 1.3rem)', fontWeight: '700', margin: '0 0 5px 0', lineHeight: '1.2', color: isDarkMode ? '#F9FAFB' : '#111827', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                          {prodottoCopertina.titolo}
+                        </h2>
+                        <span style={{ fontSize: '2rem', fontWeight: '900', color: '#FF6600', lineHeight: '1' }}>{prodottoCopertina.prezzo ? `${prodottoCopertina.prezzo}€` : "TOP"}</span>
+                      </div>
+
+                      {/* PRODOTTI SPALLA: minmax ridotto a 130px (forza 2 colonne su mobile) */}
+                      <div style={{ flex: '1 1 300px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '10px' }}>
+                        {prodottiSpalla.map((p, index) => (
+                          <div key={index} onClick={() => handleNewsClick(p.id)} style={{ background: isDarkMode ? '#1F2937' : 'white', border: isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB', borderRadius: '8px', padding: '8px', cursor: 'pointer', display: 'flex', flexDirection: 'column' }}>
+                            <div style={{ height: '90px', backgroundColor: isDarkMode ? '#111827' : '#F9FAFB', borderRadius: '4px', marginBottom: '8px', padding: '5px' }}>
+                              <img src={p.immagine_url || "https://placehold.co/150"} alt={p.titolo} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                            </div>
+                            <h3 style={{ fontFamily: 'system-ui', fontSize: '11px', fontWeight: '500', margin: '0 0 6px 0', color: isDarkMode ? '#F9FAFB' : '#111827', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', height: '30px', lineHeight: '1.3' }}>
+                              {p.titolo}
+                            </h3>
+                            <span style={{ marginTop: 'auto', fontSize: '15px', fontWeight: '900', color: '#FF6600' }}>{p.prezzo ? `${p.prezzo}€` : "Offerta"}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* STRISCIA OFFERTE LAMPO (Più sottile) */}
+                    <div style={{ borderTop: isDarkMode ? '1px dashed #374151' : '1px dashed #D1D5DB', paddingTop: '15px', position: 'relative' }}>
+                      <span style={{ position: 'absolute', top: '-9px', left: '50%', transform: 'translateX(-50%)', background: isDarkMode ? '#111827' : '#FDFBF7', padding: '0 10px', fontSize: '11px', fontWeight: '900', color: isDarkMode ? '#9CA3AF' : '#6B7280', textTransform: 'uppercase' }}>
+                        Altre Offerte {repartoCorrente.split(' ')[1]}
+                      </span>
+                      
+                      <div style={{ display: 'flex', overflowX: 'auto', gap: '10px', marginTop: '10px', paddingBottom: '5px', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                        {prodottiStriscia.map((p, index) => (
+                          <div key={index} onClick={() => handleNewsClick(p.id)} style={{ flex: '0 0 180px', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', background: isDarkMode ? '#1F2937' : 'white', padding: '6px', borderRadius: '6px', border: isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB' }}>
+                            <div style={{ width: '45px', height: '45px', flexShrink: 0, backgroundColor: isDarkMode ? '#111827' : '#F9FAFB', borderRadius: '4px', padding: '3px' }}>
+                              <img src={p.immagine_url || "https://placehold.co/100"} alt={p.titolo} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                            </div>
+                            <div style={{ overflow: 'hidden' }}>
+                              <h4 style={{ fontFamily: 'system-ui', margin: '0 0 2px 0', fontSize: '11px', fontWeight: '500', color: isDarkMode ? '#F9FAFB' : '#111827', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                                {p.titolo}
+                              </h4>
+                              <span style={{ fontSize: '13px', fontWeight: '900', color: '#EF4444' }}>{p.prezzo ? `${p.prezzo}€` : "Guarda"}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              );
+            })()}
           </div>
-
-          {prodottoCopertina && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
-              
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
-                
-                {/* PRODOTTO COPERTINA (Più compatto) */}
-                <div onClick={() => handleNewsClick(prodottoCopertina.id)} style={{ flex: '1 1 350px', cursor: 'pointer', position: 'relative', background: isDarkMode ? '#1F2937' : 'white', border: `2px solid #FF6600`, borderRadius: '8px', padding: '15px', boxShadow: '0 8px 20px rgba(255, 102, 0, 0.15)' }}>
-                  <div style={{ position: 'absolute', top: '-10px', left: '-10px', background: '#EF4444', color: 'white', padding: '8px 12px', borderRadius: '4px', fontWeight: '900', fontSize: '14px', transform: 'rotate(-3deg)', zIndex: 2 }}>SOTTOCOSTO!</div>
-                  <div style={{ width: '100%', height: '220px', backgroundColor: isDarkMode ? '#111827' : '#F9FAFB', borderRadius: '4px', marginBottom: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <img src={prodottoCopertina.immagine_url || "https://placehold.co/400x300"} alt={prodottoCopertina.titolo} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
-                  </div>
-                  <h2 style={{ fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: 'clamp(1.2rem, 3vw, 1.6rem)', fontWeight: '700', margin: '0 0 10px 0', lineHeight: '1.2', color: isDarkMode ? '#F9FAFB' : '#111827', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                    {prodottoCopertina.titolo}
-                  </h2>
-                  <div style={{ display: 'flex', alignItems: 'flex-end', gap: '10px' }}>
-                    <span style={{ fontSize: '2.5rem', fontWeight: '900', color: '#FF6600', lineHeight: '0.9' }}>{prodottoCopertina.prezzo ? `${prodottoCopertina.prezzo}€` : "TOP"}</span>
-                  </div>
-                </div>
-
-                {/* GRIGLIA "DA NON PERDERE" - ORA CON SWIPE ORIZZONTALE DA MOBILE */}
-                <div style={{ 
-                  flex: '1 1 450px', 
-                  display: 'flex', 
-                  overflowX: 'auto', // Abilita lo scorrimento
-                  gap: '15px', 
-                  paddingBottom: '15px', 
-                  scrollSnapType: 'x mandatory', // Effetto "scatto" magnetico come nelle app
-                  WebkitOverflowScrolling: 'touch' 
-                }}>
-                  {prodottiSpalla.map((p, index) => (
-                    <div key={index} onClick={() => handleNewsClick(p.id)} style={{ 
-                      flex: '0 0 180px', // Larghezza fissa per formare le card del carosello
-                      scrollSnapAlign: 'start', 
-                      background: isDarkMode ? '#1F2937' : 'white', border: isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB', borderRadius: '8px', padding: '12px', cursor: 'pointer', display: 'flex', flexDirection: 'column' 
-                    }}>
-                      <div style={{ height: '120px', backgroundColor: isDarkMode ? '#111827' : '#F9FAFB', borderRadius: '4px', marginBottom: '10px', padding: '10px' }}>
-                        <img src={p.immagine_url || "https://placehold.co/150"} alt={p.titolo} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                      </div>
-                      <h3 style={{ fontFamily: 'system-ui', fontSize: '13px', fontWeight: '500', margin: '0 0 10px 0', color: isDarkMode ? '#F9FAFB' : '#111827', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', height: '36px', lineHeight: '1.3' }}>
-                        {p.titolo}
-                      </h3>
-                      <span style={{ marginTop: 'auto', fontSize: '18px', fontWeight: '900', color: '#FF6600' }}>{p.prezzo ? `${p.prezzo}€` : "Offerta"}</span>
-                    </div>
-                  ))}
-                </div>
-
-              </div>
-
-              {/* STRISCIA OFFERTE LAMPO - ANCHE QUESTA CON SWIPE ORIZZONTALE */}
-              <div style={{ borderTop: isDarkMode ? '2px dashed #374151' : '2px dashed #D1D5DB', paddingTop: '20px', position: 'relative' }}>
-                <span style={{ position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)', background: isDarkMode ? '#111827' : '#FDFBF7', padding: '0 15px', fontSize: '14px', fontWeight: '900', color: isDarkMode ? '#F9FAFB' : '#111827', textTransform: 'uppercase' }}>
-                  Altre Offerte Lampo ({repartoAttivo.split(' ')[1] || 'Outdoor'})
-                </span>
-                
-                <div style={{ 
-                  display: 'flex', 
-                  overflowX: 'auto', 
-                  gap: '15px', 
-                  marginTop: '15px', 
-                  paddingBottom: '10px',
-                  scrollSnapType: 'x mandatory',
-                  WebkitOverflowScrolling: 'touch'
-                }}>
-                  {prodottiStriscia.map((p, index) => (
-                    <div key={index} onClick={() => handleNewsClick(p.id)} style={{ 
-                      flex: '0 0 240px', // Card rettangolari per scorrere a destra
-                      scrollSnapAlign: 'start',
-                      display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', background: isDarkMode ? '#1F2937' : 'white', padding: '10px', borderRadius: '8px', border: isDarkMode ? '1px solid #374151' : '1px solid #E5E7EB' 
-                    }}>
-                      <div style={{ width: '70px', height: '70px', flexShrink: 0, backgroundColor: isDarkMode ? '#111827' : '#F9FAFB', borderRadius: '4px', padding: '5px' }}>
-                        <img src={p.immagine_url || "https://placehold.co/100"} alt={p.titolo} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                      </div>
-                      <div style={{ overflow: 'hidden' }}>
-                        <h4 style={{ fontFamily: 'system-ui', margin: '0 0 5px 0', fontSize: '12px', fontWeight: '500', color: isDarkMode ? '#F9FAFB' : '#111827', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
-                          {p.titolo}
-                        </h4>
-                        <span style={{ fontSize: '16px', fontWeight: '900', color: '#EF4444' }}>{p.prezzo ? `${p.prezzo}€` : "Guarda"}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-            </div>
-          )}
         </div>
 
-        {/* 4. GRIGLIA GENERALE DEL CATALOGO ... (lasciala invariata da qui in giù) */}
+        {/* 4. GRIGLIA GENERALE DEL CATALOGO ... (lasciala invariata da qui in giù) test*/}
         {loading ? (
           // --- EFFETTO DI CARICAMENTO (Spinner) ---
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '100px 0' }}>
