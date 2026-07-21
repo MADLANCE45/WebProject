@@ -356,7 +356,7 @@ return (
           </div>
         </div>
 
-        {/* 4. GRIGLIA GENERALE DEL CATALOGO ... (lasciala invariata da qui in giù) */}
+        {/* 4. GRIGLIA GENERALE DEL CATALOGO ... (lasciala invariata da qui in giù) test*/}
         {loading ? (
           // --- EFFETTO DI CARICAMENTO (Spinner) ---
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '100px 0' }}>
