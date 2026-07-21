@@ -262,7 +262,16 @@ const bgPrincipale = isDarkMode ? '#111827' : '#F9FAFB'; // Sfondo generale
       <h3 style={{ fontSize: '20px', marginBottom: '20px', color: textPrincipale, display: 'inline-block', borderBottom: '3px solid #FF6600', paddingBottom: '8px' }}>
         💡 Potrebbe interessarti anche...
       </h3>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px' }}>
+      {/* 4. GRIGLIA GENERALE DEL CATALOGO */}
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', // LA MAGIA È QUI: auto-fit espande i prodotti!
+          gap: '20px', 
+          width: '96%', 
+          maxWidth: '1400px', 
+          margin: '0 auto' 
+        }}>
+           {/* Qui dentro c'è il tuo map dei prodotti.map(...) */}
         {correlati.map(corr => (
           <div 
             onClick={() => { navigate(`/prodotto/${corr.id}`); window.scrollTo(0,0); }} 
