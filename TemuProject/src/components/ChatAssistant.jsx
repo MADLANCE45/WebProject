@@ -18,9 +18,9 @@ export default function ChatAssistant({ isDarkMode }) {
   const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState([
     { 
-      sender: 'bot', 
-      text: 'Ciao! 👋 Sono il tuo Personal Shopper Virtuale. Dimmi cosa stai cercando (es. "una tenda impermeabile" o "mulinello da spinning") e ti troverò le migliori offerte!' 
-    }
+  sender: 'bot', 
+  text: "Ciao! Sono l'assistente virtuale (Intelligenza Artificiale) di Recensioni ITA. Come posso aiutarti a trovare l'offerta giusta oggi?" 
+}
   ]);
   
   const messagesEndRef = useRef(null);

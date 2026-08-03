@@ -347,7 +347,7 @@ return (
                       <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         <span style={{ fontSize: '14px', fontWeight: 'bold', color: isDarkMode ? '#D1D5DB' : '#111827', textTransform: 'uppercase', borderBottom: isDarkMode ? '2px solid #374151' : '2px solid #111827', paddingBottom: '8px', fontFamily: 'system-ui, sans-serif' }}>I Più Letti</span>
 
-                        {prodottiSpalla.slice(0, 4).map((p, index) => (
+                        {prodottiSpalla.slice(0, 3).map((p, index) => (
                           <div key={index} onClick={() => handleNewsClick(p.id)} style={{ display: 'flex', alignItems: 'flex-start', gap: '15px', cursor: 'pointer', paddingBottom: '15px', borderBottom: isDarkMode ? '1px solid #374151' : '1px solid #F3F4F6' }}>
                             <div style={{ width: '100px', height: '100px', flexShrink: 0, backgroundColor: isDarkMode ? '#1F2937' : '#F9FAFB', borderRadius: '6px', padding: '5px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                               <img src={p.immagine_url || "https://placehold.co/150"} alt={p.titolo} style={{ width: '100%', height: '100%', objectFit: 'contain', mixBlendMode: isDarkMode ? 'normal' : 'multiply' }} />
