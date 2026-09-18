@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import './App.css';
+import { Analytics } from '@vercel/analytics/react';
 
 // IMPORT DELLE PAGINE PRINCIPALI E COMPONENTI
 import Home from './components/Home';
@@ -200,6 +201,8 @@ function App() {
         <Footer isDarkMode={isDarkMode} />
         
         <CookieBanner isDarkMode={isDarkMode} />
+        
+        <Analytics />
       </div>
     </Router>
   )
