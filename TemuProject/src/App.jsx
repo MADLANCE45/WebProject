@@ -58,14 +58,14 @@ const repartiMap = {
   ]
 };
 
-// --- MOTORE SEO AVANZATO & DATI STRUTTURATI JSON-LD PER GOOGLE E IA ---
+// --- MOTORE SEO & DATI STRUTTURATI JSON-LD ---
 function SeoEngine({ repartoAttivo, filtroCategoria, prodotti }) {
   useEffect(() => {
     const catText = filtroCategoria !== 'Tutte' ? ` - ${filtroCategoria}` : '';
-    document.title = `${repartoAttivo}${catText} | Recensioni ITA - Offerte, Test e Codici Sconto Temu`;
+    document.title = `${repartoAttivo}${catText} | Recensioni ITA - Offerte, Test e Codici Sconto`;
 
     const metaDesc = document.querySelector('meta[name="description"]');
-    const descContent = `Catalogo verificato di ${repartoAttivo}${catText}: scopri le recensioni di Recensioni ITA (100.000+ views su YouTube) e sblocca il 30% di sconto + 100€ di coupon col codice app39037.`;
+    const descContent = `Catalogo verificato di ${repartoAttivo}${catText}: scopri le recensioni di Recensioni ITA (oltre 100.000 visualizzazioni su YouTube) e sblocca il 30% di sconto + 100€ di coupon col codice app39037.`;
     if (metaDesc) {
       metaDesc.setAttribute('content', descContent);
     } else {
@@ -88,7 +88,6 @@ function SeoEngine({ repartoAttivo, filtroCategoria, prodotti }) {
             "@type": "ContactPoint",
             "email": "marcocretu0@gmail.com",
             "contactType": "customer support",
-            "areaServed": ["IT", "EU"],
             "availableLanguage": ["Italian"]
           }
         },
@@ -134,8 +133,8 @@ function SeoEngine({ repartoAttivo, filtroCategoria, prodotti }) {
   return null;
 }
 
-// --- RUOTA VETTORIALE SVG AD ALTA DEFINIZIONE ---
-function SvgWheel({ rotazione = 0, size = 260 }) {
+// --- RUOTA VETTORIALE SVG ---
+function SvgWheel({ rotazione = 0, size = 240 }) {
   const numSlices = offerte.length;
   const anglePerSlice = 360 / numSlices;
   const radius = 140;
@@ -170,6 +169,8 @@ function SvgWheel({ rotazione = 0, size = 260 }) {
       height={size}
       viewBox="0 0 300 300"
       style={{
+        maxWidth: '100%',
+        height: 'auto',
         transform: `rotate(${rotazione}deg)`,
         transition: 'transform 3.2s cubic-bezier(0.15, 0.85, 0.15, 1)',
         filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.28))'
@@ -215,7 +216,7 @@ function TopBar() {
 
   return (
     <div className="topbar">
-      <span>Spedizione gratuita e <strong>-30% Extra + 100€ Coupon</strong> con il codice ufficiale <strong>app39037</strong></span>
+      <span>Spedizione gratuita e <strong>-30% Extra + 100€ Coupon</strong> col codice <strong>app39037</strong></span>
       <button onClick={copiaCodice} className="copy-badge">
         {copiato ? 'Codice Copiato' : 'Copia Codice'}
       </button>
@@ -263,22 +264,22 @@ function WheelModal({ isOpen, onClose }) {
       <div className="modal-box" onClick={(e) => e.stopPropagation()}>
         <button className="close-btn" onClick={onClose}>X</button>
         <span style={{ fontSize: '11px', fontWeight: '800', letterSpacing: '1px', color: '#dc2626', textTransform: 'uppercase' }}>
-          Estrazione Premi Ufficiale
+          Estrazione Premi Giornaliera
         </span>
-        <h2 style={{ margin: '4px 0 8px 0', fontSize: '24px', fontWeight: '900', letterSpacing: '-0.5px' }}>
+        <h2 style={{ margin: '4px 0 6px 0', fontSize: '22px', fontWeight: '900' }}>
           RUOTA BONUS TEMU
         </h2>
-        <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: '0 0 14px 0' }}>
+        <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: '0 0 12px 0' }}>
           Gira la ruota per sbloccare il tuo coupon sconto immediato.
         </p>
 
-        <div style={{ position: 'relative', display: 'inline-block', margin: '10px auto' }}>
+        <div style={{ position: 'relative', display: 'inline-block', margin: '8px auto' }}>
           <div style={{ position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)', zIndex: 10 }}>
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="#dc2626">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="#dc2626">
               <path d="M12 22L3 4h18l-9 18z" stroke="#ffffff" strokeWidth="2" />
             </svg>
           </div>
-          <SvgWheel rotazione={rotazione} size={260} />
+          <SvgWheel rotazione={rotazione} size={240} />
         </div>
 
         {!premioVinto ? (
@@ -286,16 +287,16 @@ function WheelModal({ isOpen, onClose }) {
             onClick={giraRuota}
             disabled={isSpinning}
             className="buy-direct-btn btn-red"
-            style={{ marginTop: '14px', padding: '15px' }}
+            style={{ marginTop: '12px', padding: '14px' }}
           >
             {isSpinning ? 'ESTRAZIONE IN CORSO...' : 'GIRA LA RUOTA ORA'}
           </button>
         ) : (
-          <div style={{ marginTop: '16px', padding: '16px', borderRadius: '12px', background: 'rgba(220, 38, 38, 0.08)', border: '1px solid rgba(220, 38, 38, 0.3)', textAlign: 'left' }}>
+          <div style={{ marginTop: '14px', padding: '14px', borderRadius: '12px', background: 'rgba(220, 38, 38, 0.08)', border: '1px solid rgba(220, 38, 38, 0.3)', textAlign: 'left' }}>
             <div style={{ fontSize: '11px', fontWeight: '800', color: '#dc2626', textTransform: 'uppercase', marginBottom: '4px' }}>
               Hai Sbloccato: {premioVinto.titolo}
             </div>
-            <p style={{ fontSize: '13px', lineHeight: '1.5', margin: '0 0 12px 0' }}>{premioVinto.testo}</p>
+            <p style={{ fontSize: '12.5px', lineHeight: '1.45', margin: '0 0 12px 0' }}>{premioVinto.testo}</p>
             <button onClick={() => copiaEApri(premioVinto)} className="buy-direct-btn btn-orange">
               {codiceCopiato ? 'CODICE COPIATO - APERTURA TEMU' : `COPIA CODICE (${premioVinto.codice}) E VAI SU TEMU`}
             </button>
@@ -306,7 +307,7 @@ function WheelModal({ isOpen, onClose }) {
   );
 }
 
-// --- MODALE UNIFICATA: ASSISTENZA CLIENTI UE + PRIVACY & COOKIE GDPR ---
+// --- MODALE ASSISTENZA CLIENTI, PRIVACY, COOKIE E TERMINI A NORMA DI LEGGE ---
 function LegalAndSupportModal({ activeSection, onClose, onSelectSection }) {
   const [ticketMotivo, setTicketMotivo] = useState('Assistenza Codice Sconto / Coupon Temu');
   const [ticketMessaggio, setTicketMessaggio] = useState('');
@@ -315,9 +316,9 @@ function LegalAndSupportModal({ activeSection, onClose, onSelectSection }) {
 
   const inviaRichiestaSupporto = (e) => {
     e.preventDefault();
-    const subject = encodeURIComponent(`[Supporto UE Recensioni ITA] ${ticketMotivo}`);
+    const subject = encodeURIComponent(`[Assistenza Recensioni ITA] ${ticketMotivo}`);
     const body = encodeURIComponent(
-      `Richiesta inviata dallo Sportello Assistenza Clienti UE (Reg. UE 2022/2065):\n\nTipologia: ${ticketMotivo}\n\nMessaggio:\n${ticketMessaggio}\n\n---\nPortale: https://recensioni-ita.vercel.app`
+      `Richiesta Assistenza Clienti:\n\nArgomento: ${ticketMotivo}\n\nMessaggio:\n${ticketMessaggio}\n\n---\nInviato da: https://recensioni-ita.vercel.app`
     );
     window.location.href = `mailto:marcocretu0@gmail.com?subject=${subject}&body=${body}`;
   };
@@ -332,13 +333,13 @@ function LegalAndSupportModal({ activeSection, onClose, onSelectSection }) {
             className={`legal-tab-btn ${activeSection === 'support' ? 'active' : ''}`}
             onClick={() => onSelectSection('support')}
           >
-            Assistenza Clienti UE
+            Assistenza Clienti
           </button>
           <button
             className={`legal-tab-btn ${activeSection === 'privacy' ? 'active' : ''}`}
             onClick={() => onSelectSection('privacy')}
           >
-            Privacy Policy (GDPR)
+            Privacy Policy
           </button>
           <button
             className={`legal-tab-btn ${activeSection === 'cookie' ? 'active' : ''}`}
@@ -350,62 +351,57 @@ function LegalAndSupportModal({ activeSection, onClose, onSelectSection }) {
             className={`legal-tab-btn ${activeSection === 'terms' ? 'active' : ''}`}
             onClick={() => onSelectSection('terms')}
           >
-            Termini &amp; Affiliazione
+            Termini e Condizioni
           </button>
         </div>
 
         <div className="legal-content">
           {activeSection === 'support' && (
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                <span className="eu-pill-tag">NORMATIVA UE</span>
-                <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-secondary)' }}>
-                  Punto di Contatto Unico (Art. 12 Reg. UE 2022/2065 - DSA &amp; Dir. 2011/83/UE)
-                </span>
-              </div>
-              <h3 style={{ marginTop: '4px' }}>Servizio Supporto e Tutela Consumatori UE</h3>
+              <h3 style={{ marginTop: '4px' }}>Servizio Assistenza Clienti e Tutela Acquisti</h3>
               <p>
-                In conformità con i regolamenti dell'Unione Europea sulla trasparenza digitale, offriamo assistenza diretta gratuita per codici promozionali, segnalazione link e orientamento sulle garanzie d'acquisto.
+                Hai bisogno di aiuto per applicare un codice sconto, segnalare un link non funzionante o ricevere informazioni su spedizioni e resi? Il nostro servizio di supporto risponde entro 24/48 ore.
               </p>
 
               <div className="support-grid-cards">
                 <div className="support-info-card">
-                  <h4>Diritto di Recesso UE (14 / 90 Giorni)</h4>
+                  <h4>Reso Gratuito (Fino a 90 Giorni)</h4>
                   <p>
-                    Ai sensi della Direttiva 2011/83/UE hai 14 giorni per ripensarci senza motivazione. Su Temu il reso gratuito è esteso fino a 90 giorni direttamente dall'app.
+                    Oltre ai 14 giorni di diritto di recesso previsti dal Codice del Consumo (Dir. 2011/83/UE), gli ordini idonei su Temu beneficiano del reso gratuito esteso fino a 90 giorni tramite app ufficiale.
                   </p>
                 </div>
                 <div className="support-info-card">
-                  <h4>Garanzia Legale UE (24 Mesi)</h4>
+                  <h4>Garanzia Legale (24 Mesi)</h4>
                   <p>
-                    Tutti i prodotti acquistati nell'Unione Europea godono della garanzia legale di conformità di 24 mesi gestita dal venditore finale sulla piattaforma Temu.
+                    Tutti gli articoli acquistati godono della garanzia legale di conformità di 24 mesi prevista dalla normativa europea, gestita direttamente dal venditore finale sulla piattaforma Temu.
                   </p>
                 </div>
               </div>
 
               <form className="support-form" onSubmit={inviaRichiestaSupporto}>
-                <h4 style={{ margin: '0', fontSize: '14px' }}>Apri un Ticket di Supporto Diretto (Risposta entro 24/48h)</h4>
+                <h4 style={{ margin: '0', fontSize: '13.5px' }}>Invia una richiesta al Supporto Clienti</h4>
                 <select
                   className="support-select"
                   value={ticketMotivo}
                   onChange={(e) => setTicketMotivo(e.target.value)}
                 >
-                  <option value="Assistenza Codice Sconto / Coupon Temu">Problema con Codice Sconto / Coupon Temu</option>
-                  <option value="Segnalazione Prezzo o Link Prodotto (Dir. Omnibus UE)">Segnalazione Prezzo o Link Prodotto non funzionante</option>
-                  <option value="Informazioni su Resi, Spedizioni e Garanzia UE">Informazioni su Resi, Spedizioni e Garanzia UE</option>
-                  <option value="Esercizio Diritti Privacy GDPR (Reg. UE 2016/679)">Richiesta Privacy / Cancellazione Dati GDPR</option>
+                  <option value="Assistenza Codice Sconto / Coupon Temu">Problema con Codice Sconto o Coupon</option>
+                  <option value="Informazioni su un prodotto visto su YouTube">Informazioni su un prodotto visto su YouTube</option>
+                  <option value="Segnalazione Link o Prezzo Prodotto">Segnalazione Link o Prezzo Prodotto</option>
+                  <option value="Informazioni su Resi, Spedizioni e Garanzia">Informazioni su Resi, Spedizioni e Garanzia</option>
+                  <option value="Richiesta Privacy / Dati Personali">Richiesta Privacy e Gestione Dati</option>
                 </select>
 
                 <textarea
                   className="support-textarea"
-                  placeholder="Descrivi qui la tua richiesta o indica il nome del prodotto visto sul sito o su YouTube..."
+                  placeholder="Scrivi qui il tuo messaggio o il nome dell'articolo per cui richiedi supporto..."
                   value={ticketMessaggio}
                   onChange={(e) => setTicketMessaggio(e.target.value)}
                   required
                 />
 
                 <button type="submit" className="buy-direct-btn btn-orange">
-                  Invia Richiesta a marcocretu0@gmail.com
+                  Invia Messaggio all'Assistenza
                 </button>
               </form>
             </div>
@@ -415,44 +411,44 @@ function LegalAndSupportModal({ activeSection, onClose, onSelectSection }) {
             <div>
               <h3>Informativa sulla Privacy (ai sensi dell'Art. 13 Regolamento UE 2016/679 - GDPR)</h3>
               <p>
-                <strong>1. Titolare del Trattamento e Punto di Contatto:</strong><br />
-                Per qualsiasi richiesta relativa alla presente informativa o all'esercizio dei diritti previsti dal GDPR, è possibile contattare il gestore del portale Recensioni ITA all'indirizzo email ufficiale: <strong>marcocretu0@gmail.com</strong>.
+                <strong>1. Titolare del Trattamento e Contatti:</strong><br />
+                Per qualsiasi richiesta relativa alla presente informativa o all'esercizio dei diritti previsti dalla normativa sulla protezione dei dati personali, è possibile contattare il gestore del portale Recensioni ITA all'indirizzo email: <strong>marcocretu0@gmail.com</strong>.
               </p>
               <p>
-                <strong>2. Tipologia di Dati Trattati:</strong><br />
-                Il sito ha natura di catalogo informativo e non richiede registrazione. Durante la navigazione vengono acquisiti esclusivamente dati tecnici minimi necessari alla sicurezza e alla distribuzione della pagina (hosting Vercel Inc. e database catalogo Supabase Inc.). L'invio facoltativo di email a <strong>marcocretu0@gmail.com</strong> comporta l'acquisizione dell'indirizzo del mittente al solo fine di rispondere alla richiesta di assistenza.
+                <strong>2. Tipologia di Dati Trattati e Finalità:</strong><br />
+                Il sito ha natura di catalogo informativo e non richiede registrazione. Durante la navigazione vengono trattati esclusivamente dati tecnici minimi necessari alla sicurezza e alla corretta erogazione della pagina web (tramite l'infrastruttura Vercel Inc. e il database catalogo Supabase Inc.). L'invio facoltativo e volontario di comunicazioni email a <strong>marcocretu0@gmail.com</strong> tramite il modulo di assistenza comporta l'acquisizione dell'indirizzo del mittente al solo scopo di rispondere alla richiesta (Art. 6 par. 1 lett. b/f GDPR).
               </p>
               <p>
                 <strong>3. Diritti dell'Interessato (Artt. 15-22 GDPR):</strong><br />
-                L'utente può richiedere in qualsiasi momento l'accesso, la rettifica o la cancellazione dei propri dati scrivendo a <strong>marcocretu0@gmail.com</strong>, oltre al diritto di proporre reclamo al Garante per la Protezione dei Dati Personali.
+                L'utente può richiedere in qualsiasi momento l'accesso, la rettifica, la limitazione o la cancellazione dei propri dati scrivendo a <strong>marcocretu0@gmail.com</strong>, oltre al diritto di proporre reclamo all'Autorità Garante per la Protezione dei Dati Personali.
               </p>
             </div>
           )}
 
           {activeSection === 'cookie' && (
             <div>
-              <h3>Cookie Policy (Linee Guida Garante Privacy e Direttiva ePrivacy UE)</h3>
+              <h3>Cookie Policy (Provvedimento Garante Privacy e Direttiva ePrivacy)</h3>
               <p>
                 <strong>1. Memorie Tecniche Strettamente Necessarie:</strong><br />
-                Questo sito utilizza esclusivamente memoria locale tecnica (<code>localStorage</code>) per memorizzare la scelta espressa sul banner cookie (<code>gdpr_consent_choice</code>) e il tema grafico chiaro/scuro. Non vengono installati cookie di profilazione proprietari.
+                Questo sito utilizza esclusivamente memoria locale tecnica (<code>localStorage</code>) sul browser dell'utente per memorizzare la scelta espressa sul banner informativo (<code>gdpr_consent_choice</code>) e la preferenza del tema grafico chiaro/scuro. Non vengono installati cookie di profilazione proprietari.
               </p>
               <p>
-                <strong>2. Link di Affiliazione Verso Terze Parti (Temu / YouTube):</strong><br />
-                Cliccando sui pulsanti "Vedi Offerta" o sui collegamenti verso YouTube, l'utente viene indirizzato sui domini esterni delle rispettive piattaforme (<code>temu.com</code> / <code>temu.to</code> / <code>youtube.com</code>), che operano come titolari autonomi del trattamento secondo le rispettive Cookie Policy.
+                <strong>2. Collegamenti Esterni e Piattaforme Terze (Temu e YouTube):</strong><br />
+                Il sito contiene link di affiliazione che reindirizzano verso la piattaforma terza <strong>Temu</strong> e verso il canale <strong>YouTube</strong>. Cliccando su "Vedi Offerta" o sui video, l'utente accede ai siti esterni di tali terze parti, che operano come titolari autonomi del trattamento secondo le rispettive informative Cookie e Privacy.
               </p>
             </div>
           )}
 
           {activeSection === 'terms' && (
             <div>
-              <h3>Trasparenza Affiliazione e Direttiva Omnibus UE 2019/2161</h3>
+              <h3>Termini di Servizio, Assistenza e Trasparenza Affiliazione</h3>
               <p>
-                <strong>1. Comunicazione Commerciale Trasparente:</strong><br />
-                In conformità alla Direttiva UE 2019/2161 (Omnibus) e al Digital Services Act (Reg. UE 2022/2065), informiamo che Recensioni ITA partecipa al Programma di Affiliazione Temu. I link verso i prodotti sono contrassegnati con attributo <code>rel="sponsored"</code>: l'eventuale acquisto genera una commissione di affiliazione senza alcun costo aggiuntivo per l'utente.
+                <strong>1. Trasparenza Commerciale e Affiliazione:</strong><br />
+                In conformità alle normative sulla trasparenza digitale (Direttiva UE 2019/2161 e Reg. UE 2022/2065), si informa che Recensioni ITA partecipa al Programma di Affiliazione Temu. I collegamenti verso le offerte sono contrassegnati con attributo <code>rel="sponsored"</code>: l'eventuale acquisto genera una commissione pubblicitaria per il sostegno del canale senza alcun costo aggiuntivo per l'acquirente.
               </p>
               <p>
-                <strong>2. Indicazione dei Prezzi e Venditore Finale:</strong><br />
-                Recensioni ITA non effettua vendita diretta né incassa pagamenti. I prezzi e le riduzioni percentuali mostrati sono rilevati dal catalogo Temu e possono variare in tempo reale; fa sempre fede il prezzo finale visualizzato nel carrello ufficiale Temu prima del pagamento.
+                <strong>2. Prezzi, Vendita e Servizio Clienti Post-Vendita:</strong><br />
+                Recensioni ITA svolge attività di selezione e recensione informativa: non vende direttamente i prodotti, non incassa pagamenti e non gestisce la logistica. I prezzi mostrati sono rilevati dal catalogo Temu e possono subire variazioni in tempo reale; fa sempre fede il prezzo finale indicato nell'app o sul sito ufficiale di Temu al momento del checkout. Per assistenza sui codici o segnalazioni sul catalogo è sempre attivo il recapito <strong>marcocretu0@gmail.com</strong>.
               </p>
             </div>
           )}
@@ -462,14 +458,14 @@ function LegalAndSupportModal({ activeSection, onClose, onSelectSection }) {
   );
 }
 
-// --- BANNER COOKIE GDPR ---
+// --- BANNER COOKIE ---
 function GdprCookieBanner({ isOpen, onDecision, onOpenPolicy }) {
   if (!isOpen) return null;
 
   return (
     <div className="gdpr-banner">
       <div className="gdpr-text">
-        <strong>Informativa Privacy e Cookie (UE GDPR):</strong> Utilizziamo memorie tecniche per il funzionamento del sito e link di affiliazione verso piattaforme esterne (Temu, YouTube). Consulta la nostra{' '}
+        <strong>Informativa Privacy e Cookie:</strong> Utilizziamo memorie tecniche per il funzionamento del sito e link di affiliazione verso piattaforme esterne (Temu, YouTube). Consulta la{' '}
         <button className="gdpr-link" onClick={() => onOpenPolicy('privacy')}>Privacy Policy</button> e la{' '}
         <button className="gdpr-link" onClick={() => onOpenPolicy('cookie')}>Cookie Policy</button>.
       </div>
@@ -494,8 +490,6 @@ function Home({ onOpenWheel, onOpenSupport }) {
   const [filtroPrezzo, setFiltroPrezzo] = useState('Tutti');
   const [ricerca, setRicerca] = useState('');
   const [paginaCorrente, setPaginaCorrente] = useState(1);
-  
-  // 12 prodotti = 3 righe esatte da 4 su Desktop, 4 righe da 3 su Tablet, 6 righe da 2 su Mobile
   const prodottiPerPagina = 12;
 
   useEffect(() => {
@@ -538,27 +532,24 @@ function Home({ onOpenWheel, onOpenSupport }) {
 
   const vaiAPagina = (num) => {
     setPaginaCorrente(num);
-    window.scrollTo({ top: 200, behavior: 'smooth' });
+    window.scrollTo({ top: 180, behavior: 'smooth' });
   };
 
   return (
     <main className="container-main" style={{ flex: 1 }}>
-      {/* INIEZIONE AUTOMATICA SEO & JSON-LD */}
       <SeoEngine
         repartoAttivo={repartoAttivo}
         filtroCategoria={filtroCategoria}
         prodotti={prodottiFiltrati}
       />
 
-      {/* H1 SEMANTICO PER POSIZIONAMENTO GOOGLE E IA */}
       <div className="seo-header-strip">
         <h1 className="seo-h1">
-          Catalogo {repartoAttivo} {filtroCategoria !== 'Tutte' ? `— ${filtroCategoria}` : '— Offerte Verificate e Testate'}
+          Catalogo {repartoAttivo} {filtroCategoria !== 'Tutte' ? `— ${filtroCategoria}` : '— Prodotti Testati e Offerte'}
         </h1>
-        <span className="seo-badge-eu">Conformità Normativa Consumatori UE</span>
       </div>
 
-      {/* BENTO GRID IN TESTATA */}
+      {/* BENTO GRID */}
       <div className="bento-grid">
         <div
           onClick={() => cambiaReparto('Pesca Sportiva')}
@@ -590,12 +581,12 @@ function Home({ onOpenWheel, onOpenSupport }) {
           style={{ '--bg-img': 'url(/banner10.jpg)' }}
         >
           <div className="bento-wheel-deco">
-            <SvgWheel rotazione={0} size={125} />
+            <SvgWheel rotazione={0} size={115} />
           </div>
           <div className="bento-content">
             <span className="bento-tag" style={{ background: '#dc2626' }}>Ruota della Fortuna</span>
             <h2>Coupon 100€ + 30%</h2>
-            <p>Clicca per girare la ruota e riscattare il bonus</p>
+            <p>Tocca per girare la ruota e riscattare il bonus</p>
           </div>
         </div>
       </div>
@@ -611,7 +602,7 @@ function Home({ onOpenWheel, onOpenSupport }) {
             type="search"
             aria-label="Cerca prodotto nel catalogo"
             className="search-input"
-            placeholder="Cerca per nome o codice l'articolo visto nei video su YouTube..."
+            placeholder="Cerca il prodotto visto nei video su YouTube..."
             value={ricerca}
             onChange={(e) => setRicerca(e.target.value)}
           />
@@ -649,7 +640,7 @@ function Home({ onOpenWheel, onOpenSupport }) {
         ))}
       </div>
 
-      {/* GRIGLIA PRODOTTI MICRODATA SCHEMA.ORG (4 COLONNE FISSE SU DESKTOP) */}
+      {/* GRIGLIA PRODOTTI */}
       {loading ? (
         <p style={{ textAlign: 'center', padding: '50px', color: 'var(--text-secondary)', fontWeight: '600' }}>
           Caricamento catalogo in corso...
@@ -740,7 +731,7 @@ function Home({ onOpenWheel, onOpenSupport }) {
                       itemProp="url"
                     >
                       <span>Vedi Offerta</span>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                         <polyline points="12 5 19 12 12 19"></polyline>
                       </svg>
@@ -751,7 +742,6 @@ function Home({ onOpenWheel, onOpenSupport }) {
             })}
           </div>
 
-          {/* PAGINAZIONE */}
           {totalePagine > 1 && (
             <nav className="pagination-bar" aria-label="Paginazione catalogo">
               <button
@@ -787,12 +777,12 @@ function Home({ onOpenWheel, onOpenSupport }) {
         </>
       )}
 
-      {/* SEZIONE VIDEO YOUTUBE SOPRA IL FOOTER */}
+      {/* SEZIONE VIDEO YOUTUBE */}
       <section className="video-showcase-section">
         <div className="video-showcase-header">
           <div>
             <h3>I Nostri Video Test su YouTube</h3>
-            <p>Oltre 100.000 visualizzazioni totali: guarda le prove sul campo prima di acquistare</p>
+            <p>Oltre 100.000 visualizzazioni sul canale: guarda le prove prima di acquistare</p>
           </div>
           <a
             href="https://www.youtube.com/@recensioniita9"
@@ -813,7 +803,7 @@ function Home({ onOpenWheel, onOpenSupport }) {
             style={{ backgroundImage: 'url(/banner3.jpg)' }}
           >
             <div className="video-play-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#ffffff">
                 <polygon points="6 3 20 12 6 21 6 3"></polygon>
               </svg>
             </div>
@@ -831,7 +821,7 @@ function Home({ onOpenWheel, onOpenSupport }) {
             style={{ backgroundImage: 'url(/banner4.jpg)' }}
           >
             <div className="video-play-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#ffffff">
                 <polygon points="6 3 20 12 6 21 6 3"></polygon>
               </svg>
             </div>
@@ -849,7 +839,7 @@ function Home({ onOpenWheel, onOpenSupport }) {
             style={{ backgroundImage: 'url(/banner5.jpg)' }}
           >
             <div className="video-play-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#ffffff">
                 <polygon points="6 3 20 12 6 21 6 3"></polygon>
               </svg>
             </div>
@@ -861,16 +851,16 @@ function Home({ onOpenWheel, onOpenSupport }) {
         </div>
       </section>
 
-      {/* BLOCCO SEMANTICO SEO PER GOOGLE E MOTORI AI */}
+      {/* BLOCCO SEMANTICO SEO */}
       <section className="seo-text-block">
         <h2>Recensioni ITA: Guida all'Acquisto di Attrezzatura da Pesca Sportiva e Acquariofilia</h2>
         <p>
-          Recensioni ITA seleziona e recensisce quotidianamente le migliori offerte su canne da pesca, mulinelli da spinning e carpfishing, esche artificiali, ecoscandagli portatili e accessori per acquari d'acqua dolce e marina. Utilizzando il codice ufficiale <strong>app39037</strong> sull'app Temu puoi riscattare un pacchetto di coupon da 100€ e il 30% di sconto extra sui tuoi ordini, con spedizione gratuita, reso esteso a 90 giorni e pieno supporto tramite il nostro Sportello Assistenza Clienti conforme alle normative dell'Unione Europea. Has bisogno di aiuto con un codice o un articolo visto sul nostro canale YouTube?{' '}
+          Recensioni ITA seleziona e recensisce le migliori offerte su canne da pesca, mulinelli da spinning e carpfishing, esche artificiali, ecoscandagli e accessori per acquari. Utilizzando il codice <strong>app39037</strong> sull'app Temu puoi ottenere un pacchetto di coupon da 100€ e il 30% di sconto extra sui tuoi ordini, con spedizione gratuita e reso gratuito fino a 90 giorni. Per qualsiasi dubbio su codici o articoli,{' '}
           <button
             onClick={onOpenSupport}
             style={{ background: 'none', border: 'none', color: 'var(--temu-orange)', fontWeight: '800', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
           >
-            Apri lo Sportello Assistenza Clienti UE
+            contatta la nostra Assistenza Clienti
           </button>.
         </p>
       </section>
@@ -928,20 +918,20 @@ export default function App() {
             </a>
             <span style={{ color: 'var(--border-color)' }}>|</span>
             <button className="trust-item" onClick={() => setLegalSection('support')}>
-              <span>Sportello Tutela UE</span>
+              <span>Assistenza Clienti</span>
             </button>
           </div>
 
           <div className="nav-actions">
-            <button onClick={() => setLegalSection('support')} className="support-nav-btn" title="Servizio Assistenza Clienti UE">
+            <button onClick={() => setLegalSection('support')} className="support-nav-btn" title="Assistenza Clienti">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
               </svg>
-              <span>Assistenza UE</span>
+              <span>Supporto</span>
             </button>
 
             <button onClick={() => setIsWheelOpen(true)} className="wheel-trigger-btn">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <circle cx="12" cy="12" r="3"></circle>
                 <line x1="12" y1="2" x2="12" y2="9"></line>
@@ -958,7 +948,7 @@ export default function App() {
               title="Cambia Tema"
             >
               {isDarkMode ? (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="5"></circle>
                   <line x1="12" y1="1" x2="12" y2="3"></line>
                   <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -970,7 +960,7 @@ export default function App() {
                   <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                 </svg>
               ) : (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                 </svg>
               )}
@@ -991,14 +981,16 @@ export default function App() {
           <Route path="/admin" element={<Admin />} />
         </Routes>
 
-        {/* PULSANTE FLUTTUANTE SUPPORTO CLIENTI UE */}
+        {/* PULSANTE FLUTTUANTE ASSISTENZA CLIENTI */}
         <button
           className="floating-support-btn"
           onClick={() => setLegalSection('support')}
-          aria-label="Apri Sportello Assistenza Clienti UE"
+          aria-label="Assistenza Clienti"
         >
-          <span className="eu-pill-tag">UE</span>
-          <span>Supporto Clienti</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ff5500" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <span>Assistenza</span>
         </button>
 
         <WheelModal isOpen={isWheelOpen} onClose={() => setIsWheelOpen(false)} />
@@ -1015,16 +1007,16 @@ export default function App() {
           onOpenPolicy={(sec) => setLegalSection(sec)}
         />
 
-        {/* FOOTER CON SUPPORTO CLIENTI UE, GDPR E CONTATTO UFFICIALE */}
+        {/* FOOTER */}
         <footer className="site-footer">
           <div className="footer-grid">
             <div className="footer-col">
               <h4>Recensioni ITA</h4>
               <p>
-                Il portale italiano dedicato agli appassionati di pesca sportiva e acquariofilia. Selezioniamo e testiamo le attrezzature con il miglior rapporto qualità-prezzo.
+                Il portale dedicato agli appassionati di pesca sportiva e acquariofilia. Selezioniamo e testiamo le attrezzature con il miglior rapporto qualità-prezzo.
               </p>
               <p style={{ marginTop: '10px' }}>
-                Punto di Contatto UE (DSA):{' '}
+                Email Supporto:{' '}
                 <a href="mailto:marcocretu0@gmail.com" style={{ color: '#ff5500', textDecoration: 'none', fontWeight: '700' }}>
                   marcocretu0@gmail.com
                 </a>
@@ -1032,35 +1024,35 @@ export default function App() {
             </div>
 
             <div className="footer-col">
-              <h4>Servizio Clienti UE</h4>
+              <h4>Assistenza Clienti</h4>
               <ul className="footer-links">
-                <li><button className="footer-link-btn" onClick={() => setLegalSection('support')}>Apri Ticket Assistenza Clienti</button></li>
-                <li><button className="footer-link-btn" onClick={() => setLegalSection('support')}>Garanzia 24 Mesi &amp; Reso 90gg</button></li>
-                <li><button className="footer-link-btn" onClick={() => setIsWheelOpen(true)}>Ruota Bonus Coupon Temu</button></li>
+                <li><button className="footer-link-btn" onClick={() => setLegalSection('support')}>Contatta il Supporto</button></li>
+                <li><button className="footer-link-btn" onClick={() => setLegalSection('support')}>Info Resi e Garanzia</button></li>
+                <li><button className="footer-link-btn" onClick={() => setIsWheelOpen(true)}>Ruota Bonus Coupon</button></li>
                 <li><a href="https://www.youtube.com/@recensioniita9" target="_blank" rel="noopener noreferrer">Canale YouTube Ufficiale</a></li>
               </ul>
             </div>
 
             <div className="footer-col">
-              <h4>Note Legali &amp; GDPR</h4>
+              <h4>Informative Legali</h4>
               <ul className="footer-links">
-                <li><button className="footer-link-btn" onClick={() => setLegalSection('privacy')}>Privacy Policy (Reg. UE 2016/679)</button></li>
+                <li><button className="footer-link-btn" onClick={() => setLegalSection('privacy')}>Privacy Policy</button></li>
                 <li><button className="footer-link-btn" onClick={() => setLegalSection('cookie')}>Cookie Policy</button></li>
-                <li><button className="footer-link-btn" onClick={() => setLegalSection('terms')}>Direttiva Omnibus &amp; Affiliazione</button></li>
+                <li><button className="footer-link-btn" onClick={() => setLegalSection('terms')}>Termini e Condizioni</button></li>
                 <li><button className="footer-link-btn" onClick={() => setShowGdprBanner(true)}>Preferenze Cookie</button></li>
               </ul>
             </div>
 
             <div className="footer-col">
-              <h4>Trasparenza UE</h4>
+              <h4>Trasparenza Affiliazione</h4>
               <p>
-                Conforme al Regolamento UE 2022/2065 (DSA) e alla Direttiva UE 2019/2161. Acquistando tramite i nostri link o codici sconto, sostieni il canale senza alcun costo aggiuntivo.
+                Partecipiamo al Programma Affiliati Temu. Acquistando tramite i nostri link o codici sconto, sostieni gratuitamente il canale senza alcun costo aggiuntivo.
               </p>
             </div>
           </div>
 
           <div className="footer-bottom">
-            <span>&copy; {new Date().getFullYear()} Recensioni ITA — Assistenza UE: marcocretu0@gmail.com</span>
+            <span>&copy; {new Date().getFullYear()} Recensioni ITA — Assistenza: marcocretu0@gmail.com</span>
             <span>Codice Sconto Ufficiale: <strong style={{ color: '#ff5500' }}>app39037</strong></span>
           </div>
         </footer>
