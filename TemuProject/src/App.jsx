@@ -55,8 +55,50 @@ const repartiMap = {
     'Tecnica e Manutenzione',
     'Allestimento (Hardscape)',
     'Accessori Vari'
+  ],
+  'Kit Emergenza 72h': [
+    'Zaini Grab-and-Go & Tattici',
+    'Illuminazione, Radio & Powerbank',
+    'Acqua, Filtrazione & Utensili Cibo',
+    'Primo Soccorso & Igiene',
+    'Coperte Termiche & Protezione',
+    'Documenti, Contanti & Animali'
   ]
 };
+
+// --- CHECKLIST UFFICIALE 72 ORE (LINEE GUIDA UE) CON FILTRO AUTOMATICO SCONTI ---
+const lineeGuida72Ore = [
+  {
+    titolo: "1. Zaino Grab-and-Go",
+    desc: "Zaino tattico capiente e impermeabile pronto per evacuazione rapida.",
+    categoriaTarget: "Zaini Grab-and-Go & Tattici"
+  },
+  {
+    titolo: "2. Illuminazione & Radio",
+    desc: "Torcia LED/dinamo, radio a batterie o solare e powerbank carico con cavi.",
+    categoriaTarget: "Illuminazione, Radio & Powerbank"
+  },
+  {
+    titolo: "3. Acqua (6L) & Razioni",
+    desc: "Scorta idrica, filtri potabilizzatori, apriscatole manuale e cibi no-cottura.",
+    categoriaTarget: "Acqua, Filtrazione & Utensili Cibo"
+  },
+  {
+    titolo: "4. Primo Soccorso & Igiene",
+    desc: "Kit medico con bende, garze, disinfettante, salviette e igiene da campo.",
+    categoriaTarget: "Primo Soccorso & Igiene"
+  },
+  {
+    titolo: "5. Abbigliamento & Coperte",
+    desc: "Coperta termica isotermica leggera, giacca impermeabile e indumenti caldi.",
+    categoriaTarget: "Coperte Termiche & Protezione"
+  },
+  {
+    titolo: "6. Documenti, Contanti & Pet",
+    desc: "Buste stagne/ignifughe per contanti e copie documenti, USB e kit animali.",
+    categoriaTarget: "Documenti, Contanti & Animali"
+  }
+];
 
 // --- MOTORE SEO & DATI STRUTTURATI JSON-LD ---
 function SeoEngine({ repartoAttivo, filtroCategoria, prodotti }) {
@@ -65,7 +107,7 @@ function SeoEngine({ repartoAttivo, filtroCategoria, prodotti }) {
     document.title = `${repartoAttivo}${catText} | Recensioni ITA - Offerte, Test e Codici Sconto`;
 
     const metaDesc = document.querySelector('meta[name="description"]');
-    const descContent = `Catalogo verificato di ${repartoAttivo}${catText}: scopri le recensioni di Recensioni ITA (oltre 100.000 visualizzazioni su YouTube) e sblocca il 30% di sconto + 100€ di coupon col codice app39037.`;
+    const descContent = `Catalogo verificato di ${repartoAttivo}${catText}: scopri i migliori sconti su attrezzatura da pesca, acquari e Kit Emergenza 72 Ore (Linee Guida UE) col codice app39037.`;
     if (metaDesc) {
       metaDesc.setAttribute('content', descContent);
     } else {
@@ -90,11 +132,6 @@ function SeoEngine({ repartoAttivo, filtroCategoria, prodotti }) {
             "contactType": "customer support",
             "availableLanguage": ["Italian"]
           }
-        },
-        {
-          "@type": "WebSite",
-          "name": "Recensioni ITA - Pesca Sportiva e Acquariofilia",
-          "url": "https://recensioni-ita.vercel.app/"
         },
         {
           "@type": "ItemList",
@@ -307,7 +344,7 @@ function WheelModal({ isOpen, onClose }) {
   );
 }
 
-// --- MODALE ASSISTENZA CLIENTI, PRIVACY, COOKIE E TERMINI A NORMA DI LEGGE ---
+// --- MODALE ASSISTENZA CLIENTI, PRIVACY, COOKIE E TERMINI ---
 function LegalAndSupportModal({ activeSection, onClose, onSelectSection }) {
   const [ticketMotivo, setTicketMotivo] = useState('Assistenza Codice Sconto / Coupon Temu');
   const [ticketMessaggio, setTicketMessaggio] = useState('');
@@ -360,7 +397,7 @@ function LegalAndSupportModal({ activeSection, onClose, onSelectSection }) {
             <div>
               <h3 style={{ marginTop: '4px' }}>Servizio Assistenza Clienti e Tutela Acquisti</h3>
               <p>
-                Hai bisogno di aiuto per applicare un codice sconto, segnalare un link non funzionante o ricevere informazioni su spedizioni e resi? Il nostro servizio di supporto risponde entro 24/48 ore.
+                Hai bisogno di aiuto per applicare un codice sconto, comporre il tuo Kit Emergenza 72 Ore o ricevere informazioni su spedizioni e resi? Il nostro supporto risponde entro 24/48 ore.
               </p>
 
               <div className="support-grid-cards">
@@ -386,7 +423,7 @@ function LegalAndSupportModal({ activeSection, onClose, onSelectSection }) {
                   onChange={(e) => setTicketMotivo(e.target.value)}
                 >
                   <option value="Assistenza Codice Sconto / Coupon Temu">Problema con Codice Sconto o Coupon</option>
-                  <option value="Informazioni su un prodotto visto su YouTube">Informazioni su un prodotto visto su YouTube</option>
+                  <option value="Consiglio su Kit Emergenza 72h / Prodotti">Consiglio su Kit Emergenza 72h o Prodotti</option>
                   <option value="Segnalazione Link o Prezzo Prodotto">Segnalazione Link o Prezzo Prodotto</option>
                   <option value="Informazioni su Resi, Spedizioni e Garanzia">Informazioni su Resi, Spedizioni e Garanzia</option>
                   <option value="Richiesta Privacy / Dati Personali">Richiesta Privacy e Gestione Dati</option>
@@ -416,7 +453,7 @@ function LegalAndSupportModal({ activeSection, onClose, onSelectSection }) {
               </p>
               <p>
                 <strong>2. Tipologia di Dati Trattati e Finalità:</strong><br />
-                Il sito ha natura di catalogo informativo e non richiede registrazione. Durante la navigazione vengono trattati esclusivamente dati tecnici minimi necessari alla sicurezza e alla corretta erogazione della pagina web (tramite l'infrastruttura Vercel Inc. e il database catalogo Supabase Inc.). L'invio facoltativo e volontario di comunicazioni email a <strong>marcocretu0@gmail.com</strong> tramite il modulo di assistenza comporta l'acquisizione dell'indirizzo del mittente al solo scopo di rispondere alla richiesta (Art. 6 par. 1 lett. b/f GDPR).
+                Il sito ha natura di catalogo informativo e non richiede registrazione. Durante la navigazione vengono trattati esclusivamente dati tecnici minimi necessari alla sicurezza e alla corretta erogazione della pagina web (tramite l'infrastruttura Vercel Inc. e il database catalogo Supabase Inc.). L'invio facoltativo e volontario di comunicazioni email a <strong>marcocretu0@gmail.com</strong> comporta l'acquisizione dell'indirizzo del mittente al solo scopo di rispondere alla richiesta (Art. 6 par. 1 lett. b/f GDPR).
               </p>
               <p>
                 <strong>3. Diritti dell'Interessato (Artt. 15-22 GDPR):</strong><br />
@@ -482,10 +519,9 @@ function GdprCookieBanner({ isOpen, onDecision, onOpenPolicy }) {
 }
 
 // --- PAGINA HOME ---
-function Home({ onOpenWheel, onOpenSupport }) {
+function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
   const [prodotti, setProdotti] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [repartoAttivo, setRepartoAttivo] = useState('Pesca Sportiva');
   const [filtroCategoria, setFiltroCategoria] = useState('Tutte');
   const [filtroPrezzo, setFiltroPrezzo] = useState('Tutti');
   const [ricerca, setRicerca] = useState('');
@@ -509,6 +545,7 @@ function Home({ onOpenWheel, onOpenSupport }) {
   const cambiaReparto = (nuovoReparto) => {
     setRepartoAttivo(nuovoReparto);
     setFiltroCategoria('Tutte');
+    setRicerca('');
   };
 
   const prodottiFiltrati = prodotti.filter((p) => {
@@ -535,6 +572,8 @@ function Home({ onOpenWheel, onOpenSupport }) {
     window.scrollTo({ top: 180, behavior: 'smooth' });
   };
 
+  const isApocalypse = repartoAttivo === 'Kit Emergenza 72h';
+
   return (
     <main className="container-main" style={{ flex: 1 }}>
       <SeoEngine
@@ -545,11 +584,13 @@ function Home({ onOpenWheel, onOpenSupport }) {
 
       <div className="seo-header-strip">
         <h1 className="seo-h1">
-          Catalogo {repartoAttivo} {filtroCategoria !== 'Tutte' ? `— ${filtroCategoria}` : '— Prodotti Testati e Offerte'}
+          {isApocalypse
+            ? 'Radar Sconti Sopravvivenza — Kit Emergenza 72 Ore (Linee Guida UE)'
+            : `Catalogo ${repartoAttivo} ${filtroCategoria !== 'Tutte' ? `— ${filtroCategoria}` : '— Prodotti Testati e Offerte'}`}
         </h1>
       </div>
 
-      {/* BENTO GRID */}
+      {/* BENTO GRID A 4 REPARTI */}
       <div className="bento-grid">
         <div
           onClick={() => cambiaReparto('Pesca Sportiva')}
@@ -559,7 +600,7 @@ function Home({ onOpenWheel, onOpenSupport }) {
           <div className="bento-content">
             <span className="bento-tag">Reparto 01</span>
             <h2>Pesca Sportiva</h2>
-            <p>Canne, mulinelli, esche artificiali ed elettronica</p>
+            <p>Canne, mulinelli, esche ed elettronica</p>
           </div>
         </div>
 
@@ -571,7 +612,19 @@ function Home({ onOpenWheel, onOpenSupport }) {
           <div className="bento-content">
             <span className="bento-tag">Reparto 02</span>
             <h2>Acquariofilia</h2>
-            <p>Illuminazione LED, filtri, pompe e aquascaping</p>
+            <p>Lampade LED, filtri, pompe e aquascaping</p>
+          </div>
+        </div>
+
+        <div
+          onClick={() => cambiaReparto('Kit Emergenza 72h')}
+          className={`bento-card bento-apocalypse ${repartoAttivo === 'Kit Emergenza 72h' ? 'active' : ''}`}
+          style={{ '--bg-img': 'url(/banner6.jpg)' }}
+        >
+          <div className="bento-content">
+            <span className="bento-tag" style={{ background: '#f59e0b', color: '#0f172a' }}>Nuovo • Linee Guida 72h</span>
+            <h2>Kit Emergenza 72h</h2>
+            <p>Zaini Grab-and-Go, radio dinamo, filtri e scorte</p>
           </div>
         </div>
 
@@ -591,6 +644,53 @@ function Home({ onOpenWheel, onOpenSupport }) {
         </div>
       </div>
 
+      {/* PANNELLO SPECIALE APOCALISSE / KIT 72 ORE (VISIBILE QUANDO SELEZIONATO) */}
+      {isApocalypse && (
+        <section className="apocalypse-hub">
+          <div className="apocalypse-hazard-strip"></div>
+          <div className="apocalypse-header">
+            <div>
+              <div className="radar-status">
+                <span className="radar-pulse"></span>
+                <span>Scanner Offerte Sopravvivenza 72 Ore: Attivo</span>
+              </div>
+              <h2 style={{ margin: '8px 0 4px 0', fontSize: '21px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '-0.4px' }}>
+                Configuratore Kit di Emergenza 72 Ore al Prezzo Più Basso
+              </h2>
+            </div>
+            {filtroCategoria !== 'Tutte' && (
+              <button
+                onClick={() => setFiltroCategoria('Tutte')}
+                className="copy-badge"
+                style={{ background: '#f59e0b', color: '#0f172a', border: 'none', padding: '8px 14px' }}
+              >
+                Mostra Tutto il Kit 72h
+              </button>
+            )}
+          </div>
+
+          <div className="apocalypse-disclaimer">
+            <strong>Nota Informativa Ufficiale:</strong> Le indicazioni dell'Unione Europea sul Kit da 72 ore <strong>non sono obbligatorie per legge</strong> e non impongono alcun vincolo, ma rappresentano linee guida pratiche per affrontare in autonomia le prime 72 ore di un'emergenza (blackout prolungati, calamità naturali o guasti alle infrastrutture). Clicca su una categoria qui sotto per filtrare i migliori sconti verificati:
+          </div>
+
+          <div className="checklist-72h-grid">
+            {lineeGuida72Ore.map((item, idx) => (
+              <div
+                key={idx}
+                onClick={() => setFiltroCategoria(item.categoriaTarget)}
+                className={`checklist-item-card ${filtroCategoria === item.categoriaTarget ? 'active' : ''}`}
+              >
+                <h4>
+                  <span>{item.titolo}</span>
+                  <span style={{ fontSize: '11px', color: '#f8fafc' }}>Filtra →</span>
+                </h4>
+                <p>{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* BARRA DI RICERCA E FILTRO PREZZO */}
       <div className="toolbar">
         <div className="search-box">
@@ -602,7 +702,11 @@ function Home({ onOpenWheel, onOpenSupport }) {
             type="search"
             aria-label="Cerca prodotto nel catalogo"
             className="search-input"
-            placeholder="Cerca il prodotto visto nei video su YouTube..."
+            placeholder={
+              isApocalypse
+                ? "Cerca nel bunker: torcia dinamo, radio, filtro acqua, zaino 72h..."
+                : "Cerca il prodotto visto nei video su YouTube..."
+            }
             value={ricerca}
             onChange={(e) => setRicerca(e.target.value)}
           />
@@ -621,7 +725,7 @@ function Home({ onOpenWheel, onOpenSupport }) {
         </select>
       </div>
 
-      {/* CATEGORIE */}
+      {/* PILLOLE CATEGORIE */}
       <div className="category-pills">
         <button
           onClick={() => setFiltroCategoria('Tutte')}
@@ -629,7 +733,7 @@ function Home({ onOpenWheel, onOpenSupport }) {
         >
           Tutti ({prodottiFiltrati.length})
         </button>
-        {repartiMap[repartoAttivo].map((cat) => (
+        {(repartiMap[repartoAttivo] || []).map((cat) => (
           <button
             key={cat}
             onClick={() => setFiltroCategoria(cat)}
@@ -643,18 +747,20 @@ function Home({ onOpenWheel, onOpenSupport }) {
       {/* GRIGLIA PRODOTTI */}
       {loading ? (
         <p style={{ textAlign: 'center', padding: '50px', color: 'var(--text-secondary)', fontWeight: '600' }}>
-          Caricamento catalogo in corso...
+          Scansione offerte in corso...
         </p>
       ) : prodottiPaginati.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '50px 20px' }}>
           <p style={{ color: 'var(--text-secondary)', marginBottom: '16px' }}>
-            Nessun articolo corrisponde ai filtri selezionati.
+            {isApocalypse
+              ? 'Nessun prodotto ancora caricato in questa sottocategoria del Kit 72h. Aggiungili dal pannello /admin!'
+              : 'Nessun articolo corrisponde ai filtri selezionati.'}
           </p>
           <button
             onClick={() => { setRicerca(''); setFiltroCategoria('Tutte'); setFiltroPrezzo('Tutti'); }}
             className="cat-pill active"
           >
-            Mostra Tutto il Catalogo
+            Mostra Tutto il Reparto
           </button>
         </div>
       ) : (
@@ -675,7 +781,7 @@ function Home({ onOpenWheel, onOpenSupport }) {
                   itemType="https://schema.org/Product"
                 >
                   <span className={`discount-badge ${isRedTheme ? 'badge-red' : 'badge-orange'}`}>
-                    {isRedTheme ? 'OFFERTA LAMPO' : 'TEMU -30%'}
+                    {isApocalypse ? 'SCORTA 72H -30%' : isRedTheme ? 'OFFERTA LAMPO' : 'TEMU -30%'}
                   </span>
 
                   <a
@@ -730,7 +836,7 @@ function Home({ onOpenWheel, onOpenSupport }) {
                       className={`buy-direct-btn ${isRedTheme ? 'btn-red' : 'btn-orange'}`}
                       itemProp="url"
                     >
-                      <span>Vedi Offerta</span>
+                      <span>{isApocalypse ? 'Sblocca Scorta' : 'Vedi Offerta'}</span>
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                         <polyline points="12 5 19 12 12 19"></polyline>
@@ -827,7 +933,7 @@ function Home({ onOpenWheel, onOpenSupport }) {
             </div>
             <div className="video-card-info">
               <span>Guida Acquisti</span>
-              <h4>Migliori Accessori Pesca Sotto i 10 Euro</h4>
+              <h4>Migliori Accessori Sotto i 10 Euro</h4>
             </div>
           </a>
 
@@ -844,8 +950,8 @@ function Home({ onOpenWheel, onOpenSupport }) {
               </svg>
             </div>
             <div className="video-card-info">
-              <span>Setup e Acquari</span>
-              <h4>Lampade LED, Filtri e Manutenzione</h4>
+              <span>Kit Emergenza &amp; Outdoor</span>
+              <h4>Torce LED, Powerbank Solari e Accessori</h4>
             </div>
           </a>
         </div>
@@ -853,9 +959,9 @@ function Home({ onOpenWheel, onOpenSupport }) {
 
       {/* BLOCCO SEMANTICO SEO */}
       <section className="seo-text-block">
-        <h2>Recensioni ITA: Guida all'Acquisto di Attrezzatura da Pesca Sportiva e Acquariofilia</h2>
+        <h2>Recensioni ITA: Pesca Sportiva, Acquariofilia e Kit di Emergenza 72 Ore</h2>
         <p>
-          Recensioni ITA seleziona e recensisce le migliori offerte su canne da pesca, mulinelli da spinning e carpfishing, esche artificiali, ecoscandagli e accessori per acquari. Utilizzando il codice <strong>app39037</strong> sull'app Temu puoi ottenere un pacchetto di coupon da 100€ e il 30% di sconto extra sui tuoi ordini, con spedizione gratuita e reso gratuito fino a 90 giorni. Per qualsiasi dubbio su codici o articoli,{' '}
+          Recensioni ITA seleziona e recensisce le migliori offerte su canne da pesca, mulinelli, accessori per acquari e dispositivi per il <strong>Kit di Emergenza 72 Ore</strong> secondo le linee guida europee (zaini grab-and-go, torce a dinamo, radio a batterie, powerbank solari, filtri per l'acqua e kit di primo soccorso). Utilizzando il codice <strong>app39037</strong> sull'app Temu puoi ottenere un pacchetto di coupon da 100€ e il 30% di sconto extra sui tuoi ordini. Per qualsiasi dubbio su codici o articoli,{' '}
           <button
             onClick={onOpenSupport}
             style={{ background: 'none', border: 'none', color: 'var(--temu-orange)', fontWeight: '800', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
@@ -871,6 +977,7 @@ function Home({ onOpenWheel, onOpenSupport }) {
 // --- COMPONENTE ROOT ---
 export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [repartoAttivo, setRepartoAttivo] = useState('Pesca Sportiva');
   const [isWheelOpen, setIsWheelOpen] = useState(false);
   const [legalSection, setLegalSection] = useState(null);
   const [showGdprBanner, setShowGdprBanner] = useState(false);
@@ -887,13 +994,15 @@ export default function App() {
     setShowGdprBanner(false);
   };
 
+  const isApocalypse = repartoAttivo === 'Kit Emergenza 72h';
+
   return (
     <Router>
-      <div className={`app-wrapper ${isDarkMode ? 'dark' : ''}`}>
+      <div className={`app-wrapper ${isDarkMode || isApocalypse ? 'dark' : ''} ${isApocalypse ? 'apocalypse-mode' : ''}`}>
         <TopBar />
 
         <header className="navbar">
-          <Link to="/" className="brand-logo">
+          <Link to="/" className="brand-logo" onClick={() => setRepartoAttivo('Pesca Sportiva')}>
             <div className="logo-circle">
               <img src="/logo.png" alt="Logo Recensioni ITA" />
             </div>
@@ -902,7 +1011,7 @@ export default function App() {
                 <strong>Recensioni</strong>
                 <span>ITA</span>
               </div>
-              <div className="brand-subtitle">Fishing &amp; Aquarium Selection</div>
+              <div className="brand-subtitle">Fishing • Aquarium • 72h Survival</div>
             </div>
           </Link>
 
@@ -916,6 +1025,10 @@ export default function App() {
               <span className="trust-dot"></span>
               <span>YouTube: 100.000+ Views</span>
             </a>
+            <span style={{ color: 'var(--border-color)' }}>|</span>
+            <button className="trust-item" onClick={() => setRepartoAttivo('Kit Emergenza 72h')}>
+              <span style={{ color: '#f59e0b' }}>Kit Emergenza 72h</span>
+            </button>
             <span style={{ color: 'var(--border-color)' }}>|</span>
             <button className="trust-item" onClick={() => setLegalSection('support')}>
               <span>Assistenza Clienti</span>
@@ -973,6 +1086,8 @@ export default function App() {
             path="/"
             element={
               <Home
+                repartoAttivo={repartoAttivo}
+                setRepartoAttivo={setRepartoAttivo}
                 onOpenWheel={() => setIsWheelOpen(true)}
                 onOpenSupport={() => setLegalSection('support')}
               />
@@ -1013,7 +1128,7 @@ export default function App() {
             <div className="footer-col">
               <h4>Recensioni ITA</h4>
               <p>
-                Il portale dedicato agli appassionati di pesca sportiva e acquariofilia. Selezioniamo e testiamo le attrezzature con il miglior rapporto qualità-prezzo.
+                Il portale dedicato agli appassionati di pesca sportiva, acquariofilia e preparazione alle emergenze (Kit 72 Ore). Selezioniamo le attrezzature con il miglior rapporto qualità-prezzo.
               </p>
               <p style={{ marginTop: '10px' }}>
                 Email Supporto:{' '}
