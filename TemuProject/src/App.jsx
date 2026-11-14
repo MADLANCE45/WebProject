@@ -44,6 +44,12 @@ const offerte = [
 ];
 
 const repartiMap = {
+  'Auto & Inverno 15 Nov': [
+    'Calze da Neve & Catene',
+    'Jump Starter & Batterie',
+    'Mini Compressori & Gonfiaggio',
+    'Raschiaghiaccio & Telo Termico'
+  ],
   'Pesca Sportiva': [
     'Attrezzatura da Pesca',
     'Abbigliamento Tecnico',
@@ -66,7 +72,35 @@ const repartiMap = {
   ]
 };
 
-// --- CHECKLIST UFFICIALE 72 ORE (LINEE GUIDA UE) CON FILTRO AUTOMATICO SCONTI ---
+// --- I 4 ACCESSORI INDISPENSABILI DEL VIDEO YOUTUBE (OBBLIGO 15 NOVEMBRE) ---
+const accessoriAuto15Nov = [
+  {
+    num: "Accessorio #01",
+    titolo: "Calze da Neve in Azione",
+    desc: "Omologate EN 16662-1 per l'obbligo del 15 Novembre: montaggio rapido in 2 minuti e zero vibrazioni.",
+    categoriaTarget: "Calze da Neve & Catene"
+  },
+  {
+    num: "Accessorio #02",
+    titolo: "Avviatore d'Emergenza (Jump Starter)",
+    desc: "Fa ripartire l'auto con batteria a terra col gelo invernale + funzione Powerbank e torcia LED.",
+    categoriaTarget: "Jump Starter & Batterie"
+  },
+  {
+    num: "Accessorio #03",
+    titolo: "Mini Compressore Portatile",
+    desc: "Controlla e ripristina la pressione delle gomme che cala col freddo, con arresto automatico digitale.",
+    categoriaTarget: "Mini Compressori & Gonfiaggio"
+  },
+  {
+    num: "Accessorio #04",
+    titolo: "Raschiaghiaccio / Telo Termico",
+    desc: "Protegge il parabrezza dalle gelate notturne e rimuove il ghiaccio in pochi secondi senza graffiare.",
+    categoriaTarget: "Raschiaghiaccio & Telo Termico"
+  }
+];
+
+// --- CHECKLIST 72 ORE (LINEE GUIDA UE) ---
 const lineeGuida72Ore = [
   {
     titolo: "1. Zaino Grab-and-Go",
@@ -107,7 +141,7 @@ function SeoEngine({ repartoAttivo, filtroCategoria, prodotti }) {
     document.title = `${repartoAttivo}${catText} | Recensioni ITA - Offerte, Test e Codici Sconto`;
 
     const metaDesc = document.querySelector('meta[name="description"]');
-    const descContent = `Catalogo verificato di ${repartoAttivo}${catText}: scopri i migliori sconti su attrezzatura da pesca, acquari e Kit Emergenza 72 Ore (Linee Guida UE) col codice app39037.`;
+    const descContent = `Catalogo verificato di ${repartoAttivo}${catText}: scopri i 4 accessori auto indispensabili per l'obbligo del 15 novembre, attrezzatura da pesca, acquari e Kit 72h col codice app39037.`;
     if (metaDesc) {
       metaDesc.setAttribute('content', descContent);
     } else {
@@ -397,7 +431,7 @@ function LegalAndSupportModal({ activeSection, onClose, onSelectSection }) {
             <div>
               <h3 style={{ marginTop: '4px' }}>Servizio Assistenza Clienti e Tutela Acquisti</h3>
               <p>
-                Hai bisogno di aiuto per applicare un codice sconto, comporre il tuo Kit Emergenza 72 Ore o ricevere informazioni su spedizioni e resi? Il nostro supporto risponde entro 24/48 ore.
+                Hai bisogno di aiuto per trovare uno dei 4 accessori auto del video, applicare un codice sconto o ricevere informazioni su spedizioni e resi? Il nostro supporto risponde entro 24/48 ore.
               </p>
 
               <div className="support-grid-cards">
@@ -423,9 +457,9 @@ function LegalAndSupportModal({ activeSection, onClose, onSelectSection }) {
                   onChange={(e) => setTicketMotivo(e.target.value)}
                 >
                   <option value="Assistenza Codice Sconto / Coupon Temu">Problema con Codice Sconto o Coupon</option>
+                  <option value="Info sui 4 Accessori Auto Inverno (15 Novembre)">Info sui 4 Accessori Auto Inverno (15 Novembre)</option>
                   <option value="Consiglio su Kit Emergenza 72h / Prodotti">Consiglio su Kit Emergenza 72h o Prodotti</option>
                   <option value="Segnalazione Link o Prezzo Prodotto">Segnalazione Link o Prezzo Prodotto</option>
-                  <option value="Informazioni su Resi, Spedizioni e Garanzia">Informazioni su Resi, Spedizioni e Garanzia</option>
                   <option value="Richiesta Privacy / Dati Personali">Richiesta Privacy e Gestione Dati</option>
                 </select>
 
@@ -572,6 +606,7 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
     window.scrollTo({ top: 180, behavior: 'smooth' });
   };
 
+  const isWinter = repartoAttivo === 'Auto & Inverno 15 Nov';
   const isApocalypse = repartoAttivo === 'Kit Emergenza 72h';
 
   return (
@@ -584,21 +619,35 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
 
       <div className="seo-header-strip">
         <h1 className="seo-h1">
-          {isApocalypse
+          {isWinter
+            ? 'Speciale Obbligo 15 Novembre — I 4 Accessori Auto Indispensabili Visti su YouTube'
+            : isApocalypse
             ? 'Radar Sconti Sopravvivenza — Kit Emergenza 72 Ore (Linee Guida UE)'
             : `Catalogo ${repartoAttivo} ${filtroCategoria !== 'Tutte' ? `— ${filtroCategoria}` : '— Prodotti Testati e Offerte'}`}
         </h1>
       </div>
 
-      {/* BENTO GRID A 4 REPARTI */}
+      {/* BENTO GRID A 5 ELEMENTI */}
       <div className="bento-grid">
+        <div
+          onClick={() => cambiaReparto('Auto & Inverno 15 Nov')}
+          className={`bento-card bento-winter ${repartoAttivo === 'Auto & Inverno 15 Nov' ? 'active' : ''}`}
+          style={{ '--bg-img': 'url(/auto.jpg)' }}
+        >
+          <div className="bento-content">
+            <span className="bento-tag" style={{ background: '#0284c7', color: '#ffffff' }}>Nuovo Video • 15 Nov</span>
+            <h2>Auto &amp; Inverno</h2>
+            <p>Calze da neve, Jump Starter, Compressore e Telo</p>
+          </div>
+        </div>
+
         <div
           onClick={() => cambiaReparto('Pesca Sportiva')}
           className={`bento-card ${repartoAttivo === 'Pesca Sportiva' ? 'active' : ''}`}
           style={{ '--bg-img': 'url(/banner.jpg)' }}
         >
           <div className="bento-content">
-            <span className="bento-tag">Reparto 01</span>
+            <span className="bento-tag">Reparto Pesca</span>
             <h2>Pesca Sportiva</h2>
             <p>Canne, mulinelli, esche ed elettronica</p>
           </div>
@@ -610,7 +659,7 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
           style={{ '--bg-img': 'url(/banner2.jpg)' }}
         >
           <div className="bento-content">
-            <span className="bento-tag">Reparto 02</span>
+            <span className="bento-tag">Reparto Acquari</span>
             <h2>Acquariofilia</h2>
             <p>Lampade LED, filtri, pompe e aquascaping</p>
           </div>
@@ -619,12 +668,12 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
         <div
           onClick={() => cambiaReparto('Kit Emergenza 72h')}
           className={`bento-card bento-apocalypse ${repartoAttivo === 'Kit Emergenza 72h' ? 'active' : ''}`}
-          style={{ '--bg-img': 'url(/banner6.jpg)' }}
+          style={{ '--bg-img': 'url(/kit.jpg)' }}
         >
           <div className="bento-content">
-            <span className="bento-tag" style={{ background: '#f59e0b', color: '#0f172a' }}>Nuovo • Linee Guida 72h</span>
+            <span className="bento-tag" style={{ background: '#f59e0b', color: '#0f172a' }}>Linee Guida 72h</span>
             <h2>Kit Emergenza 72h</h2>
-            <p>Zaini Grab-and-Go, radio dinamo, filtri e scorte</p>
+            <p>Zaini Grab-and-Go, radio dinamo e scorte</p>
           </div>
         </div>
 
@@ -634,7 +683,7 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
           style={{ '--bg-img': 'url(/banner10.jpg)' }}
         >
           <div className="bento-wheel-deco">
-            <SvgWheel rotazione={0} size={115} />
+            <SvgWheel rotazione={0} size={110} />
           </div>
           <div className="bento-content">
             <span className="bento-tag" style={{ background: '#dc2626' }}>Ruota della Fortuna</span>
@@ -644,7 +693,51 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
         </div>
       </div>
 
-      {/* PANNELLO SPECIALE APOCALISSE / KIT 72 ORE (VISIBILE QUANDO SELEZIONATO) */}
+      {/* DASHBOARD SPECIALE VIDEO YOUTUBE: OBBLIGO 15 NOVEMBRE (4 ACCESSORI INDISPENSABILI) */}
+      {isWinter && (
+        <section className="winter-hub">
+          <div className="winter-road-strip"></div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px', flexWrap: 'wrap' }}>
+            <div>
+              <div className="winter-badge">
+                <span>Speciale Video YouTube • Scadenza 15 Novembre</span>
+              </div>
+              <h2 style={{ margin: '8px 0 0 0', fontSize: '22px', fontWeight: '800', textTransform: 'uppercase' }}>
+                I 4 Accessori Auto Indispensabili per l'Inverno (E l'Obbligo del 15 Novembre)
+              </h2>
+            </div>
+            {filtroCategoria !== 'Tutte' && (
+              <button
+                onClick={() => setFiltroCategoria('Tutte')}
+                className="copy-badge"
+                style={{ background: '#38bdf8', color: '#090d16', border: 'none', padding: '8px 14px' }}
+              >
+                Mostra Tutti i 4 Accessori
+              </button>
+            )}
+          </div>
+
+          <div className="winter-notice">
+            <strong>Dal 15 Novembre scatta ufficialmente l'obbligo delle dotazioni invernali:</strong> fatti trovare pronto per neve, batteria scarica dal freddo, calo di pressione delle gomme e parabrezza ghiacciato. Clicca su uno dei 4 accessori protagonisti del video per vedere l'offerta diretta:
+          </div>
+
+          <div className="winter-4-grid">
+            {accessoriAuto15Nov.map((item, idx) => (
+              <div
+                key={idx}
+                onClick={() => setFiltroCategoria(item.categoriaTarget)}
+                className={`winter-item-card ${filtroCategoria === item.categoriaTarget ? 'active' : ''}`}
+              >
+                <span className="winter-item-num">{item.num}</span>
+                <h4>{item.titolo}</h4>
+                <p>{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* PANNELLO SPECIALE APOCALISSE / KIT 72 ORE */}
       {isApocalypse && (
         <section className="apocalypse-hub">
           <div className="apocalypse-hazard-strip"></div>
@@ -670,7 +763,7 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
           </div>
 
           <div className="apocalypse-disclaimer">
-            <strong>Nota Informativa Ufficiale:</strong> Le indicazioni dell'Unione Europea sul Kit da 72 ore <strong>non sono obbligatorie per legge</strong> e non impongono alcun vincolo, ma rappresentano linee guida pratiche per affrontare in autonomia le prime 72 ore di un'emergenza (blackout prolungati, calamità naturali o guasti alle infrastrutture). Clicca su una categoria qui sotto per filtrare i migliori sconti verificati:
+            <strong>Nota Informativa Ufficiale:</strong> Le indicazioni dell'Unione Europea sul Kit da 72 ore <strong>non sono obbligatorie per legge</strong> e non impongono alcun vincolo, ma rappresentano linee guida pratiche per affrontare in autonomia le prime 72 ore di un'emergenza. Clicca su una categoria qui sotto per filtrare i migliori sconti verificati:
           </div>
 
           <div className="checklist-72h-grid">
@@ -703,7 +796,9 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
             aria-label="Cerca prodotto nel catalogo"
             className="search-input"
             placeholder={
-              isApocalypse
+              isWinter
+                ? "Cerca: calze da neve, jump starter, mini compressore, telo termico..."
+                : isApocalypse
                 ? "Cerca nel bunker: torcia dinamo, radio, filtro acqua, zaino 72h..."
                 : "Cerca il prodotto visto nei video su YouTube..."
             }
@@ -747,13 +842,13 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
       {/* GRIGLIA PRODOTTI */}
       {loading ? (
         <p style={{ textAlign: 'center', padding: '50px', color: 'var(--text-secondary)', fontWeight: '600' }}>
-          Scansione offerte in corso...
+          Caricamento offerte in corso...
         </p>
       ) : prodottiPaginati.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '50px 20px' }}>
           <p style={{ color: 'var(--text-secondary)', marginBottom: '16px' }}>
-            {isApocalypse
-              ? 'Nessun prodotto ancora caricato in questa sottocategoria del Kit 72h. Aggiungili dal pannello /admin!'
+            {isWinter
+              ? 'Carica i 4 accessori del video (Calze da neve, Jump Starter, Mini Compressore, Raschiaghiaccio/Telo) dal pannello /admin!'
               : 'Nessun articolo corrisponde ai filtri selezionati.'}
           </p>
           <button
@@ -780,8 +875,8 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
                   itemScope
                   itemType="https://schema.org/Product"
                 >
-                  <span className={`discount-badge ${isRedTheme ? 'badge-red' : 'badge-orange'}`}>
-                    {isApocalypse ? 'SCORTA 72H -30%' : isRedTheme ? 'OFFERTA LAMPO' : 'TEMU -30%'}
+                  <span className={`discount-badge ${isWinter ? 'badge-ice' : isRedTheme ? 'badge-red' : 'badge-orange'}`}>
+                    {isWinter ? 'SPECIALE 15 NOV' : isApocalypse ? 'SCORTA 72H -30%' : isRedTheme ? 'OFFERTA LAMPO' : 'TEMU -30%'}
                   </span>
 
                   <a
@@ -836,7 +931,7 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
                       className={`buy-direct-btn ${isRedTheme ? 'btn-red' : 'btn-orange'}`}
                       itemProp="url"
                     >
-                      <span>{isApocalypse ? 'Sblocca Scorta' : 'Vedi Offerta'}</span>
+                      <span>Vedi Offerta</span>
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                         <polyline points="12 5 19 12 12 19"></polyline>
@@ -902,6 +997,24 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
 
         <div className="video-grid">
           <a
+            href="https://www.youtube.com/@recensioniita9/videos"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="video-card"
+            style={{ backgroundImage: 'url(/auto.jpg)' }}
+          >
+            <div className="video-play-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#ffffff">
+                <polygon points="6 3 20 12 6 21 6 3"></polygon>
+              </svg>
+            </div>
+            <div className="video-card-info">
+              <span>Nuovo Video • Obbligo 15 Novembre</span>
+              <h4>I 4 Accessori Auto Indispensabili per l'Inverno</h4>
+            </div>
+          </a>
+
+          <a
             href="https://www.youtube.com/@recensioniita9/shorts"
             target="_blank"
             rel="noopener noreferrer"
@@ -920,29 +1033,11 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
           </a>
 
           <a
-            href="https://www.youtube.com/@recensioniita9/videos"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="video-card"
-            style={{ backgroundImage: 'url(/banner4.jpg)' }}
-          >
-            <div className="video-play-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="#ffffff">
-                <polygon points="6 3 20 12 6 21 6 3"></polygon>
-              </svg>
-            </div>
-            <div className="video-card-info">
-              <span>Guida Acquisti</span>
-              <h4>Migliori Accessori Sotto i 10 Euro</h4>
-            </div>
-          </a>
-
-          <a
             href="https://www.youtube.com/@recensioniita9"
             target="_blank"
             rel="noopener noreferrer"
             className="video-card"
-            style={{ backgroundImage: 'url(/banner5.jpg)' }}
+            style={{ backgroundImage: 'url(/kit.jpg)' }}
           >
             <div className="video-play-icon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="#ffffff">
@@ -959,9 +1054,9 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
 
       {/* BLOCCO SEMANTICO SEO */}
       <section className="seo-text-block">
-        <h2>Recensioni ITA: Pesca Sportiva, Acquariofilia e Kit di Emergenza 72 Ore</h2>
+        <h2>Recensioni ITA: Dotazioni Auto 15 Novembre, Pesca Sportiva, Acquari e Kit 72 Ore</h2>
         <p>
-          Recensioni ITA seleziona e recensisce le migliori offerte su canne da pesca, mulinelli, accessori per acquari e dispositivi per il <strong>Kit di Emergenza 72 Ore</strong> secondo le linee guida europee (zaini grab-and-go, torce a dinamo, radio a batterie, powerbank solari, filtri per l'acqua e kit di primo soccorso). Utilizzando il codice <strong>app39037</strong> sull'app Temu puoi ottenere un pacchetto di coupon da 100€ e il 30% di sconto extra sui tuoi ordini. Per qualsiasi dubbio su codici o articoli,{' '}
+          Recensioni ITA seleziona e testa sul campo i migliori prodotti in offerta: dai <strong>4 Accessori Auto Indispensabili per l'obbligo del 15 Novembre</strong> (Calze da neve omologate, Avviatore d'emergenza Jump Starter, Mini compressore portatile e Raschiaghiaccio / Telo termico) fino alle attrezzature per Pesca Sportiva, Acquariofilia e Kit di Emergenza 72 Ore. Utilizzando il codice <strong>app39037</strong> sull'app Temu puoi ottenere un pacchetto di coupon da 100€ e il 30% di sconto extra. Per qualsiasi dubbio,{' '}
           <button
             onClick={onOpenSupport}
             style={{ background: 'none', border: 'none', color: 'var(--temu-orange)', fontWeight: '800', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
@@ -977,7 +1072,7 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
 // --- COMPONENTE ROOT ---
 export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [repartoAttivo, setRepartoAttivo] = useState('Pesca Sportiva');
+  const [repartoAttivo, setRepartoAttivo] = useState('Auto & Inverno 15 Nov');
   const [isWheelOpen, setIsWheelOpen] = useState(false);
   const [legalSection, setLegalSection] = useState(null);
   const [showGdprBanner, setShowGdprBanner] = useState(false);
@@ -994,15 +1089,20 @@ export default function App() {
     setShowGdprBanner(false);
   };
 
+  const isWinter = repartoAttivo === 'Auto & Inverno 15 Nov';
   const isApocalypse = repartoAttivo === 'Kit Emergenza 72h';
 
   return (
     <Router>
-      <div className={`app-wrapper ${isDarkMode || isApocalypse ? 'dark' : ''} ${isApocalypse ? 'apocalypse-mode' : ''}`}>
+      <div
+        className={`app-wrapper ${isDarkMode || isApocalypse || isWinter ? 'dark' : ''} ${
+          isWinter ? 'winter-mode' : ''
+        } ${isApocalypse ? 'apocalypse-mode' : ''}`}
+      >
         <TopBar />
 
         <header className="navbar">
-          <Link to="/" className="brand-logo" onClick={() => setRepartoAttivo('Pesca Sportiva')}>
+          <Link to="/" className="brand-logo" onClick={() => setRepartoAttivo('Auto & Inverno 15 Nov')}>
             <div className="logo-circle">
               <img src="/logo.png" alt="Logo Recensioni ITA" />
             </div>
@@ -1011,20 +1111,15 @@ export default function App() {
                 <strong>Recensioni</strong>
                 <span>ITA</span>
               </div>
-              <div className="brand-subtitle">Fishing • Aquarium • 72h Survival</div>
+              <div className="brand-subtitle">Auto 15 Nov • Pesca • Acquari • 72h</div>
             </div>
           </Link>
 
           <div className="nav-center-trust">
-            <a
-              href="https://www.youtube.com/@recensioniita9"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="trust-item"
-            >
-              <span className="trust-dot"></span>
-              <span>YouTube: 100.000+ Views</span>
-            </a>
+            <button className="trust-item" onClick={() => setRepartoAttivo('Auto & Inverno 15 Nov')}>
+              <span className="trust-dot" style={{ background: '#38bdf8' }}></span>
+              <span style={{ color: '#38bdf8' }}>Speciale Auto 15 Novembre</span>
+            </button>
             <span style={{ color: 'var(--border-color)' }}>|</span>
             <button className="trust-item" onClick={() => setRepartoAttivo('Kit Emergenza 72h')}>
               <span style={{ color: '#f59e0b' }}>Kit Emergenza 72h</span>
@@ -1128,7 +1223,7 @@ export default function App() {
             <div className="footer-col">
               <h4>Recensioni ITA</h4>
               <p>
-                Il portale dedicato agli appassionati di pesca sportiva, acquariofilia e preparazione alle emergenze (Kit 72 Ore). Selezioniamo le attrezzature con il miglior rapporto qualità-prezzo.
+                Il portale dedicato agli appassionati di accessori auto invernali, pesca sportiva, acquariofilia e preparazione alle emergenze (Kit 72 Ore).
               </p>
               <p style={{ marginTop: '10px' }}>
                 Email Supporto:{' '}

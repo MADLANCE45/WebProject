@@ -3,6 +3,12 @@ import { supabase } from './supabaseClient';
 import { Link } from 'react-router-dom';
 
 const strutturaReparti = {
+  '❄️ Auto & Inverno 15 Nov': [
+    'Calze da Neve & Catene',
+    'Jump Starter & Batterie',
+    'Mini Compressori & Gonfiaggio',
+    'Raschiaghiaccio & Telo Termico'
+  ],
   '🎣 Pesca Sportiva': [
     'Attrezzatura da Pesca',
     'Abbigliamento Tecnico',
@@ -25,7 +31,31 @@ const strutturaReparti = {
   ]
 };
 
-// Suggerimenti rapidi basati sulle linee guida UE 72 ore per velocizzare l'inserimento
+// Preset rapidi per i 4 Accessori del Video YouTube "Obbligo 15 Novembre"
+const presetAutoInverno = [
+  {
+    label: '1. Calze da Neve Omologate',
+    cat: 'Calze da Neve & Catene',
+    titolo: '#01 - Calze da Neve Auto Omologate EN 16662-1 Antiscivolo (Obbligo 15 Novembre)'
+  },
+  {
+    label: '2. Avviatore Emergenza (Jump Starter)',
+    cat: 'Jump Starter & Batterie',
+    titolo: '#02 - Avviatore Emergenza Auto Portatile (Jump Starter) con Pinze e Powerbank LED'
+  },
+  {
+    label: '3. Mini Compressore Portatile',
+    cat: 'Mini Compressori & Gonfiaggio',
+    titolo: '#03 - Mini Compressore Portatile Digitale Ricaricabile per Pneumatici Auto e Moto'
+  },
+  {
+    label: '4. Raschiaghiaccio / Telo Termico',
+    cat: 'Raschiaghiaccio & Telo Termico',
+    titolo: '#04 - Telo Termico Copriauto Antighiaccio Magnetico + Raschiaghiaccio Parabrezza'
+  }
+];
+
+// Preset rapidi per il Kit Emergenza 72 Ore UE
 const presetEmergenzaUE = [
   { label: 'Zaino Grab-and-Go 72h', cat: 'Zaini Grab-and-Go & Tattici', titolo: 'Zaino Tattico Impermeabile 45L Grab-and-Go Emergenza 72h' },
   { label: 'Torcia LED / Dinamo', cat: 'Illuminazione, Radio & Powerbank', titolo: 'Torcia LED Alta Potenza Ricaricabile / Dinamo Emergenza Blackout' },
@@ -34,8 +64,7 @@ const presetEmergenzaUE = [
   { label: 'Apriscatole & Multi-Tool', cat: 'Acqua, Filtrazione & Utensili Cibo', titolo: 'Multi-Tool Acciaio con Apriscatole Manuale e Posate da Campo' },
   { label: 'Kit Primo Soccorso IFAK', cat: 'Primo Soccorso & Igiene', titolo: 'Kit Primo Soccorso Completo con Bende, Garze e Disinfettante' },
   { label: 'Coperta Termica & Poncho', cat: 'Coperte Termiche & Protezione', titolo: 'Set Coperte Termiche d’Emergenza Mylar + Giacca Impermeabile' },
-  { label: 'Busta Ignifuga Documenti/Contanti', cat: 'Documenti, Contanti & Animali', titolo: 'Custodia Ignifuga e Impermeabile per Documenti, USB e Contanti' },
-  { label: 'Kit Emergenza Animali', cat: 'Documenti, Contanti & Animali', titolo: 'Set Ciotole Pieghevoli e Trasportino Compatto Emergenza Pet' }
+  { label: 'Busta Ignifuga Documenti/Contanti', cat: 'Documenti, Contanti & Animali', titolo: 'Custodia Ignifuga e Impermeabile per Documenti, USB e Contanti' }
 ];
 
 export default function Admin() {
@@ -50,8 +79,8 @@ export default function Admin() {
     prezzo: '',
     immagine_url: '',
     link_affiliazione: '',
-    reparto: '☢️ Kit Emergenza 72h',
-    categoria: 'Zaini Grab-and-Go & Tattici'
+    reparto: '❄️ Auto & Inverno 15 Nov',
+    categoria: 'Calze da Neve & Catene'
   });
 
   useEffect(() => {
@@ -76,10 +105,10 @@ export default function Admin() {
     });
   };
 
-  const applicaPresetUE = (preset) => {
+  const applicaPreset = (repartoTarget, preset) => {
     setFormData({
       ...formData,
-      reparto: '☢️ Kit Emergenza 72h',
+      reparto: repartoTarget,
       categoria: preset.cat,
       titolo: preset.titolo
     });
@@ -134,7 +163,7 @@ export default function Admin() {
   };
 
   const avviaModifica = (prodotto) => {
-    const rep = strutturaReparti[prodotto.reparto] ? prodotto.reparto : '🎣 Pesca Sportiva';
+    const rep = strutturaReparti[prodotto.reparto] ? prodotto.reparto : '❄️ Auto & Inverno 15 Nov';
     setEditingId(prodotto.id);
     setFormData({
       titolo: prodotto.titolo || '',
@@ -157,18 +186,19 @@ export default function Admin() {
 
   const prodottiFiltrati = prodotti.filter((p) => {
     if (filtroRepartoAdmin === 'Tutti') return true;
-    return (p.reparto || '').includes(filtroRepartoAdmin.replace(/^[^\s]+\s/, ''));
+    const nomePulito = filtroRepartoAdmin.replace(/^[^\s]+\s/, '');
+    return (p.reparto || '').includes(nomePulito);
   });
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '28px 4%', fontFamily: 'Inter, sans-serif' }}>
+    <div style={{ maxWidth: '1220px', margin: '0 auto', padding: '28px 4%', fontFamily: 'Inter, sans-serif' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
         <div>
           <h1 style={{ margin: 0, fontSize: '24px', fontWeight: '900', textTransform: 'uppercase' }}>
-            Pannello Admin — Gestione Prodotti
+            Pannello Admin — Gestione Catalogo
           </h1>
           <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#64748b' }}>
-            Aggiungi o modifica articoli per Pesca Sportiva, Acquariofilia e Kit Emergenza 72h
+            Gestisci i prodotti per Auto &amp; Inverno 15 Nov, Pesca Sportiva, Acquariofilia e Kit 72h
           </p>
         </div>
         <Link
@@ -185,19 +215,40 @@ export default function Admin() {
           {editingId ? `Modifica Prodotto #${editingId}` : 'Aggiungi Nuovo Prodotto'}
         </h2>
 
+        {/* SCORCIATOIE RAPIDE PER I 4 ACCESSORI DEL VIDEO AUTO 15 NOVEMBRE */}
+        {formData.reparto.includes('Auto & Inverno 15 Nov') && (
+          <div style={{ background: '#0b1320', color: '#f8fafc', padding: '16px', borderRadius: '12px', marginBottom: '18px', borderLeft: '4px solid #38bdf8' }}>
+            <div style={{ fontSize: '11.5px', fontWeight: '800', color: '#38bdf8', textTransform: 'uppercase', marginBottom: '10px', letterSpacing: '0.5px' }}>
+              Compilazione Rapida Video YouTube "Obbligo 15 Novembre - 4 Accessori Indispensabili":
+            </div>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              {presetAutoInverno.map((preset, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => applicaPreset('❄️ Auto & Inverno 15 Nov', preset)}
+                  style={{ background: '#162235', color: '#e0f2fe', border: '1px solid #0284c7', padding: '8px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}
+                >
+                  + {preset.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* SCORCIATOIE KIT EMERGENZA 72H */}
         {formData.reparto.includes('Kit Emergenza 72h') && (
-          <div style={{ background: '#111827', color: '#f8fafc', padding: '14px', borderRadius: '10px', marginBottom: '18px', borderLeft: '4px solid #f59e0b' }}>
-            <div style={{ fontSize: '11px', fontWeight: '800', color: '#f59e0b', textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '0.5px' }}>
-              Pre-compilazione Rapida Kit 72 Ore (Clicca un elemento della lista UE per impostare categoria e titolo base):
+          <div style={{ background: '#111827', color: '#f8fafc', padding: '16px', borderRadius: '12px', marginBottom: '18px', borderLeft: '4px solid #f59e0b' }}>
+            <div style={{ fontSize: '11.5px', fontWeight: '800', color: '#f59e0b', textTransform: 'uppercase', marginBottom: '10px', letterSpacing: '0.5px' }}>
+              Pre-compilazione Rapida Kit 72 Ore (Linee Guida UE):
             </div>
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
               {presetEmergenzaUE.map((preset, idx) => (
                 <button
                   key={idx}
                   type="button"
-                  onClick={() => applicaPresetUE(preset)}
-                  style={{ background: '#1f2937', color: '#e2e8f0', border: '1px solid #374151', padding: '6px 10px', borderRadius: '6px', fontSize: '11.5px', fontWeight: '700', cursor: 'pointer' }}
+                  onClick={() => applicaPreset('☢️ Kit Emergenza 72h', preset)}
+                  style={{ background: '#1f2937', color: '#e2e8f0', border: '1px solid #374151', padding: '7px 11px', borderRadius: '6px', fontSize: '11.5px', fontWeight: '700', cursor: 'pointer' }}
                 >
                   + {preset.label}
                 </button>
@@ -239,12 +290,12 @@ export default function Admin() {
 
           <div style={{ gridColumn: '1 / -1' }}>
             <label style={{ display: 'block', fontSize: '12px', fontWeight: '800', marginBottom: '6px', textTransform: 'uppercase', color: '#475569' }}>
-              Titolo Prodotto (Consiglio: usa parole chiave chiare)
+              Titolo Prodotto
             </label>
             <input
               type="text"
               required
-              placeholder="Es. Radio Emergenza Solare Dinamo con Torcia LED e Powerbank..."
+              placeholder="Es. #01 - Calze da Neve Auto Omologate EN 16662-1..."
               value={formData.titolo}
               onChange={(e) => setFormData({ ...formData, titolo: e.target.value })}
               style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px' }}
@@ -253,12 +304,12 @@ export default function Admin() {
 
           <div>
             <label style={{ display: 'block', fontSize: '12px', fontWeight: '800', marginBottom: '6px', textTransform: 'uppercase', color: '#475569' }}>
-              Prezzo in Euro (es. 14.99)
+              Prezzo in Euro (es. 19.99)
             </label>
             <input
               type="text"
               required
-              placeholder="Es. 12.50"
+              placeholder="Es. 19.99"
               value={formData.prezzo}
               onChange={(e) => setFormData({ ...formData, prezzo: e.target.value })}
               style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px' }}
