@@ -866,7 +866,14 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
               const prezzoBarrato = numPrezzo > 0 ? (numPrezzo * 1.35).toFixed(2) : null;
               const linkLower = (prodotto.link_affiliazione || '').toLowerCase();
 
-              const isRedTheme = (numPrezzo > 0 && numPrezzo <= 10) || (linkLower && !linkLower.includes('temu'));
+              const isAliExpress = linkLower.includes('aliexpress');
+              const isRedTheme = isAliExpress || (numPrezzo > 0 && numPrezzo <= 10);
+
+              const gestisciClickProdotto = () => {
+                if (!isAliExpress) {
+                  navigator.clipboard.writeText('app39037').catch(() => {});
+                }
+              };
 
               return (
                 <article
@@ -875,8 +882,8 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
                   itemScope
                   itemType="https://schema.org/Product"
                 >
-                  <span className={`discount-badge ${isWinter ? 'badge-ice' : isRedTheme ? 'badge-red' : 'badge-orange'}`}>
-                    {isWinter ? 'SPECIALE 15 NOV' : isApocalypse ? 'SCORTA 72H -30%' : isRedTheme ? 'OFFERTA LAMPO' : 'TEMU -30%'}
+                  <span className={`discount-badge ${isAliExpress ? 'badge-red' : isWinter ? 'badge-ice' : isRedTheme ? 'badge-red' : 'badge-orange'}`}>
+                    {isAliExpress ? 'ALIEXPRESS DEAL' : isWinter ? 'SPECIALE 15 NOV' : isApocalypse ? 'SCORTA 72H -30%' : isRedTheme ? 'OFFERTA LAMPO' : 'TEMU -30%'}
                   </span>
 
                   <a
@@ -884,6 +891,7 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
                     target="_blank"
                     rel="sponsored noopener noreferrer"
                     className="product-img-wrapper"
+                    onClick={gestisciClickProdotto}
                   >
                     {prodotto.immagine_url ? (
                       <img
@@ -930,8 +938,9 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
                       rel="sponsored noopener noreferrer"
                       className={`buy-direct-btn ${isRedTheme ? 'btn-red' : 'btn-orange'}`}
                       itemProp="url"
+                      onClick={gestisciClickProdotto}
                     >
-                      <span>Vedi Offerta</span>
+                      <span>{isAliExpress ? 'Vedi su AliExpress' : 'Vedi Offerta'}</span>
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                         <polyline points="12 5 19 12 12 19"></polyline>

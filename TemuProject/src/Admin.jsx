@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from './supabaseClient';
 import { Link } from 'react-router-dom';
+
+const CODICE_AMICO_DEFAULT = 'app39037';
 
 const strutturaReparti = {
   '❄️ Auto & Inverno 15 Nov': [
@@ -31,48 +33,23 @@ const strutturaReparti = {
   ]
 };
 
-// Preset rapidi per i 4 Accessori del Video YouTube "Obbligo 15 Novembre"
-const presetAutoInverno = [
-  {
-    label: '1. Calze da Neve Omologate',
-    cat: 'Calze da Neve & Catene',
-    titolo: '#01 - Calze da Neve Auto Omologate EN 16662-1 Antiscivolo (Obbligo 15 Novembre)'
-  },
-  {
-    label: '2. Avviatore Emergenza (Jump Starter)',
-    cat: 'Jump Starter & Batterie',
-    titolo: '#02 - Avviatore Emergenza Auto Portatile (Jump Starter) con Pinze e Powerbank LED'
-  },
-  {
-    label: '3. Mini Compressore Portatile',
-    cat: 'Mini Compressori & Gonfiaggio',
-    titolo: '#03 - Mini Compressore Portatile Digitale Ricaricabile per Pneumatici Auto e Moto'
-  },
-  {
-    label: '4. Raschiaghiaccio / Telo Termico',
-    cat: 'Raschiaghiaccio & Telo Termico',
-    titolo: '#04 - Telo Termico Copriauto Antighiaccio Magnetico + Raschiaghiaccio Parabrezza'
-  }
-];
-
-// Preset rapidi per il Kit Emergenza 72 Ore UE
-const presetEmergenzaUE = [
-  { label: 'Zaino Grab-and-Go 72h', cat: 'Zaini Grab-and-Go & Tattici', titolo: 'Zaino Tattico Impermeabile 45L Grab-and-Go Emergenza 72h' },
-  { label: 'Torcia LED / Dinamo', cat: 'Illuminazione, Radio & Powerbank', titolo: 'Torcia LED Alta Potenza Ricaricabile / Dinamo Emergenza Blackout' },
-  { label: 'Radio Emergenza + Powerbank', cat: 'Illuminazione, Radio & Powerbank', titolo: 'Radio Emergenza AM/FM Solare con Dinamo e Powerbank Integrato' },
-  { label: 'Filtro Acqua / Tanica 6L+', cat: 'Acqua, Filtrazione & Utensili Cibo', titolo: 'Filtro Acqua Portatile Sopravvivenza + Tanica Pieghevole' },
-  { label: 'Apriscatole & Multi-Tool', cat: 'Acqua, Filtrazione & Utensili Cibo', titolo: 'Multi-Tool Acciaio con Apriscatole Manuale e Posate da Campo' },
-  { label: 'Kit Primo Soccorso IFAK', cat: 'Primo Soccorso & Igiene', titolo: 'Kit Primo Soccorso Completo con Bende, Garze e Disinfettante' },
-  { label: 'Coperta Termica & Poncho', cat: 'Coperte Termiche & Protezione', titolo: 'Set Coperte Termiche d’Emergenza Mylar + Giacca Impermeabile' },
-  { label: 'Busta Ignifuga Documenti/Contanti', cat: 'Documenti, Contanti & Animali', titolo: 'Custodia Ignifuga e Impermeabile per Documenti, USB e Contanti' }
-];
-
+// Script Bookmarklet che gira nel browser dell'utente (bypassa il blocco "Login" di Temu e AliExpress)
+const BOOKMARKLET_CODE = `javascript:(function(){const results=[];const seen=new Set();const cards=Array.from(document.querySelectorAll('a[href]'));for(const a of cards){const href=a.href;if(!href||seen.has(href)||href.includes('login')||href.includes('javascript:'))continue;const img=Array.from(a.querySelectorAll('img')).find(i=>i.width>=80&&!i.src.includes('avatar')&&!i.src.includes('/usual/')&&!i.src.includes('154x64'))||(a.parentElement&&a.parentElement.querySelector('img'));if(!img||!img.src||img.width<80)continue;const box=a.closest('[data-tooltip-title],[class*="card"],[class*="item"],li,div')||a;const txt=(box.innerText||a.innerText||'').replace(/\\s+/g,' ');const pm=txt.match(/(\\d+[.,]\\d{1,2})\\s*€|€\\s*(\\d+[.,]\\d{1,2})/);if(!pm)continue;const price=(pm[1]||pm[2]).replace(',','.');let title=(img.alt||a.getAttribute('aria-label')||txt.split(pm[0])[0]||'Prodotto').trim().replace(/\\|/g,'-').replace(/\\s+/g,' ').substring(0,95);if(title.length<4||title.toLowerCase()==='login')continue;seen.add(href);results.push(title+' | '+price+' | '+img.src+' | '+href);if(results.length>=16)break;}if(results.length>0){navigator.clipboard.writeText(results.join('\\n')).then(()=>alert('✅ Catturati '+results.length+' prodotti! Ora vai nel Pannello Admin e incollali nel box Importazione Massiva.'));}else{alert('⚠️ Nessun prodotto rilevato. Scorri leggermente la pagina per far caricare le foto e riprova!');}})();`;
 export default function Admin() {
   const [prodotti, setProdotti] = useState([]);
   const [loading, setLoading] = useState(true);
   const [messaggio, setMessaggio] = useState('');
   const [filtroRepartoAdmin, setFiltroRepartoAdmin] = useState('Tutti');
   const [editingId, setEditingId] = useState(null);
+
+  const [smartInput, setSmartInput] = useState('');
+  const [isFetchingMeta, setIsFetchingMeta] = useState(false);
+
+  const [showBulkModal, setShowBulkModal] = useState(false);
+  const [bulkText, setBulkText] = useState('');
+  const [isBulkImporting, setIsBulkImporting] = useState(false);
+
+  const bookmarkletRef = useRef(null);
 
   const [formData, setFormData] = useState({
     titolo: '',
@@ -84,6 +61,9 @@ export default function Admin() {
   });
 
   useEffect(() => {
+    if (bookmarkletRef.current) {
+      bookmarkletRef.current.setAttribute('href', BOOKMARKLET_CODE);
+    }
     caricaProdotti();
   }, []);
 
@@ -105,13 +85,160 @@ export default function Admin() {
     });
   };
 
-  const applicaPreset = (repartoTarget, preset) => {
-    setFormData({
-      ...formData,
-      reparto: repartoTarget,
-      categoria: preset.cat,
-      titolo: preset.titolo
-    });
+  // Estrae un titolo leggibile direttamente dall'URL se Temu/AliExpress blocca con "Login"
+  const estraiTitoloDaUrl = (urlStr) => {
+    try {
+      const url = new URL(urlStr);
+      const searchKey = url.searchParams.get('search_key') || url.searchParams.get('SearchText');
+      if (searchKey) {
+        return searchKey
+          .split(' ')
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(' ');
+      }
+      const pathParts = url.pathname.split('/').filter(Boolean);
+      const slug = pathParts[pathParts.length - 1] || '';
+      if (slug && !slug.includes('search_result') && !slug.includes('item')) {
+        const cleanSlug = slug
+          .replace(/-g-\d+.*$/i, '')
+          .replace(/\.html$/i, '')
+          .replace(/[-_]+/g, ' ')
+          .trim();
+        if (cleanSlug.length > 3) {
+          return cleanSlug.charAt(0).toUpperCase() + cleanSlug.slice(1);
+        }
+      }
+    } catch (e) {
+      return '';
+    }
+    return '';
+  };
+
+  // --- 1. AUTO-ESTRAZIONE SINGOLA (CON FILTRO ANTI-"LOGIN" PER TEMU E ALIEXPRESS) ---
+  const estraiDatiAutomaticamente = async () => {
+    if (!smartInput.trim()) return;
+    setIsFetchingMeta(true);
+    setMessaggio('🔍 Analisi del link Temu / AliExpress in corso...');
+
+    try {
+      const urlMatch = smartInput.match(/https?:\/\/[^\s]+/);
+      const extractedUrl = urlMatch ? urlMatch[0].replace(/[.,;!?)]+$/, '') : '';
+
+      const priceMatch = smartInput.match(/(?:€\s*(\d+[.,]\d{1,2}))|(?:(\d+[.,]\d{1,2})\s*€)/i);
+      const extractedPrice = priceMatch ? (priceMatch[1] || priceMatch[2]).replace(',', '.') : '';
+
+      let testoPulito = smartInput
+        .replace(/https?:\/\/[^\s]+/g, '')
+        .replace(/(?:€\s*\d+[.,]\d{1,2})|(?:\d+[.,]\d{1,2}\s*€)/gi, '')
+        .replace(/[\n\r]+/g, ' ')
+        .trim();
+
+      let autoTitle = testoPulito || estraiTitoloDaUrl(extractedUrl);
+      let autoImage = '';
+
+      if (extractedUrl) {
+        const res = await fetch(`https://api.microlink.io/?url=${encodeURIComponent(extractedUrl)}`);
+        const json = await res.json();
+
+        if (json.status === 'success' && json.data) {
+          const rawTitle = (json.data.title || '').trim();
+          const isBlockedTitle =
+            !rawTitle ||
+            rawTitle.toLowerCase() === 'login' ||
+            rawTitle.toLowerCase().includes('sign in') ||
+            rawTitle.toLowerCase().includes('temu | explore');
+
+          if (!isBlockedTitle) {
+            autoTitle = rawTitle.replace(/\s*\|\s*(Temu|AliExpress).*$/i, '').trim();
+          }
+
+          if (json.data.image && json.data.image.url && !json.data.image.url.includes('/usual/')) {
+            autoImage = json.data.image.url;
+          }
+        }
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        titolo: autoTitle || prev.titolo,
+        prezzo: extractedPrice || prev.prezzo,
+        immagine_url: autoImage || prev.immagine_url,
+        link_affiliazione: extractedUrl || prev.link_affiliazione
+      }));
+
+      if (!autoImage) {
+        setMessaggio(
+          '⚠️ Temu richiede il login per leggere la foto da remoto: fai Tasto Destro sulla foto del prodotto su Temu → "Copia indirizzo dell\'immagine" e incollala nel campo Immagine, oppure usa il pulsante "Cattura Temu / AliExpress" qui sopra!'
+        );
+      } else {
+        setMessaggio('✅ Dati estratti con successo! Verifica e clicca Pubblica.');
+      }
+    } catch (err) {
+      setMessaggio('⚠️ Impossibile leggere la foto in automatico da questo link: incolla l\'indirizzo dell\'immagine manualmente.');
+    } finally {
+      setIsFetchingMeta(false);
+    }
+  };
+
+  // --- 2. FUNZIONE IMPORTAZIONE MASSIVA INTELLIGENTE (IMMUNE AI "|" NEI TITOLI) ---
+  const eseguiImportazioneMassiva = async () => {
+    if (!bulkText.trim()) return;
+    setIsBulkImporting(true);
+    setMessaggio('📦 Importazione massiva su Supabase in corso...');
+
+    const righe = bulkText.split('\n').map((r) => r.trim()).filter(Boolean);
+    const nuoviProdotti = [];
+
+    for (const riga of righe) {
+      const parti = riga.split('|').map((s) => s.trim()).filter(Boolean);
+      if (parti.length >= 4) {
+        // Legge da destra verso sinistra così eventuali "|" nel titolo non rompono il prezzo
+        const link = parti[parti.length - 1];
+        const immagine = parti[parti.length - 2];
+        const prezzoRaw = parti[parti.length - 3];
+        const titoloUnito = parti.slice(0, parti.length - 3).join(' - ');
+
+        const prezzoPulito = parseFloat(prezzoRaw.replace(/[^0-9.,]/g, '').replace(',', '.'));
+
+        if (!isNaN(prezzoPulito) && link.startsWith('http')) {
+          nuoviProdotti.push({
+            titolo: titoloUnito,
+            prezzo: prezzoPulito,
+            immagine_url: immagine,
+            link_affiliazione: link,
+            reparto: formData.reparto,
+            categoria: formData.categoria
+          });
+        }
+      }
+    }
+
+    if (nuoviProdotti.length === 0) {
+      setMessaggio('❌ Formato non valido. Assicurati che ogni riga termini con: | Prezzo | URL_Immagine | Link');
+      setIsBulkImporting(false);
+      return;
+    }
+
+    const { error } = await supabase.from('products').insert(nuoviProdotti);
+    if (error) {
+      setMessaggio(`Errore durante l'importazione massiva: ${error.message}`);
+    } else {
+      setMessaggio(`🎉 Importati con successo ${nuoviProdotti.length} prodotti in "${formData.categoria}"!`);
+      setBulkText('');
+      setShowBulkModal(false);
+      caricaProdotti();
+    }
+    setIsBulkImporting(false);
+  };
+
+  const incollaDagliAppunti = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      setBulkText(text);
+      setShowBulkModal(true);
+    } catch (e) {
+      setShowBulkModal(true);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -129,26 +256,27 @@ export default function Admin() {
 
     if (editingId) {
       const { error } = await supabase.from('products').update(payload).eq('id', editingId);
-      if (error) {
-        setMessaggio(`Errore durante la modifica: ${error.message}`);
-      } else {
+      if (!error) {
         setMessaggio('✅ Prodotto aggiornato con successo!');
         setEditingId(null);
         resetForm();
         caricaProdotti();
+      } else {
+        setMessaggio(`Errore: ${error.message}`);
       }
     } else {
       const { error } = await supabase.from('products').insert([payload]);
-      if (error) {
-        setMessaggio(`Errore durante l'inserimento: ${error.message}`);
-      } else {
-        setMessaggio('✅ Nuovo prodotto aggiunto al catalogo!');
+      if (!error) {
+        setMessaggio('✅ Nuovo prodotto pubblicato nel catalogo!');
         resetForm();
+        setSmartInput('');
         caricaProdotti();
+      } else {
+        setMessaggio(`Errore: ${error.message}`);
       }
     }
 
-    setTimeout(() => setMessaggio(''), 4000);
+    setTimeout(() => setMessaggio(''), 5000);
   };
 
   const resetForm = () => {
@@ -192,70 +320,157 @@ export default function Admin() {
 
   return (
     <div style={{ maxWidth: '1220px', margin: '0 auto', padding: '28px 4%', fontFamily: 'Inter, sans-serif' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
+      {/* HEADER ADMIN */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '22px', flexWrap: 'wrap', gap: '12px' }}>
         <div>
           <h1 style={{ margin: 0, fontSize: '24px', fontWeight: '900', textTransform: 'uppercase' }}>
-            Pannello Admin — Gestione Catalogo
+            Pannello Admin — Automazione Temu &amp; AliExpress
           </h1>
           <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#64748b' }}>
-            Gestisci i prodotti per Auto &amp; Inverno 15 Nov, Pesca Sportiva, Acquariofilia e Kit 72h
+            Codice Amico globale copiato al click dei clienti: <strong style={{ color: '#ff5500' }}>{CODICE_AMICO_DEFAULT}</strong>
           </p>
         </div>
-        <Link
-          to="/"
-          style={{ background: '#0f172a', color: '#fff', textDecoration: 'none', padding: '10px 18px', borderRadius: '8px', fontSize: '13px', fontWeight: '800' }}
-        >
-          ← Torna al Sito Pubblico
-        </Link>
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <button
+            type="button"
+            onClick={incollaDagliAppunti}
+            style={{ background: '#0284c7', color: '#fff', border: 'none', padding: '10px 16px', borderRadius: '8px', fontSize: '13px', fontWeight: '800', cursor: 'pointer' }}
+          >
+            📦 Incolla &amp; Importa Multi-Prodotto
+          </button>
+          <Link
+            to="/"
+            style={{ background: '#0f172a', color: '#fff', textDecoration: 'none', padding: '10px 18px', borderRadius: '8px', fontSize: '13px', fontWeight: '800' }}
+          >
+            ← Torna al Sito
+          </Link>
+        </div>
       </div>
 
-      {/* BOX INSERIMENTO / MODIFICA */}
+      {/* BOX SEGNALIBRO CATTURA PAGINA PER TEMU & ALIEXPRESS */}
+      <div style={{ background: 'linear-gradient(135deg, #0b1320, #1e293b)', color: '#fff', padding: '20px', borderRadius: '14px', marginBottom: '24px', border: '1px solid #38bdf8' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+          <div style={{ flex: '1 1 480px' }}>
+            <span style={{ fontSize: '11px', fontWeight: '800', color: '#38bdf8', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
+              🚀 Soluzione Anti-Blocco Login (Funziona su Pagine di Ricerca Temu e AliExpress)
+            </span>
+            <h3 style={{ margin: '4px 0 6px 0', fontSize: '17px', fontWeight: '800' }}>
+              Cattura fino a 16 Prodotti alla volta mentre navighi su Temu o AliExpress
+            </h3>
+            <p style={{ margin: 0, fontSize: '12.5px', color: '#cbd5e1', lineHeight: '1.5' }}>
+              1. Trascina <strong>⚡ Cattura Temu / AliExpress</strong> sulla Barra dei Segnalibri (oppure clicca <strong>📋 Copia Codice Segnalibro</strong> e incollalo nell'URL del segnalibro di Firefox).<br />
+              2. Vai su una pagina di ricerca di <strong>Temu</strong> o <strong>AliExpress</strong> e clicca sul segnalibro: copierà <strong>Titoli, Prezzi, Foto HD e Link</strong>!<br />
+              3. Torna qui e clicca su <strong>"📦 Incolla &amp; Importa Multi-Prodotto"</strong>.
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <a
+              ref={bookmarkletRef}
+              onClick={(e) => {
+                e.preventDefault();
+                alert('Trascina questo pulsante sulla Barra dei Segnalibri di Firefox, oppure clicca il bottone "Copia Codice Segnalibro" qui a fianco!');
+              }}
+              style={{
+                background: 'linear-gradient(135deg, #ff5500, #dc2626)',
+                color: '#fff',
+                textDecoration: 'none',
+                padding: '13px 18px',
+                borderRadius: '10px',
+                fontWeight: '900',
+                fontSize: '12.5px',
+                textTransform: 'uppercase',
+                boxShadow: '0 8px 20px rgba(255,85,0,0.4)',
+                cursor: 'grab',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              ⚡ Cattura Temu / AliExpress
+            </a>
+
+            <button
+              type="button"
+              onClick={() => {
+                navigator.clipboard.writeText(BOOKMARKLET_CODE);
+                alert('✅ Codice Segnalibro copiato negli appunti! Ora incollalo nella casella URL del segnalibro su Firefox.');
+              }}
+              style={{
+                background: '#1e293b',
+                color: '#38bdf8',
+                border: '1px solid #38bdf8',
+                padding: '13px 16px',
+                borderRadius: '10px',
+                fontWeight: '800',
+                fontSize: '12px',
+                cursor: 'pointer'
+              }}
+            >
+              📋 Copia Codice Segnalibro
+            </button>
+          </div>
+        </div>
+
+        {/* BARRA INCOLLA SINGOLO TESTO CONDIVISIONE APP */}
+        <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.1)', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <input
+            type="text"
+            placeholder="Oppure incolla qui il messaggio di condivisione di un singolo prodotto dall'app Temu / AliExpress..."
+            value={smartInput}
+            onChange={(e) => setSmartInput(e.target.value)}
+            style={{ flex: '1 1 300px', padding: '11px 14px', borderRadius: '8px', border: '1px solid #475569', background: '#090d16', color: '#fff', fontSize: '13.5px' }}
+          />
+          <button
+            type="button"
+            onClick={estraiDatiAutomaticamente}
+            disabled={isFetchingMeta}
+            style={{ background: '#38bdf8', color: '#090d16', border: 'none', padding: '11px 20px', borderRadius: '8px', fontWeight: '800', fontSize: '12.5px', textTransform: 'uppercase', cursor: 'pointer' }}
+          >
+            {isFetchingMeta ? 'Lettura...' : 'Estrai Singolo Link'}
+          </button>
+        </div>
+      </div>
+
+      {/* BOX IMPORTAZIONE MASSIVA DA SEGNALIBRO O LISTA */}
+      {showBulkModal && (
+        <div style={{ background: '#f0f9ff', border: '2px solid #0284c7', borderRadius: '14px', padding: '20px', marginBottom: '24px' }}>
+          <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', color: '#0f172a' }}>
+            📦 Importazione Massiva in: {formData.reparto} → {formData.categoria}
+          </h3>
+          <p style={{ margin: '0 0 10px 0', fontSize: '12.5px', color: '#334155' }}>
+            Prima seleziona qui sotto il <strong>Reparto</strong> e la <strong>Categoria Specifica</strong> in cui vuoi salvare i prodotti, poi incolla qui le righe catturate col Segnalibro (<code>Titolo | Prezzo | URL Immagine | Link</code>):
+          </p>
+          <textarea
+            rows={7}
+            placeholder={`Copertura Parabrezza Auto Magnetica | 6.43 | https://img.kwcdn.com/... | https://www.temu.com/...\nCalze da Neve Omologate EN 16662-1 | 19.99 | https://img.kwcdn.com/... | https://temu.to/...`}
+            value={bulkText}
+            onChange={(e) => setBulkText(e.target.value)}
+            style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #94a3b8', fontFamily: 'monospace', fontSize: '12px', marginBottom: '12px' }}
+          />
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <button
+              type="button"
+              onClick={eseguiImportazioneMassiva}
+              disabled={isBulkImporting}
+              style={{ background: '#0284c7', color: '#fff', border: 'none', padding: '12px 22px', borderRadius: '8px', fontWeight: '800', fontSize: '13px', cursor: 'pointer' }}
+            >
+              {isBulkImporting ? 'Caricamento in corso...' : 'Pubblica Tutti i Prodotti Ora'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowBulkModal(false)}
+              style={{ background: '#e2e8f0', color: '#0f172a', border: 'none', padding: '12px 18px', borderRadius: '8px', fontWeight: '700', fontSize: '13px', cursor: 'pointer' }}
+            >
+              Chiudi
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* FORM PRINCIPALE INSERIMENTO / MODIFICA SINGOLO PRODOTTO */}
       <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px', boxShadow: '0 4px 14px rgba(0,0,0,0.05)', marginBottom: '32px' }}>
         <h2 style={{ margin: '0 0 16px 0', fontSize: '18px', fontWeight: '800', color: '#0f172a' }}>
-          {editingId ? `Modifica Prodotto #${editingId}` : 'Aggiungi Nuovo Prodotto'}
+          {editingId ? `Modifica Prodotto #${editingId}` : 'Verifica e Pubblica Singolo Prodotto'}
         </h2>
-
-        {/* SCORCIATOIE RAPIDE PER I 4 ACCESSORI DEL VIDEO AUTO 15 NOVEMBRE */}
-        {formData.reparto.includes('Auto & Inverno 15 Nov') && (
-          <div style={{ background: '#0b1320', color: '#f8fafc', padding: '16px', borderRadius: '12px', marginBottom: '18px', borderLeft: '4px solid #38bdf8' }}>
-            <div style={{ fontSize: '11.5px', fontWeight: '800', color: '#38bdf8', textTransform: 'uppercase', marginBottom: '10px', letterSpacing: '0.5px' }}>
-              Compilazione Rapida Video YouTube "Obbligo 15 Novembre - 4 Accessori Indispensabili":
-            </div>
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              {presetAutoInverno.map((preset, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => applicaPreset('❄️ Auto & Inverno 15 Nov', preset)}
-                  style={{ background: '#162235', color: '#e0f2fe', border: '1px solid #0284c7', padding: '8px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: '700', cursor: 'pointer' }}
-                >
-                  + {preset.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* SCORCIATOIE KIT EMERGENZA 72H */}
-        {formData.reparto.includes('Kit Emergenza 72h') && (
-          <div style={{ background: '#111827', color: '#f8fafc', padding: '16px', borderRadius: '12px', marginBottom: '18px', borderLeft: '4px solid #f59e0b' }}>
-            <div style={{ fontSize: '11.5px', fontWeight: '800', color: '#f59e0b', textTransform: 'uppercase', marginBottom: '10px', letterSpacing: '0.5px' }}>
-              Pre-compilazione Rapida Kit 72 Ore (Linee Guida UE):
-            </div>
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              {presetEmergenzaUE.map((preset, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => applicaPreset('☢️ Kit Emergenza 72h', preset)}
-                  style={{ background: '#1f2937', color: '#e2e8f0', border: '1px solid #374151', padding: '7px 11px', borderRadius: '6px', fontSize: '11.5px', fontWeight: '700', cursor: 'pointer' }}
-                >
-                  + {preset.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
 
         <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px' }}>
           <div>
@@ -304,12 +519,12 @@ export default function Admin() {
 
           <div>
             <label style={{ display: 'block', fontSize: '12px', fontWeight: '800', marginBottom: '6px', textTransform: 'uppercase', color: '#475569' }}>
-              Prezzo in Euro (es. 19.99)
+              Prezzo in Euro (es. 6.43)
             </label>
             <input
               type="text"
               required
-              placeholder="Es. 19.99"
+              placeholder="Es. 6.43"
               value={formData.prezzo}
               onChange={(e) => setFormData({ ...formData, prezzo: e.target.value })}
               style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px' }}
@@ -318,12 +533,12 @@ export default function Admin() {
 
           <div>
             <label style={{ display: 'block', fontSize: '12px', fontWeight: '800', marginBottom: '6px', textTransform: 'uppercase', color: '#475569' }}>
-              URL Immagine Prodotto
+              URL Immagine Prodotto (Tasto destro sulla foto di Temu/AliExpress → Copia indirizzo immagine)
             </label>
             <input
               type="url"
               required
-              placeholder="https://..."
+              placeholder="https://img.kwcdn.com/..."
               value={formData.immagine_url}
               onChange={(e) => setFormData({ ...formData, immagine_url: e.target.value })}
               style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px' }}
@@ -332,19 +547,19 @@ export default function Admin() {
 
           <div style={{ gridColumn: '1 / -1' }}>
             <label style={{ display: 'block', fontSize: '12px', fontWeight: '800', marginBottom: '6px', textTransform: 'uppercase', color: '#475569' }}>
-              Link Affiliazione Temu
+              Link Affiliazione (Temu o AliExpress)
             </label>
             <input
               type="url"
               required
-              placeholder="https://temu.to/..."
+              placeholder="https://temu.to/... oppure https://s.click.aliexpress.com/..."
               value={formData.link_affiliazione}
               onChange={(e) => setFormData({ ...formData, link_affiliazione: e.target.value })}
               style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px' }}
             />
           </div>
 
-          <div style={{ gridColumn: '1 / -1', display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <div style={{ gridColumn: '1 / -1', display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
             <button
               type="submit"
               style={{ background: '#ff5500', color: '#fff', border: 'none', padding: '14px 28px', borderRadius: '8px', fontSize: '14px', fontWeight: '800', textTransform: 'uppercase', cursor: 'pointer' }}
@@ -360,12 +575,16 @@ export default function Admin() {
                 Annulla Modifica
               </button>
             )}
-            {messaggio && <span style={{ fontWeight: '700', fontSize: '14px', color: '#059669' }}>{messaggio}</span>}
+            {messaggio && (
+              <span style={{ fontWeight: '700', fontSize: '13px', color: '#0f172a', background: '#f1f5f9', padding: '10px 14px', borderRadius: '8px', borderLeft: '4px solid #ff5500' }}>
+                {messaggio}
+              </span>
+            )}
           </div>
         </form>
       </div>
 
-      {/* ELENCO PRODOTTI ESISTENTI */}
+      {/* ELENCO PRODOTTI ESISTENTI CON FILTRI REPARTO */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
         <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '800' }}>
           Prodotti Caricati ({prodottiFiltrati.length})
