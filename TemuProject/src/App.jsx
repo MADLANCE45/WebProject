@@ -784,7 +784,7 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
         <div
           onClick={() => cambiaReparto('Kit Emergenza 72h')}
           className={`bento-card bento-apocalypse ${isApocalypse ? 'active' : ''}`}
-          style={{ '--bg-img': 'url(/banner6.jpg)' }}
+          style={{ '--bg-img': 'url(/kit.jpg)' }}
         >
           <div className="bento-content">
             <span className="bento-tag" style={{ background: '#f59e0b', color: '#0f172a' }}>Linee Guida 72h</span>
