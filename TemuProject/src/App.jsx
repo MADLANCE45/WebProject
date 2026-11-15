@@ -72,7 +72,105 @@ const repartiMap = {
   ]
 };
 
-// --- I 4 ACCESSORI INDISPENSABILI DEL VIDEO YOUTUBE (OBBLIGO 15 NOVEMBRE) ---
+// --- 1. CONFIGURATORE PESCA SPORTIVA (SONAR & SPOT INTERATTIVO) ---
+const spotPescaConfig = {
+  fiume: {
+    nome: "Acqua Dolce (Fiume & Lago)",
+    profondita: "1.8m - 6.5m",
+    tempAcqua: "11°C - 16°C",
+    consiglio: "Assetto consigliato: trecciati sottili ad alta visibilità, artificiali suspending o gomme piombate per sondare i fondali.",
+    parolaChiave: ""
+  },
+  mare: {
+    nome: "Mare & Scogliera (Spinning / Surf)",
+    profondita: "3.0m - 14.0m",
+    tempAcqua: "14°C - 19°C",
+    consiglio: "Assetto consigliato: mulinelli schermati contro la salsedine, fluorocarbon resistente all'abrasione e long jerk o metal jig.",
+    parolaChiave: ""
+  },
+  notturna: {
+    nome: "Sessione Notturna & Carpfishing",
+    profondita: "2.5m - 9.0m",
+    tempAcqua: "10°C - 14°C",
+    consiglio: "Assetto consigliato: segnalatori acustici, lampade frontali LED ricaricabili, sonar wireless portatile e borse termiche porta-esche.",
+    parolaChiave: ""
+  }
+};
+
+const setupPescaSportiva = [
+  {
+    tag: "Postazione 01",
+    titolo: "Canne, Mulinelli & Esche",
+    desc: "Mulinelli fluidi ad alto rapporto di recupero, canne in carbonio, artificiali, ami e trecciati.",
+    categoriaTarget: "Attrezzatura da Pesca"
+  },
+  {
+    tag: "Postazione 02",
+    titolo: "Sonar, Ecoscandagli & Tech",
+    desc: "Ecoscandagli wireless per individuare gli spot, bilance digitali, torce frontali e powerbank.",
+    categoriaTarget: "Elettronica e Utilità"
+  },
+  {
+    tag: "Postazione 03",
+    titolo: "Zaini, Box & Logistica",
+    desc: "Scatole porta-minuterie impermeabili, zaini tecnici da riva, foderi e borse termiche.",
+    categoriaTarget: "Accessori e Logistica"
+  },
+  {
+    tag: "Postazione 04",
+    titolo: "Abbigliamento Tecnico",
+    desc: "Occhiali polarizzati anti-riflesso per vedere i pesci sott'acqua, guanti anti-taglio e calzature.",
+    categoriaTarget: "Abbigliamento Tecnico"
+  }
+];
+
+// --- 2. CONFIGURATORE ACQUARIOFILIA (CENTRALINA LED & ECOSISTEMA) ---
+const spettroAcquarioConfig = {
+  daylight: {
+    titolo: "Daylight 6500K (Acqua Dolce Tropicale)",
+    parametri: "Temp: 24°C - 26°C • pH: 6.8 - 7.2 • Fotoperiodo: 8 ore/giorno",
+    descrizione: "Ideale per acquari di comunità: esalta i colori naturali dei pesci tropicali e mantiene l'acqua cristallina."
+  },
+  plant: {
+    titolo: "Plant Grow Full Spectrum (Aquascaping)",
+    parametri: "Temp: 23°C - 25°C • CO2: 20-30 mg/l • Spettro: WRGB Fotosintetico",
+    descrizione: "Stimola la fotosintesi e la crescita compatta delle piante vere, muschi e pratini sommersi."
+  },
+  moonlight: {
+    titolo: "Moonlight Deep Blue (Notturno / Biotopo)",
+    parametri: "Luce Attinica Notturna • Stress Zero • Osservazione Fauna Notturna",
+    descrizione: "Riproduce il chiaro di luna naturale per osservare i pesci di fondo senza stressare la fauna."
+  }
+};
+
+const setupAcquariofilia = [
+  {
+    tag: "Zona 01 • Tecnica",
+    titolo: "Filtri, Pompe, LED & CO2",
+    desc: "Plafoniere LED a spettro completo, filtri esterni/interni silenziosi, termoriscaldatori e impianti CO2.",
+    categoriaTarget: "Tecnica e Manutenzione"
+  },
+  {
+    tag: "Zona 02 • Layout",
+    titolo: "Allestimento & Hardscape",
+    desc: "Rocce naturali, legni ramificati, fondi fertili, sabbie ambrate e decorazioni sicure per la fauna.",
+    categoriaTarget: "Allestimento (Hardscape)"
+  },
+  {
+    tag: "Zona 03 • Struttura",
+    titolo: "Vasche, Supporti & Nursery",
+    desc: "Acquari in vetro extrachiaro, sale parto, reti da allevamento per avannotti e supporti.",
+    categoriaTarget: "Vasche e Mobili"
+  },
+  {
+    tag: "Zona 04 • Cura",
+    titolo: "Manutenzione & Accessori",
+    desc: "Mangiatoie automatiche digitali, sifoni aspirarifiuti, calamite puliscivetro e pinze lunghe.",
+    categoriaTarget: "Accessori Vari"
+  }
+];
+
+// --- 3. ACCESSORI AUTO 15 NOVEMBRE ---
 const accessoriAuto15Nov = [
   {
     num: "Accessorio #01",
@@ -100,7 +198,7 @@ const accessoriAuto15Nov = [
   }
 ];
 
-// --- CHECKLIST 72 ORE (LINEE GUIDA UE) ---
+// --- 4. CHECKLIST 72 ORE (LINEE GUIDA UE) ---
 const lineeGuida72Ore = [
   {
     titolo: "1. Zaino Grab-and-Go",
@@ -141,7 +239,7 @@ function SeoEngine({ repartoAttivo, filtroCategoria, prodotti }) {
     document.title = `${repartoAttivo}${catText} | Recensioni ITA - Offerte, Test e Codici Sconto`;
 
     const metaDesc = document.querySelector('meta[name="description"]');
-    const descContent = `Catalogo verificato di ${repartoAttivo}${catText}: scopri i 4 accessori auto indispensabili per l'obbligo del 15 novembre, attrezzatura da pesca, acquari e Kit 72h col codice app39037.`;
+    const descContent = `Catalogo interattivo di ${repartoAttivo}${catText}: scopri le migliori offerte verificate su Pesca Sportiva, Acquariofilia, Accessori Auto 15 Novembre e Kit 72h col codice app39037.`;
     if (metaDesc) {
       metaDesc.setAttribute('content', descContent);
     } else {
@@ -431,20 +529,20 @@ function LegalAndSupportModal({ activeSection, onClose, onSelectSection }) {
             <div>
               <h3 style={{ marginTop: '4px' }}>Servizio Assistenza Clienti e Tutela Acquisti</h3>
               <p>
-                Hai bisogno di aiuto per trovare uno dei 4 accessori auto del video, applicare un codice sconto o ricevere informazioni su spedizioni e resi? Il nostro supporto risponde entro 24/48 ore.
+                Hai bisogno di aiuto per scegliere un'attrezzatura da pesca, un accessorio per l'acquario o applicare un codice sconto? Il nostro supporto risponde entro 24/48 ore.
               </p>
 
               <div className="support-grid-cards">
                 <div className="support-info-card">
                   <h4>Reso Gratuito (Fino a 90 Giorni)</h4>
                   <p>
-                    Oltre ai 14 giorni di diritto di recesso previsti dal Codice del Consumo (Dir. 2011/83/UE), gli ordini idonei su Temu beneficiano del reso gratuito esteso fino a 90 giorni tramite app ufficiale.
+                    Oltre ai 14 giorni di diritto di recesso previsti dal Codice del Consumo (Dir. 2011/83/UE), gli ordini idonei beneficiano del reso gratuito esteso fino a 90 giorni.
                   </p>
                 </div>
                 <div className="support-info-card">
                   <h4>Garanzia Legale (24 Mesi)</h4>
                   <p>
-                    Tutti gli articoli acquistati godono della garanzia legale di conformità di 24 mesi prevista dalla normativa europea, gestita direttamente dal venditore finale sulla piattaforma Temu.
+                    Tutti gli articoli acquistati godono della garanzia legale di conformità di 24 mesi prevista dalla normativa europea, gestita direttamente sulla piattaforma d'acquisto.
                   </p>
                 </div>
               </div>
@@ -457,10 +555,10 @@ function LegalAndSupportModal({ activeSection, onClose, onSelectSection }) {
                   onChange={(e) => setTicketMotivo(e.target.value)}
                 >
                   <option value="Assistenza Codice Sconto / Coupon Temu">Problema con Codice Sconto o Coupon</option>
+                  <option value="Consiglio Tecnico Pesca Sportiva / Acquariofilia">Consiglio su Pesca Sportiva o Acquariofilia</option>
                   <option value="Info sui 4 Accessori Auto Inverno (15 Novembre)">Info sui 4 Accessori Auto Inverno (15 Novembre)</option>
-                  <option value="Consiglio su Kit Emergenza 72h / Prodotti">Consiglio su Kit Emergenza 72h o Prodotti</option>
+                  <option value="Consiglio su Kit Emergenza 72h / Prodotti">Consiglio su Kit Emergenza 72h</option>
                   <option value="Segnalazione Link o Prezzo Prodotto">Segnalazione Link o Prezzo Prodotto</option>
-                  <option value="Richiesta Privacy / Dati Personali">Richiesta Privacy e Gestione Dati</option>
                 </select>
 
                 <textarea
@@ -491,7 +589,7 @@ function LegalAndSupportModal({ activeSection, onClose, onSelectSection }) {
               </p>
               <p>
                 <strong>3. Diritti dell'Interessato (Artt. 15-22 GDPR):</strong><br />
-                L'utente può richiedere in qualsiasi momento l'accesso, la rettifica, la limitazione o la cancellazione dei propri dati scrivendo a <strong>marcocretu0@gmail.com</strong>, oltre al diritto di proporre reclamo all'Autorità Garante per la Protezione dei Dati Personali.
+                L'utente può richiedere in qualsiasi momento l'accesso, la rettifica, la limitazione o la cancellazione dei propri dati scrivendo a <strong>marcocretu0@gmail.com</strong>.
               </p>
             </div>
           )}
@@ -504,8 +602,8 @@ function LegalAndSupportModal({ activeSection, onClose, onSelectSection }) {
                 Questo sito utilizza esclusivamente memoria locale tecnica (<code>localStorage</code>) sul browser dell'utente per memorizzare la scelta espressa sul banner informativo (<code>gdpr_consent_choice</code>) e la preferenza del tema grafico chiaro/scuro. Non vengono installati cookie di profilazione proprietari.
               </p>
               <p>
-                <strong>2. Collegamenti Esterni e Piattaforme Terze (Temu e YouTube):</strong><br />
-                Il sito contiene link di affiliazione che reindirizzano verso la piattaforma terza <strong>Temu</strong> e verso il canale <strong>YouTube</strong>. Cliccando su "Vedi Offerta" o sui video, l'utente accede ai siti esterni di tali terze parti, che operano come titolari autonomi del trattamento secondo le rispettive informative Cookie e Privacy.
+                <strong>2. Collegamenti Esterni e Piattaforme Terze (Temu, AliExpress e YouTube):</strong><br />
+                Il sito contiene link di affiliazione che reindirizzano verso piattaforme terze (<strong>Temu</strong>, <strong>AliExpress</strong>, <strong>YouTube</strong>) che operano come titolari autonomi del trattamento secondo le rispettive informative Cookie e Privacy.
               </p>
             </div>
           )}
@@ -515,11 +613,11 @@ function LegalAndSupportModal({ activeSection, onClose, onSelectSection }) {
               <h3>Termini di Servizio, Assistenza e Trasparenza Affiliazione</h3>
               <p>
                 <strong>1. Trasparenza Commerciale e Affiliazione:</strong><br />
-                In conformità alle normative sulla trasparenza digitale (Direttiva UE 2019/2161 e Reg. UE 2022/2065), si informa che Recensioni ITA partecipa al Programma di Affiliazione Temu. I collegamenti verso le offerte sono contrassegnati con attributo <code>rel="sponsored"</code>: l'eventuale acquisto genera una commissione pubblicitaria per il sostegno del canale senza alcun costo aggiuntivo per l'acquirente.
+                In conformità alle normative sulla trasparenza digitale (Direttiva UE 2019/2161 e Reg. UE 2022/2065), si informa che Recensioni ITA partecipa a programmi di affiliazione (Temu, AliExpress). I collegamenti verso le offerte sono contrassegnati con attributo <code>rel="sponsored"</code>: l'eventuale acquisto genera una commissione pubblicitaria per il sostegno del canale senza alcun costo aggiuntivo per l'acquirente.
               </p>
               <p>
-                <strong>2. Prezzi, Vendita e Servizio Clienti Post-Vendita:</strong><br />
-                Recensioni ITA svolge attività di selezione e recensione informativa: non vende direttamente i prodotti, non incassa pagamenti e non gestisce la logistica. I prezzi mostrati sono rilevati dal catalogo Temu e possono subire variazioni in tempo reale; fa sempre fede il prezzo finale indicato nell'app o sul sito ufficiale di Temu al momento del checkout. Per assistenza sui codici o segnalazioni sul catalogo è sempre attivo il recapito <strong>marcocretu0@gmail.com</strong>.
+                <strong>2. Prezzi, Vendita e Servizio Clienti:</strong><br />
+                Recensioni ITA svolge attività di selezione e recensione informativa: non vende direttamente i prodotti e non gestisce pagamenti. Per assistenza sui codici o segnalazioni sul catalogo è sempre attivo il recapito <strong>marcocretu0@gmail.com</strong>.
               </p>
             </div>
           )}
@@ -536,7 +634,7 @@ function GdprCookieBanner({ isOpen, onDecision, onOpenPolicy }) {
   return (
     <div className="gdpr-banner">
       <div className="gdpr-text">
-        <strong>Informativa Privacy e Cookie:</strong> Utilizziamo memorie tecniche per il funzionamento del sito e link di affiliazione verso piattaforme esterne (Temu, YouTube). Consulta la{' '}
+        <strong>Informativa Privacy e Cookie:</strong> Utilizziamo memorie tecniche per il funzionamento del sito e link di affiliazione verso piattaforme esterne. Consulta la{' '}
         <button className="gdpr-link" onClick={() => onOpenPolicy('privacy')}>Privacy Policy</button> e la{' '}
         <button className="gdpr-link" onClick={() => onOpenPolicy('cookie')}>Cookie Policy</button>.
       </div>
@@ -560,6 +658,11 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
   const [filtroPrezzo, setFiltroPrezzo] = useState('Tutti');
   const [ricerca, setRicerca] = useState('');
   const [paginaCorrente, setPaginaCorrente] = useState(1);
+
+  // Stati interattivi per Pesca Sportiva e Acquariofilia
+  const [spotPesca, setSpotPesca] = useState('fiume');
+  const [spettroLed, setSpettroLed] = useState('daylight');
+
   const prodottiPerPagina = 12;
 
   useEffect(() => {
@@ -580,6 +683,15 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
     setRepartoAttivo(nuovoReparto);
     setFiltroCategoria('Tutte');
     setRicerca('');
+  };
+
+  // Conta quanti prodotti ci sono in ogni sottocategoria per mostrarlo nelle card interattive
+  const contaProdottiCategoria = (nomeReparto, nomeCat) => {
+    return prodotti.filter((p) => {
+      const repDb = p.reparto || '';
+      const appartieneReparto = repDb.includes(nomeReparto) || (!p.reparto && nomeReparto === 'Pesca Sportiva');
+      return appartieneReparto && p.categoria === nomeCat;
+    }).length;
   };
 
   const prodottiFiltrati = prodotti.filter((p) => {
@@ -607,6 +719,8 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
   };
 
   const isWinter = repartoAttivo === 'Auto & Inverno 15 Nov';
+  const isFishing = repartoAttivo === 'Pesca Sportiva';
+  const isAquarium = repartoAttivo === 'Acquariofilia';
   const isApocalypse = repartoAttivo === 'Kit Emergenza 72h';
 
   return (
@@ -619,56 +733,58 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
 
       <div className="seo-header-strip">
         <h1 className="seo-h1">
-          {isWinter
+          {isFishing
+            ? 'Ecoscandaglio Offerte Pesca Sportiva — Canne, Mulinelli, Esche e Sonar Testati'
+            : isAquarium
+            ? 'Configuratore Acquariofilia & Aquascaping — Plafoniere LED, Filtri, Vasche e Hardscape'
+            : isWinter
             ? 'Speciale Obbligo 15 Novembre — I 4 Accessori Auto Indispensabili Visti su YouTube'
-            : isApocalypse
-            ? 'Radar Sconti Sopravvivenza — Kit Emergenza 72 Ore (Linee Guida UE)'
-            : `Catalogo ${repartoAttivo} ${filtroCategoria !== 'Tutte' ? `— ${filtroCategoria}` : '— Prodotti Testati e Offerte'}`}
+            : 'Radar Sconti Sopravvivenza — Kit Emergenza 72 Ore (Linee Guida UE)'}
         </h1>
       </div>
 
-      {/* BENTO GRID A 5 ELEMENTI */}
+      {/* BENTO GRID A 5 CARD INTERATTIVE */}
       <div className="bento-grid">
         <div
-          onClick={() => cambiaReparto('Auto & Inverno 15 Nov')}
-          className={`bento-card bento-winter ${repartoAttivo === 'Auto & Inverno 15 Nov' ? 'active' : ''}`}
-          style={{ '--bg-img': 'url(/auto.jpg)' }}
+          onClick={() => cambiaReparto('Pesca Sportiva')}
+          className={`bento-card bento-fishing ${isFishing ? 'active' : ''}`}
+          style={{ '--bg-img': 'url(/banner.jpg)' }}
         >
           <div className="bento-content">
-            <span className="bento-tag" style={{ background: '#0284c7', color: '#ffffff' }}>Nuovo Video • 15 Nov</span>
+            <span className="bento-tag" style={{ background: '#10b981', color: '#042f2e' }}>Sonar &amp; Spot</span>
+            <h2>Pesca Sportiva</h2>
+            <p>Canne, mulinelli, esche ed ecoscandagli</p>
+          </div>
+        </div>
+
+        <div
+          onClick={() => cambiaReparto('Acquariofilia')}
+          className={`bento-card bento-aquarium ${isAquarium ? 'active' : ''}`}
+          style={{ '--bg-img': 'url(/banner2.jpg)' }}
+        >
+          <div className="bento-content">
+            <span className="bento-tag" style={{ background: '#06b6d4', color: '#04101c' }}>Aquascaping LED</span>
+            <h2>Acquariofilia</h2>
+            <p>Lampade LED, filtri, pompe e allestimento</p>
+          </div>
+        </div>
+
+        <div
+          onClick={() => cambiaReparto('Auto & Inverno 15 Nov')}
+          className={`bento-card bento-winter ${isWinter ? 'active' : ''}`}
+          style={{ '--bg-img': 'url(/banner4.jpg)' }}
+        >
+          <div className="bento-content">
+            <span className="bento-tag" style={{ background: '#0284c7', color: '#ffffff' }}>Speciale 15 Nov</span>
             <h2>Auto &amp; Inverno</h2>
             <p>Calze da neve, Jump Starter, Compressore e Telo</p>
           </div>
         </div>
 
         <div
-          onClick={() => cambiaReparto('Pesca Sportiva')}
-          className={`bento-card ${repartoAttivo === 'Pesca Sportiva' ? 'active' : ''}`}
-          style={{ '--bg-img': 'url(/banner.jpg)' }}
-        >
-          <div className="bento-content">
-            <span className="bento-tag">Reparto Pesca</span>
-            <h2>Pesca Sportiva</h2>
-            <p>Canne, mulinelli, esche ed elettronica</p>
-          </div>
-        </div>
-
-        <div
-          onClick={() => cambiaReparto('Acquariofilia')}
-          className={`bento-card ${repartoAttivo === 'Acquariofilia' ? 'active' : ''}`}
-          style={{ '--bg-img': 'url(/banner2.jpg)' }}
-        >
-          <div className="bento-content">
-            <span className="bento-tag">Reparto Acquari</span>
-            <h2>Acquariofilia</h2>
-            <p>Lampade LED, filtri, pompe e aquascaping</p>
-          </div>
-        </div>
-
-        <div
           onClick={() => cambiaReparto('Kit Emergenza 72h')}
-          className={`bento-card bento-apocalypse ${repartoAttivo === 'Kit Emergenza 72h' ? 'active' : ''}`}
-          style={{ '--bg-img': 'url(/kit.jpg)' }}
+          className={`bento-card bento-apocalypse ${isApocalypse ? 'active' : ''}`}
+          style={{ '--bg-img': 'url(/banner6.jpg)' }}
         >
           <div className="bento-content">
             <span className="bento-tag" style={{ background: '#f59e0b', color: '#0f172a' }}>Linee Guida 72h</span>
@@ -693,7 +809,200 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
         </div>
       </div>
 
-      {/* DASHBOARD SPECIALE VIDEO YOUTUBE: OBBLIGO 15 NOVEMBRE (4 ACCESSORI INDISPENSABILI) */}
+      {/* =========================================================
+          1. DASHBOARD INTERATTIVA PESCA SPORTIVA (SONAR & ASSETTO)
+         ========================================================= */}
+      {isFishing && (
+        <section className="fishing-hub">
+          <div className="fishing-wave-strip"></div>
+          <div className="fishing-top-row">
+            <div>
+              <div className="sonar-badge">
+                <span className="radar-pulse"></span>
+                <span>Ecoscandaglio Offerte Pesca • Scansione Attiva</span>
+              </div>
+              <h2 style={{ margin: '8px 0 4px 0', fontSize: '22px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '-0.4px' }}>
+                Configuratore Interattivo Assetto da Pesca Sportiva
+              </h2>
+              <p style={{ margin: 0, fontSize: '13px', color: '#a7f3d0' }}>
+                Seleziona il tuo ambiente di pesca o clicca su una postazione per filtrare le attrezzature testate:
+              </p>
+            </div>
+
+            {/* Quadrante Radar Ecoscandaglio SVG Animato */}
+            <div className="sonar-radar-box">
+              <svg width="54" height="54" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="46" fill="#042f2e" stroke="#10b981" strokeWidth="2" />
+                <circle cx="50" cy="50" r="30" fill="none" stroke="rgba(16,185,129,0.35)" strokeWidth="1" strokeDasharray="3 3" />
+                <circle cx="50" cy="50" r="14" fill="none" stroke="rgba(16,185,129,0.35)" strokeWidth="1" />
+                <line x1="50" y1="4" x2="50" y2="96" stroke="rgba(16,185,129,0.25)" strokeWidth="1" />
+                <line x1="4" y1="50" x2="96" y2="50" stroke="rgba(16,185,129,0.25)" strokeWidth="1" />
+                <path
+                  className="sonar-Sweep"
+                  d="M50 50 L50 4 A46 46 0 0 1 92 32 Z"
+                  fill="rgba(16, 185, 129, 0.45)"
+                />
+                <circle cx="66" cy="34" r="3.5" fill="#34d399" />
+                <circle cx="34" cy="68" r="3" fill="#fbbf24" />
+              </svg>
+              <div style={{ textAlign: 'left', fontSize: '11.5px', lineHeight: '1.4' }}>
+                <div style={{ fontWeight: '900', color: '#34d399', textTransform: 'uppercase' }}>
+                  {spotPescaConfig[spotPesca].nome}
+                </div>
+                <div style={{ color: '#a7f3d0' }}>
+                  Fondale: <strong>{spotPescaConfig[spotPesca].profondita}</strong> • Acqua: <strong>{spotPescaConfig[spotPesca].tempAcqua}</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottoni Scelta Ambiente di Pesca */}
+          <div className="spot-selector-bar">
+            <button
+              type="button"
+              onClick={() => setSpotPesca('fiume')}
+              className={`spot-btn ${spotPesca === 'fiume' ? 'active' : ''}`}
+            >
+              Acqua Dolce (Fiume &amp; Lago)
+            </button>
+            <button
+              type="button"
+              onClick={() => setSpotPesca('mare')}
+              className={`spot-btn ${spotPesca === 'mare' ? 'active' : ''}`}
+            >
+              Mare &amp; Scogliera
+            </button>
+            <button
+              type="button"
+              onClick={() => setSpotPesca('notturna')}
+              className={`spot-btn ${spotPesca === 'notturna' ? 'active' : ''}`}
+            >
+              Carpfishing &amp; Notturna
+            </button>
+
+            {filtroCategoria !== 'Tutte' && (
+              <button
+                type="button"
+                onClick={() => setFiltroCategoria('Tutte')}
+                className="spot-btn"
+                style={{ marginLeft: 'auto', background: '#ff5500', color: '#fff', borderColor: '#ff5500' }}
+              >
+                Mostra Tutto il Reparto Pesca
+              </button>
+            )}
+          </div>
+
+          <div className="spot-advice-box">
+            <span><strong>Consiglio Tecnico Sonar:</strong> {spotPescaConfig[spotPesca].consiglio}</span>
+          </div>
+
+          <div className="fishing-4-grid">
+            {setupPescaSportiva.map((item, idx) => {
+              const count = contaProdottiCategoria('Pesca Sportiva', item.categoriaTarget);
+              return (
+                <div
+                  key={idx}
+                  onClick={() => setFiltroCategoria(item.categoriaTarget)}
+                  className={`fishing-item-card ${filtroCategoria === item.categoriaTarget ? 'active' : ''}`}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span className="fishing-item-tag">{item.tag}</span>
+                    <span style={{ fontSize: '11px', fontWeight: '800', color: '#34d399' }}>
+                      {count} {count === 1 ? 'Articolo' : 'Articoli'} →
+                    </span>
+                  </div>
+                  <h4>{item.titolo}</h4>
+                  <p>{item.desc}</p>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* =========================================================
+          2. DASHBOARD INTERATTIVA ACQUARIOFILIA (SPETTRO LED)
+         ========================================================= */}
+      {isAquarium && (
+        <section className={`aquarium-hub spectrum-${spettroLed}`}>
+          <div className="aquarium-led-bar"></div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px', flexWrap: 'wrap' }}>
+            <div>
+              <span style={{ fontSize: '11px', fontWeight: '800', color: '#67e8f9', textTransform: 'uppercase', letterSpacing: '0.8px' }}>
+                Plancia Aquascaping &amp; Biotopo • Simulatore Luce Attivo
+              </span>
+              <h2 style={{ margin: '6px 0 4px 0', fontSize: '22px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '-0.4px' }}>
+                Configuratore Ecosistema Acquario &amp; Spettro LED
+              </h2>
+            </div>
+
+            {/* Controller Spettro Plafoniera LED Interattivo */}
+            <div className="led-controller-box">
+              <span style={{ fontSize: '11px', fontWeight: '800', color: '#bae6fd', marginRight: '4px' }}>
+                PROVA SPETTRO LUCE:
+              </span>
+              <button
+                type="button"
+                onClick={() => setSpettroLed('daylight')}
+                className={`led-btn ${spettroLed === 'daylight' ? 'active' : ''}`}
+              >
+                Daylight 6500K
+              </button>
+              <button
+                type="button"
+                onClick={() => setSpettroLed('plant')}
+                className={`led-btn ${spettroLed === 'plant' ? 'active' : ''}`}
+              >
+                Plant Grow RGB
+              </button>
+              <button
+                type="button"
+                onClick={() => setSpettroLed('moonlight')}
+                className={`led-btn ${spettroLed === 'moonlight' ? 'active' : ''}`}
+              >
+                Moonlight Notturno
+              </button>
+            </div>
+          </div>
+
+          <div className="aquarium-params-strip">
+            <div>
+              <strong style={{ color: '#ffffff' }}>{spettroAcquarioConfig[spettroLed].titolo}:</strong>{' '}
+              {spettroAcquarioConfig[spettroLed].descrizione}
+            </div>
+            <div style={{ fontWeight: '800', color: '#67e8f9', fontSize: '11.5px' }}>
+              {spettroAcquarioConfig[spettroLed].parametri}
+            </div>
+          </div>
+
+          <div className="aquarium-4-grid">
+            {setupAcquariofilia.map((item, idx) => {
+              const count = contaProdottiCategoria('Acquariofilia', item.categoriaTarget);
+              return (
+                <div
+                  key={idx}
+                  onClick={() => setFiltroCategoria(item.categoriaTarget)}
+                  className={`aquarium-item-card ${filtroCategoria === item.categoriaTarget ? 'active' : ''}`}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span className="aquarium-item-tag">{item.tag}</span>
+                    <span style={{ fontSize: '11px', fontWeight: '800', color: '#67e8f9' }}>
+                      {count} {count === 1 ? 'Articolo' : 'Articoli'} →
+                    </span>
+                  </div>
+                  <h4>{item.titolo}</h4>
+                  <p>{item.desc}</p>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* =========================================================
+          3. DASHBOARD AUTO & INVERNO (OBBLIGO 15 NOVEMBRE)
+         ========================================================= */}
       {isWinter && (
         <section className="winter-hub">
           <div className="winter-road-strip"></div>
@@ -718,7 +1027,7 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
           </div>
 
           <div className="winter-notice">
-            <strong>Dal 15 Novembre scatta ufficialmente l'obbligo delle dotazioni invernali:</strong> fatti trovare pronto per neve, batteria scarica dal freddo, calo di pressione delle gomme e parabrezza ghiacciato. Clicca su uno dei 4 accessori protagonisti del video per vedere l'offerta diretta:
+            <strong>Dal 15 Novembre scatta ufficialmente l'obbligo delle dotazioni invernali:</strong> fatti trovare pronto per neve, batteria scarica dal freddo, calo di pressione delle gomme e parabrezza ghiacciato. Clicca su uno dei 4 accessori protagonisti del video per filtrare le offerte:
           </div>
 
           <div className="winter-4-grid">
@@ -737,7 +1046,9 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
         </section>
       )}
 
-      {/* PANNELLO SPECIALE APOCALISSE / KIT 72 ORE */}
+      {/* =========================================================
+          4. DASHBOARD APOCALISSE / KIT EMERGENZA 72 ORE
+         ========================================================= */}
       {isApocalypse && (
         <section className="apocalypse-hub">
           <div className="apocalypse-hazard-strip"></div>
@@ -796,11 +1107,13 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
             aria-label="Cerca prodotto nel catalogo"
             className="search-input"
             placeholder={
-              isWinter
+              isFishing
+                ? "Cerca nel reparto pesca: mulinello, canna spinning, trecciato, ecoscandaglio..."
+                : isAquarium
+                ? "Cerca nel reparto acquari: filtro esterno, plafoniera LED, riscaldatore, rocce..."
+                : isWinter
                 ? "Cerca: calze da neve, jump starter, mini compressore, telo termico..."
-                : isApocalypse
-                ? "Cerca nel bunker: torcia dinamo, radio, filtro acqua, zaino 72h..."
-                : "Cerca il prodotto visto nei video su YouTube..."
+                : "Cerca nel bunker: torcia dinamo, radio, filtro acqua, zaino 72h..."
             }
             value={ricerca}
             onChange={(e) => setRicerca(e.target.value)}
@@ -834,7 +1147,7 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
             onClick={() => setFiltroCategoria(cat)}
             className={`cat-pill ${filtroCategoria === cat ? 'active' : ''}`}
           >
-            {cat}
+            {cat} ({contaProdottiCategoria(repartoAttivo, cat)})
           </button>
         ))}
       </div>
@@ -847,9 +1160,7 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
       ) : prodottiPaginati.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '50px 20px' }}>
           <p style={{ color: 'var(--text-secondary)', marginBottom: '16px' }}>
-            {isWinter
-              ? 'Carica i 4 accessori del video (Calze da neve, Jump Starter, Mini Compressore, Raschiaghiaccio/Telo) dal pannello /admin!'
-              : 'Nessun articolo corrisponde ai filtri selezionati.'}
+            Nessun articolo trovato con i filtri attuali in {repartoAttivo}.
           </p>
           <button
             onClick={() => { setRicerca(''); setFiltroCategoria('Tutte'); setFiltroPrezzo('Tutti'); }}
@@ -875,6 +1186,25 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
                 }
               };
 
+              let badgeClass = 'badge-orange';
+              let badgeText = 'TEMU -30%';
+              if (isAliExpress) {
+                badgeClass = 'badge-red';
+                badgeText = 'ALIEXPRESS DEAL';
+              } else if (isFishing) {
+                badgeClass = isRedTheme ? 'badge-red' : 'badge-emerald';
+                badgeText = isRedTheme ? 'LAMPO PESCA' : 'SELEZIONE PESCA';
+              } else if (isAquarium) {
+                badgeClass = isRedTheme ? 'badge-red' : 'badge-cyan';
+                badgeText = isRedTheme ? 'LAMPO ACQUARI' : 'AQUASCAPE PRO';
+              } else if (isWinter) {
+                badgeClass = 'badge-ice';
+                badgeText = 'SPECIALE 15 NOV';
+              } else if (isApocalypse) {
+                badgeClass = 'badge-red';
+                badgeText = 'SCORTA 72H';
+              }
+
               return (
                 <article
                   key={prodotto.id}
@@ -882,8 +1212,8 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
                   itemScope
                   itemType="https://schema.org/Product"
                 >
-                  <span className={`discount-badge ${isAliExpress ? 'badge-red' : isWinter ? 'badge-ice' : isRedTheme ? 'badge-red' : 'badge-orange'}`}>
-                    {isAliExpress ? 'ALIEXPRESS DEAL' : isWinter ? 'SPECIALE 15 NOV' : isApocalypse ? 'SCORTA 72H -30%' : isRedTheme ? 'OFFERTA LAMPO' : 'TEMU -30%'}
+                  <span className={`discount-badge ${badgeClass}`}>
+                    {badgeText}
                   </span>
 
                   <a
@@ -1006,7 +1336,7 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
 
         <div className="video-grid">
           <a
-            href="https://www.youtube.com/@recensioniita9/videos"
+            href="https://youtu.be/MzimymF65zs?si=gPB_TaEGij8HXkqv"
             target="_blank"
             rel="noopener noreferrer"
             className="video-card"
@@ -1024,11 +1354,11 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
           </a>
 
           <a
-            href="https://www.youtube.com/@recensioniita9/shorts"
+            href="https://youtu.be/FyFkfrBTf9w?si=JFopDujq3zsx0kr8"
             target="_blank"
             rel="noopener noreferrer"
             className="video-card"
-            style={{ backgroundImage: 'url(/banner3.jpg)' }}
+            style={{ backgroundImage: 'url(/banner4.jpg)' }}
           >
             <div className="video-play-icon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="#ffffff">
@@ -1036,13 +1366,13 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
               </svg>
             </div>
             <div className="video-card-info">
-              <span>Test Attrezzatura</span>
+              <span>Test Pesca Sportiva</span>
               <h4>Mulinelli ed Esche Artificiali: La Prova</h4>
             </div>
           </a>
 
           <a
-            href="https://www.youtube.com/@recensioniita9"
+            href="https://youtu.be/Nrcfqyx0ymU?si=EoAAyhkP-g1egMUI"
             target="_blank"
             rel="noopener noreferrer"
             className="video-card"
@@ -1054,8 +1384,8 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
               </svg>
             </div>
             <div className="video-card-info">
-              <span>Kit Emergenza &amp; Outdoor</span>
-              <h4>Torce LED, Powerbank Solari e Accessori</h4>
+              <span>Acquariofilia &amp; Kit 72h</span>
+              <h4>Plafoniere LED, Filtri, Torce e Powerbank</h4>
             </div>
           </a>
         </div>
@@ -1063,9 +1393,9 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
 
       {/* BLOCCO SEMANTICO SEO */}
       <section className="seo-text-block">
-        <h2>Recensioni ITA: Dotazioni Auto 15 Novembre, Pesca Sportiva, Acquari e Kit 72 Ore</h2>
+        <h2>Recensioni ITA: Pesca Sportiva, Acquariofilia, Accessori Auto 15 Novembre e Kit 72 Ore</h2>
         <p>
-          Recensioni ITA seleziona e testa sul campo i migliori prodotti in offerta: dai <strong>4 Accessori Auto Indispensabili per l'obbligo del 15 Novembre</strong> (Calze da neve omologate, Avviatore d'emergenza Jump Starter, Mini compressore portatile e Raschiaghiaccio / Telo termico) fino alle attrezzature per Pesca Sportiva, Acquariofilia e Kit di Emergenza 72 Ore. Utilizzando il codice <strong>app39037</strong> sull'app Temu puoi ottenere un pacchetto di coupon da 100€ e il 30% di sconto extra. Per qualsiasi dubbio,{' '}
+          Recensioni ITA seleziona e testa sul campo i migliori prodotti in offerta: attrezzature per <strong>Pesca Sportiva</strong> (canne, mulinelli, artificiali ed ecoscandagli), <strong>Acquariofilia e Aquascaping</strong> (lampade LED, filtri, riscaldatori e hardscape), i <strong>4 Accessori Auto per l'obbligo del 15 Novembre</strong> e il <strong>Kit di Emergenza 72 Ore</strong>. Utilizzando il codice <strong>app39037</strong> sull'app Temu puoi ottenere un pacchetto di coupon da 100€ e il 30% di sconto extra. Per qualsiasi dubbio,{' '}
           <button
             onClick={onOpenSupport}
             style={{ background: 'none', border: 'none', color: 'var(--temu-orange)', fontWeight: '800', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
@@ -1081,7 +1411,7 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
 // --- COMPONENTE ROOT ---
 export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [repartoAttivo, setRepartoAttivo] = useState('Auto & Inverno 15 Nov');
+  const [repartoAttivo, setRepartoAttivo] = useState('Pesca Sportiva');
   const [isWheelOpen, setIsWheelOpen] = useState(false);
   const [legalSection, setLegalSection] = useState(null);
   const [showGdprBanner, setShowGdprBanner] = useState(false);
@@ -1098,20 +1428,24 @@ export default function App() {
     setShowGdprBanner(false);
   };
 
+  const isFishing = repartoAttivo === 'Pesca Sportiva';
+  const isAquarium = repartoAttivo === 'Acquariofilia';
   const isWinter = repartoAttivo === 'Auto & Inverno 15 Nov';
   const isApocalypse = repartoAttivo === 'Kit Emergenza 72h';
 
   return (
     <Router>
       <div
-        className={`app-wrapper ${isDarkMode || isApocalypse || isWinter ? 'dark' : ''} ${
+        className={`app-wrapper ${
+          isDarkMode || isFishing || isAquarium || isWinter || isApocalypse ? 'dark' : ''
+        } ${isFishing ? 'fishing-mode' : ''} ${isAquarium ? 'aquarium-mode' : ''} ${
           isWinter ? 'winter-mode' : ''
         } ${isApocalypse ? 'apocalypse-mode' : ''}`}
       >
         <TopBar />
 
         <header className="navbar">
-          <Link to="/" className="brand-logo" onClick={() => setRepartoAttivo('Auto & Inverno 15 Nov')}>
+          <Link to="/" className="brand-logo" onClick={() => setRepartoAttivo('Pesca Sportiva')}>
             <div className="logo-circle">
               <img src="/logo.png" alt="Logo Recensioni ITA" />
             </div>
@@ -1120,22 +1454,26 @@ export default function App() {
                 <strong>Recensioni</strong>
                 <span>ITA</span>
               </div>
-              <div className="brand-subtitle">Auto 15 Nov • Pesca • Acquari • 72h</div>
+              <div className="brand-subtitle">Pesca • Acquari • Auto 15 Nov • 72h</div>
             </div>
           </Link>
 
           <div className="nav-center-trust">
+            <button className="trust-item" onClick={() => setRepartoAttivo('Pesca Sportiva')}>
+              <span className="trust-dot" style={{ background: '#10b981' }}></span>
+              <span style={{ color: isFishing ? '#34d399' : 'inherit' }}>Pesca Sportiva</span>
+            </button>
+            <span style={{ color: 'var(--border-color)' }}>|</span>
+            <button className="trust-item" onClick={() => setRepartoAttivo('Acquariofilia')}>
+              <span style={{ color: isAquarium ? '#38bdf8' : 'inherit' }}>Acquariofilia</span>
+            </button>
+            <span style={{ color: 'var(--border-color)' }}>|</span>
             <button className="trust-item" onClick={() => setRepartoAttivo('Auto & Inverno 15 Nov')}>
-              <span className="trust-dot" style={{ background: '#38bdf8' }}></span>
-              <span style={{ color: '#38bdf8' }}>Speciale Auto 15 Novembre</span>
+              <span style={{ color: isWinter ? '#38bdf8' : 'inherit' }}>Auto 15 Nov</span>
             </button>
             <span style={{ color: 'var(--border-color)' }}>|</span>
             <button className="trust-item" onClick={() => setRepartoAttivo('Kit Emergenza 72h')}>
-              <span style={{ color: '#f59e0b' }}>Kit Emergenza 72h</span>
-            </button>
-            <span style={{ color: 'var(--border-color)' }}>|</span>
-            <button className="trust-item" onClick={() => setLegalSection('support')}>
-              <span>Assistenza Clienti</span>
+              <span style={{ color: isApocalypse ? '#f59e0b' : 'inherit' }}>Kit 72h</span>
             </button>
           </div>
 
@@ -1232,7 +1570,7 @@ export default function App() {
             <div className="footer-col">
               <h4>Recensioni ITA</h4>
               <p>
-                Il portale dedicato agli appassionati di accessori auto invernali, pesca sportiva, acquariofilia e preparazione alle emergenze (Kit 72 Ore).
+                Il portale dedicato agli appassionati di pesca sportiva, acquariofilia, accessori auto invernali e preparazione alle emergenze (Kit 72 Ore).
               </p>
               <p style={{ marginTop: '10px' }}>
                 Email Supporto:{' '}
@@ -1265,7 +1603,7 @@ export default function App() {
             <div className="footer-col">
               <h4>Trasparenza Affiliazione</h4>
               <p>
-                Partecipiamo al Programma Affiliati Temu. Acquistando tramite i nostri link o codici sconto, sostieni gratuitamente il canale senza alcun costo aggiuntivo.
+                Partecipiamo ai programmi di affiliazione Temu e AliExpress. Acquistando tramite i nostri link o codici sconto, sostieni gratuitamente il canale senza alcun costo aggiuntivo.
               </p>
             </div>
           </div>

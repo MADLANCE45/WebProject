@@ -1564,3 +1564,415 @@ body {
   gap: 10px;
   font-size: 12px;
 }
+/* =========================================================
+   TEMA E DASHBOARD INTERATTIVA: PESCA SPORTIVA (SONAR TECH)
+   ========================================================= */
+.app-wrapper.fishing-mode {
+  --bg-main: #061310;
+  --bg-surface: #0c1f1a;
+  --text-primary: #ecfdf5;
+  --text-secondary: #86efac;
+  --border-color: #144436;
+  background-image: 
+    radial-gradient(circle at 20% 20%, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 80% 75%, rgba(20, 184, 166, 0.07) 0%, transparent 40%);
+}
+
+.app-wrapper.fishing-mode .navbar {
+  background: rgba(6, 19, 16, 0.94);
+  border-bottom: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.bento-card.bento-fishing.active {
+  border-color: #10b981;
+  box-shadow: 0 12px 30px rgba(16, 185, 129, 0.32);
+}
+
+.fishing-hub {
+  background: linear-gradient(135deg, #071914 0%, #0d2922 100%);
+  border: 1px solid rgba(16, 185, 129, 0.45);
+  border-radius: 18px;
+  padding: 22px;
+  margin-bottom: 22px;
+  color: #ecfdf5;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+}
+
+.fishing-wave-strip {
+  height: 6px;
+  width: 100%;
+  background: linear-gradient(90deg, #059669, #10b981, #34d399, #059669);
+  background-size: 200% 100%;
+  animation: waveFlow 4s linear infinite;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+@keyframes waveFlow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+.fishing-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.sonar-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(16, 185, 129, 0.16);
+  border: 1px solid rgba(16, 185, 129, 0.5);
+  color: #34d399;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+}
+
+/* Radar Ecoscandaglio SVG Animato */
+.sonar-radar-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 10px 16px;
+  border-radius: 14px;
+}
+
+.sonar-Sweep {
+  transform-origin: 50% 50%;
+  animation: sonarRotate 3.5s linear infinite;
+}
+
+@keyframes sonarRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Selettore Interattivo Ambiente di Pesca */
+.spot-selector-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.spot-btn {
+  background: rgba(255, 255, 255, 0.05);
+  color: #a7f3d0;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.spot-btn:hover,
+.spot-btn.active {
+  background: #10b981;
+  color: #042f2e;
+  border-color: #34d399;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+}
+
+.spot-advice-box {
+  background: rgba(6, 19, 16, 0.65);
+  border-left: 3px solid #10b981;
+  padding: 11px 14px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #d1fae5;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.fishing-4-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 960px) {
+  .fishing-4-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 540px) {
+  .fishing-4-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.fishing-item-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 12px;
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  text-align: left;
+  position: relative;
+}
+
+.fishing-item-card:hover,
+.fishing-item-card.active {
+  background: rgba(16, 185, 129, 0.16);
+  border-color: #10b981;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 22px rgba(16, 185, 129, 0.2);
+}
+
+.fishing-item-tag {
+  display: inline-block;
+  background: rgba(16, 185, 129, 0.22);
+  color: #6ee7b7;
+  font-weight: 800;
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.fishing-item-card.active .fishing-item-tag {
+  background: #10b981;
+  color: #042f2e;
+}
+
+.fishing-item-card h4 {
+  margin: 0 0 5px 0;
+  font-size: 14px;
+  font-weight: 800;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.fishing-item-card p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #a7f3d0;
+}
+
+.badge-emerald {
+  background: #059669;
+  border: 1px solid #34d399;
+}
+
+/* =========================================================
+   TEMA E DASHBOARD INTERATTIVA: ACQUARIOFILIA (AQUASCAPING)
+   ========================================================= */
+.app-wrapper.aquarium-mode {
+  --bg-main: #04101c;
+  --bg-surface: #081c30;
+  --text-primary: #f0f9ff;
+  --text-secondary: #7dd3fc;
+  --border-color: #153e61;
+  background-image: 
+    radial-gradient(circle at 25% 15%, rgba(6, 182, 212, 0.1) 0%, transparent 45%),
+    radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.09) 0%, transparent 45%);
+}
+
+.app-wrapper.aquarium-mode .navbar {
+  background: rgba(4, 16, 28, 0.94);
+  border-bottom: 1px solid rgba(6, 182, 212, 0.35);
+}
+
+.bento-card.bento-aquarium.active {
+  border-color: #06b6d4;
+  box-shadow: 0 12px 30px rgba(6, 182, 212, 0.35);
+}
+
+.aquarium-hub {
+  border-radius: 18px;
+  padding: 22px;
+  margin-bottom: 22px;
+  color: #f0f9ff;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.5);
+}
+
+/* 3 Spettri di Luce LED Interattivi */
+.aquarium-hub.spectrum-daylight {
+  background: linear-gradient(135deg, #062138 0%, #0b3c5d 100%);
+  border: 1px solid rgba(34, 211, 238, 0.55);
+}
+
+.aquarium-hub.spectrum-plant {
+  background: linear-gradient(135deg, #091e26 0%, #113a35 55%, #231934 100%);
+  border: 1px solid rgba(52, 211, 153, 0.55);
+}
+
+.aquarium-hub.spectrum-moonlight {
+  background: linear-gradient(135deg, #030b17 0%, #0c1b38 60%, #17143a 100%);
+  border: 1px solid rgba(99, 102, 241, 0.6);
+}
+
+/* Barra Plafoniera LED Superiore */
+.aquarium-led-bar {
+  height: 7px;
+  width: 100%;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  transition: all 0.4s ease;
+}
+
+.spectrum-daylight .aquarium-led-bar {
+  background: linear-gradient(90deg, #38bdf8, #ffffff, #22d3ee);
+  box-shadow: 0 0 18px rgba(34, 211, 238, 0.85);
+}
+
+.spectrum-plant .aquarium-led-bar {
+  background: linear-gradient(90deg, #10b981, #f43f5e, #38bdf8, #10b981);
+  box-shadow: 0 0 18px rgba(16, 185, 129, 0.85);
+}
+
+.spectrum-moonlight .aquarium-led-bar {
+  background: linear-gradient(90deg, #3b82f6, #6366f1, #1d4ed8);
+  box-shadow: 0 0 18px rgba(99, 102, 241, 0.9);
+}
+
+.led-controller-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.led-btn {
+  background: rgba(255, 255, 255, 0.07);
+  color: #e0f2fe;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.led-btn.active {
+  background: #22d3ee;
+  color: #04101c;
+  border-color: #ffffff;
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.6);
+}
+
+.aquarium-params-strip {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 14px 0 16px 0;
+  padding: 10px 14px;
+  background: rgba(4, 16, 28, 0.6);
+  border-radius: 10px;
+  border-left: 3px solid #22d3ee;
+  font-size: 12.5px;
+  color: #bae6fd;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.aquarium-4-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 960px) {
+  .aquarium-4-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 540px) {
+  .aquarium-4-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.aquarium-item-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(34, 211, 238, 0.25);
+  border-radius: 12px;
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  text-align: left;
+}
+
+.aquarium-item-card:hover,
+.aquarium-item-card.active {
+  background: rgba(34, 211, 238, 0.16);
+  border-color: #22d3ee;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(6, 182, 212, 0.25);
+}
+
+.aquarium-item-tag {
+  display: inline-block;
+  background: rgba(34, 211, 238, 0.2);
+  color: #67e8f9;
+  font-weight: 800;
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.aquarium-item-card.active .aquarium-item-tag {
+  background: #22d3ee;
+  color: #04101c;
+}
+
+.aquarium-item-card h4 {
+  margin: 0 0 5px 0;
+  font-size: 14px;
+  font-weight: 800;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.aquarium-item-card p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #bae6fd;
+}
+
+.badge-cyan {
+  background: #0891b2;
+  border: 1px solid #67e8f9;
+}
