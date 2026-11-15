@@ -772,7 +772,7 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
         <div
           onClick={() => cambiaReparto('Auto & Inverno 15 Nov')}
           className={`bento-card bento-winter ${isWinter ? 'active' : ''}`}
-          style={{ '--bg-img': 'url(/banner4.jpg)' }}
+          style={{ '--bg-img': 'url(/auto.jpg)' }}
         >
           <div className="bento-content">
             <span className="bento-tag" style={{ background: '#0284c7', color: '#ffffff' }}>Speciale 15 Nov</span>
