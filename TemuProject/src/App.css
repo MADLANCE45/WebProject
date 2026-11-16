@@ -1976,3 +1976,101 @@ body {
   background: #0891b2;
   border: 1px solid #67e8f9;
 }
+/* =========================================================
+   SEZIONE TECH & SICUREZZA AUTO (NUOVO VIDEO CODICE DELLA STRADA)
+   ========================================================= */
+.tech-auto-section {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px dashed rgba(56, 189, 248, 0.35);
+}
+
+.tech-auto-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tech-auto-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: #f0f9ff;
+  text-transform: uppercase;
+  letter-spacing: -0.3px;
+}
+
+.fine-warning-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(220, 38, 38, 0.2);
+  border: 1px solid rgba(220, 38, 38, 0.5);
+  color: #fca5a5;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 10.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tech-3-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 900px) {
+  .tech-3-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tech-item-card {
+  background: rgba(15, 25, 40, 0.7);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 12px;
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  text-align: left;
+}
+
+.tech-item-card:hover,
+.tech-item-card.active {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: #38bdf8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(56, 189, 248, 0.2);
+}
+
+.tech-item-num {
+  display: inline-block;
+  background: #38bdf8;
+  color: #070d17;
+  font-weight: 900;
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.tech-item-card h4 {
+  margin: 0 0 5px 0;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.tech-item-card p {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: #bae6fd;
+}

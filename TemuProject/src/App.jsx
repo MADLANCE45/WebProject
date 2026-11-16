@@ -3,7 +3,27 @@ import { useEffect, useState } from 'react';
 import { supabase } from './supabaseClient';
 import Admin from './Admin';
 import './App.css';
-
+// --- I 3 GADGET SICUREZZA DEL NUOVO VIDEO (CELLULARE ALLA GUIDA) ---
+const gadgetSicurezzaAuto = [
+  {
+    num: "Gadget #01",
+    titolo: "Supporto Magnetico / Gravitazionale",
+    desc: "Stabile e sicuro sulle bocchette o cruscotto: guida a mani libere ed evita multe salate.",
+    categoriaTarget: "Supporti Smartphone Stabili"
+  },
+  {
+    num: "Gadget #02",
+    titolo: "Trasmettitore FM Bluetooth",
+    desc: "Per auto senza Bluetooth: chiamate in vivavoce e streaming musicale diretto dall'autoradio.",
+    categoriaTarget: "Trasmettitori FM & Bluetooth"
+  },
+  {
+    num: "Gadget #03",
+    titolo: "Schermo Wireless CarPlay & Android",
+    desc: "Il salto di qualità definitivo: navigazione GPS, mappe e comandi vocali senza installazioni complesse.",
+    categoriaTarget: "Schermi Wireless CarPlay/Android"
+  }
+];
 // --- OFFERTE RUOTA BONUS ---
 const offerte = [
   { 
@@ -48,7 +68,10 @@ const repartiMap = {
     'Calze da Neve & Catene',
     'Jump Starter & Batterie',
     'Mini Compressori & Gonfiaggio',
-    'Raschiaghiaccio & Telo Termico'
+    'Raschiaghiaccio & Telo Termico',
+    'Supporti Smartphone Stabili',
+    'Trasmettitori FM & Bluetooth',
+    'Schermi Wireless CarPlay/Android'
   ],
   'Pesca Sportiva': [
     'Attrezzatura da Pesca',
@@ -1003,34 +1026,42 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
       {/* =========================================================
           3. DASHBOARD AUTO & INVERNO (OBBLIGO 15 NOVEMBRE)
          ========================================================= */}
+      {/* DASHBOARD SPECIALE AUTO: INVERNO 15 NOV + SICUREZZA SMARTPHONE & MULTI-MEDIA */}
       {isWinter && (
         <section className="winter-hub">
           <div className="winter-road-strip"></div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px', flexWrap: 'wrap' }}>
             <div>
               <div className="winter-badge">
-                <span>Speciale Video YouTube • Scadenza 15 Novembre</span>
+                <span>Speciale YouTube • Sicurezza Stradale &amp; Inverno</span>
               </div>
               <h2 style={{ margin: '8px 0 0 0', fontSize: '22px', fontWeight: '800', textTransform: 'uppercase' }}>
-                I 4 Accessori Auto Indispensabili per l'Inverno (E l'Obbligo del 15 Novembre)
+                Speciali Auto: Dotazioni 15 Novembre &amp; Gadget Antidistrazione
               </h2>
             </div>
             {filtroCategoria !== 'Tutte' && (
               <button
+                type="button"
                 onClick={() => setFiltroCategoria('Tutte')}
                 className="copy-badge"
                 style={{ background: '#38bdf8', color: '#090d16', border: 'none', padding: '8px 14px' }}
               >
-                Mostra Tutti i 4 Accessori
+                Mostra Tutti gli Accessori Auto
               </button>
             )}
           </div>
 
           <div className="winter-notice">
-            <strong>Dal 15 Novembre scatta ufficialmente l'obbligo delle dotazioni invernali:</strong> fatti trovare pronto per neve, batteria scarica dal freddo, calo di pressione delle gomme e parabrezza ghiacciato. Clicca su uno dei 4 accessori protagonisti del video per filtrare le offerte:
+            <strong>Attenzione alle nuove sanzioni al Codice della Strada:</strong> l'uso del cellulare alla guida comporta multe fino a 1.000€ e sospensione immediata della patente già alla prima violazione. Proteggiti con i supporti e gli schermi wireless, oltre alle dotazioni obbligatorie del 15 Novembre:
           </div>
 
-          <div className="winter-4-grid">
+          {/* Griglia 4 Inverno */}
+          <div style={{ marginBottom: '16px' }}>
+            <span style={{ fontSize: '11px', fontWeight: '800', color: '#7dd3fc', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              1. Dotazioni Obbligatorie (Scadenza 15 Novembre)
+            </span>
+          </div>
+          <div className="winter-4-grid" style={{ marginBottom: '22px' }}>
             {accessoriAuto15Nov.map((item, idx) => (
               <div
                 key={idx}
@@ -1042,6 +1073,35 @@ function Home({ repartoAttivo, setRepartoAttivo, onOpenWheel, onOpenSupport }) {
                 <p>{item.desc}</p>
               </div>
             ))}
+          </div>
+
+          {/* Griglia 3 Sicurezza / Tech */}
+          <div className="tech-auto-section">
+            <div className="tech-auto-header">
+              <div>
+                <span style={{ fontSize: '11px', fontWeight: '800', color: '#fca5a5', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  2. Anti-Multa &amp; Smart Driving (Nuovo Video)
+                </span>
+                <h3>I 3 Gadget Tecnologici per Guidare a Mani Libere</h3>
+              </div>
+              <span className="fine-warning-badge">
+                ⚠️ Stop multe fino a 1.000€
+              </span>
+            </div>
+
+            <div className="tech-3-grid">
+              {gadgetSicurezzaAuto.map((item, idx) => (
+                <div
+                  key={idx}
+                  onClick={() => setFiltroCategoria(item.categoriaTarget)}
+                  className={`tech-item-card ${filtroCategoria === item.categoriaTarget ? 'active' : ''}`}
+                >
+                  <span className="tech-item-num">{item.num}</span>
+                  <h4>{item.titolo}</h4>
+                  <p>{item.desc}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
       )}
